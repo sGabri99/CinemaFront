@@ -1,149 +1,62 @@
-<div class="position-relative overflow-hidden text-light bg-dark" style="background: linear-gradient(rgba(0,0,0,0.2), #111), url('https://images.unsplash.com/photo-1536440136628-849c177e76a1?auto=format&fit=crop&w=1920&q=80') center/cover; min-height: 70vh; display: flex; align-items: center;">
-  <div class="container py-5">
-    <div class="row">
-      <div class="col-12 col-md-8 col-lg-6">
-        <span class="badge bg-danger text-uppercase fw-bold mb-3 px-3 py-2 rounded-2 tracking-wider">In Evidenza</span>
-        <h1 class="display-3 fw-black text-white mb-3">L'Ultimo Viaggio</h1>
-        <p class="fs-5 text-light-50 mb-4">
-          Un'epica avventura fantascientifica attraverso i confini dello spazio e del tempo. Disponibile ora anche nelle nostre sale IMAX 3D con audio Dolby Atmos corporativo.
-        </p>
-        <div class="d-flex flex-wrap gap-3">
-          <a routerLink="/prenota/1" class="btn btn-danger btn-lg px-4 py-3 rounded-3 fw-bold text-uppercase small shadow">
-            <i class="bi bi-ticket-perforated-fill me-2"></i>Prenota Biglietto
-          </a>
-          <button class="btn btn-outline-light btn-lg px-4 py-3 rounded-3 fw-bold text-uppercase small">
-            <i class="bi bi-play-fill me-2"></i>Guarda il Trailer
-          </button>
-        </div>
+<main class="cinema-page">
+  <section class="hero">
+    <div class="hero-content">
+      <span class="tag">Ora in sala</span>
+      <h1>Vivi il cinema come mai prima.</h1>
+      <p>
+        Scopri i film piu attesi, scegli lo spettacolo e prenota il biglietto
+        per la tua prossima serata sul grande schermo.
+      </p>
+
+      <div class="buttons">
+        <a routerLink="/lista-film" class="btn btn-primary">Prenota ora</a>
+        <a href="#programmazione" class="btn btn-secondary">Guarda la programmazione</a>
       </div>
     </div>
-  </div>
-</div>
+  </section>
 
-<div class="py-5" style="background-color: #111;">
-  <div class="container">
-
-    <div class="d-flex justify-content-between align-items-end mb-4 border-bottom border-secondary pb-3">
+  <section class="content-section">
+    <div class="section-header">
       <div>
-        <h2 class="fw-bold text-white mb-1 text-uppercase tracking-tight">Ora nei Nostri Cinema</h2>
-        <p class="text-muted small mb-0">Scegli il tuo film preferito e prenota i posti migliori</p>
+        <h2>Film in evidenza</h2>
+        <p>Le uscite piu popolari di questa settimana.</p>
       </div>
-      <div class="btn-group rounded-3 overflow-hidden bg-dark border border-secondary p-1">
-        <button class="btn btn-sm btn-danger rounded-2 px-3 fw-bold text-uppercase">Tutti</button>
-        <button class="btn btn-sm text-secondary rounded-2 px-3 fw-bold text-uppercase">Oggi</button>
-        <button class="btn btn-sm text-secondary rounded-2 px-3 fw-bold text-uppercase">Domani</button>
+      <a routerLink="/lista-film" class="btn btn-secondary">Vedi tutti</a>
+    </div>
+
+    <div class="movie-grid">
+      <article class="movie-card" *ngFor="let film of filmInEvidenza; let i = index">
+        <div [class]="posterClass(i)" *ngIf="!film.urlLocandina">
+          <span>POSTER</span>
+        </div>
+        <img *ngIf="film.urlLocandina" class="poster-image" [src]="film.urlLocandina" [alt]="'Locandina ' + film.titolo">
+
+        <div class="movie-info">
+          <h3>{{ film.titolo }}</h3>
+          <p class="movie-meta">{{ generiLabel(film) }} - {{ durataLabel(film.durata) }}</p>
+          <a [routerLink]="['/dettaglio-film', film.id]" class="btn btn-primary">Dettagli</a>
+        </div>
+      </article>
+    </div>
+  </section>
+
+  <section id="programmazione" class="content-section">
+    <div class="section-header">
+      <div>
+        <h2>Programmazione di oggi</h2>
+        <p>Scegli l orario piu comodo per te.</p>
       </div>
     </div>
 
-    <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-lg-4 g-4">
-
-      <div class="col">
-        <div class="card h-100 border-0 bg-transparent text-light group position-relative">
-          <div class="overflow-hidden rounded-4 shadow mb-3 position-relative" style="aspect-ratio: 2/3;">
-            <img src="https://images.unsplash.com/photo-1485846234645-a62644f84728?auto=format&fit=crop&w=400&q=80"
-                 alt="Locandina Film"
-                 class="w-100 h-100 object-fit-cover transition-transform duration-300 transform-hover" style="transition: 0.3s ease;">
-            <div class="position-absolute top-0 end-0 m-3">
-              <span class="badge bg-warning text-dark fw-bold px-2.5 py-1.5 rounded-2 shadow-sm">IMAX 3D</span>
-            </div>
-          </div>
-          <div class="card-body p-0">
-            <h5 class="fw-bold text-white text-truncate mb-1">Il Regista Invisibile</h5>
-            <div class="d-flex justify-content-between align-items-center text-muted small mb-3">
-              <span>Azione / Thriller</span>
-              <span class="text-danger fw-bold"><i class="bi bi-clock me-1"></i>142 min</span>
-            </div>
-            <a routerLink="/programmazione/1" class="btn btn-outline-danger w-100 py-2 rounded-3 fw-semibold text-uppercase small">
-              Orari e Biglietti
-            </a>
-          </div>
+    <div class="schedule">
+      <article class="schedule-card" *ngFor="let spettacolo of spettacoliOggi; let i = index">
+        <h3>{{ spettacolo.nomeFilm }}</h3>
+        <p class="movie-meta">{{ spettacolo.nomeSala }} - {{ spettacolo.postiRimanenti }} posti disponibili</p>
+        <div class="time-list">
+          <span class="time" [class.featured]="i % 2 === 0">{{ orario(spettacolo.oraInizio) }}</span>
+          <span class="time">{{ orario(spettacolo.oraFine) }}</span>
         </div>
-      </div>
-
-      <div class="col">
-        <div class="card h-100 border-0 bg-transparent text-light group">
-          <div class="overflow-hidden rounded-4 shadow mb-3 position-relative" style="aspect-ratio: 2/3;">
-            <img src="https://images.unsplash.com/photo-1574267432553-4b4628081c31?auto=format&fit=crop&w=400&q=80"
-                 alt="Locandina Film"
-                 class="w-100 h-100 object-fit-cover" style="transition: 0.3s ease;">
-            <div class="position-absolute top-0 end-0 m-3">
-              <span class="badge bg-primary text-white fw-bold px-2.5 py-1.5 rounded-2 shadow-sm">ATMOS</span>
-            </div>
-          </div>
-          <div class="card-body p-0">
-            <h5 class="fw-bold text-white text-truncate mb-1">Sinfonia Notturna</h5>
-            <div class="d-flex justify-content-between align-items-center text-muted small mb-3">
-              <span>Drammatico / Musicale</span>
-              <span class="text-danger fw-bold"><i class="bi bi-clock me-1"></i>115 min</span>
-            </div>
-            <a routerLink="/programmazione/2" class="btn btn-outline-danger w-100 py-2 rounded-3 fw-semibold text-uppercase small">
-              Orari e Biglietti
-            </a>
-          </div>
-        </div>
-      </div>
-
-      <div class="col">
-        <div class="card h-100 border-0 bg-transparent text-light group">
-          <div class="overflow-hidden rounded-4 shadow mb-3 position-relative" style="aspect-ratio: 2/3;">
-            <img src="https://images.unsplash.com/photo-1608889174637-3c44f6326f20?auto=format&fit=crop&w=400&q=80"
-                 alt="Locandina Film"
-                 class="w-100 h-100 object-fit-cover">
-          </div>
-          <div class="card-body p-0">
-            <h5 class="fw-bold text-white text-truncate mb-1">CyberCity 2026</h5>
-            <div class="d-flex justify-content-between align-items-center text-muted small mb-3">
-              <span>Sci-Fi / Animazione</span>
-              <span class="text-danger fw-bold"><i class="bi bi-clock me-1"></i>98 min</span>
-            </div>
-            <a routerLink="/programmazione/3" class="btn btn-outline-danger w-100 py-2 rounded-3 fw-semibold text-uppercase small">
-              Orari e Biglietti
-            </a>
-          </div>
-        </div>
-      </div>
-
-      <div class="col">
-        <div class="card h-100 border-0 bg-transparent text-light group">
-          <div class="overflow-hidden rounded-4 shadow mb-3 position-relative" style="aspect-ratio: 2/3;">
-            <img src="https://images.unsplash.com/photo-1509248961158-e54f6934749c?auto=format&fit=crop&w=400&q=80"
-                 alt="Locandina Film"
-                 class="w-100 h-100 object-fit-cover">
-            <div class="position-absolute top-0 end-0 m-3">
-              <span class="badge bg-success text-white fw-bold px-2.5 py-1.5 rounded-2 shadow-sm">TOP 1</span>
-            </div>
-          </div>
-          <div class="card-body p-0">
-            <h5 class="fw-bold text-white text-truncate mb-1">Ombre nel Buio</h5>
-            <div class="d-flex justify-content-between align-items-center text-muted small mb-3">
-              <span>Horror</span>
-              <span class="text-danger fw-bold"><i class="bi bi-clock me-1"></i>124 min</span>
-            </div>
-            <a routerLink="/programmazione/4" class="btn btn-outline-danger w-100 py-2 rounded-3 fw-semibold text-uppercase small">
-              Orari e Biglietti
-            </a>
-          </div>
-        </div>
-      </div>
-
+      </article>
     </div>
-  </div>
-</div>
-
-<div class="py-5" style="background-color: #161616;">
-  <div class="container">
-    <div class="row align-items-center bg-dark text-light p-4 p-md-5 rounded-4 shadow-sm border border-secondary">
-      <div class="col-lg-8 mb-4 mb-lg-0">
-        <h3 class="fw-bold text-white mb-2">🍿 Ami il cinema? Risparmia con la CineCard!</h3>
-        <p class="text-muted mb-0 fs-6">
-          Entra nel nostro club esclusivo. Con la CineCard hai diritto a 5 o 10 ingressi a prezzo ridotto, sconti fino al 20% sul bar (popcorn e bibite) e prevendite anticipate per gli eventi speciali e le maratone della saga del momento.
-        </p>
-      </div>
-      <div class="col-lg-4 text-lg-end">
-        <a routerLink="/abbonamenti" class="btn btn-danger btn-lg px-4 py-2.5 rounded-3 fw-bold text-uppercase small shadow">
-          Scopri le Offerte
-        </a>
-      </div>
-    </div>
-  </div>
-</div>
+  </section>
+</main>
