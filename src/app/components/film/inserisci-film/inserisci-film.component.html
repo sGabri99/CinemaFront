@@ -1,0 +1,44 @@
+<div class="container my-4">
+    <h2>Inserisci film</h2>
+
+    <form [formGroup]="form" (ngSubmit)="salva()">
+
+        <div class="mb-3">
+            <label>Titolo</label>
+            <input type="text" class="form-control" formControlName="titolo">
+        </div>
+
+        <div class="mb-3">
+            <label>Descrizione</label>
+            <input type="text" class="form-control" formControlName="descrizione">
+        </div>
+
+        <div class="mb-3">
+            <label>Durata (minuti)</label>
+            <input type="number" class="form-control" formControlName="durata">
+        </div>
+
+        <div class="mb-3">
+            <label>Attori</label>
+            <input type="text" class="form-control" formControlName="attori">
+        </div>
+
+        <div class="mb-3">
+            <label>URL locandina</label>
+            <input type="text" class="form-control" formControlName="urlLocandina">
+        </div>
+
+        <div class="mb-3">
+            <label>Generi</label>
+            @for (genere of generi; track genere.id) {
+                <div class="form-check">
+                    <input type="checkbox" class="form-check-input" (change)="selezionaGenere(genere.id)">
+                    <label class="form-check-label">{{ genere.nome }}</label>
+                </div>
+            }
+        </div>
+
+        <button type="submit" class="btn btn-primary" [disabled]="form.invalid">Salva</button>
+    </form>
+</div>
+
