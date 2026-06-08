@@ -1,0 +1,54 @@
+.cinema-header {
+  --background: #121212;
+  --primary: #E50914;
+  --secondary: #B3B3B3;
+  --text: #FFFFFF;
+  --border: #2a2a2a;
+  background: rgba(18, 18, 18, 0.95);
+  border-bottom: 1px solid var(--border);
+  position: sticky;
+  top: 0;
+  z-index: 10;
+}
+
+.cinema-navbar {
+  align-items: center;
+  display: flex;
+  font-family: Arial, Helvetica, sans-serif;
+  justify-content: space-between;
+  margin: 0 auto;
+  max-width: 1200px;
+  padding: 18px 24px;
+}
+
+.logo {
+  color: var(--primary);
+  font-size: 1.6rem;
+  font-weight: 800;
+  letter-spacing: 1px;
+  text-decoration: none;
+}
+
+.nav-links {
+  display: flex;
+  gap: 24px;
+}
+
+.nav-links a {
+  color: var(--secondary);
+  font-size: 0.95rem;
+  text-decoration: none;
+  transition: color 0.2s ease;
+}
+
+.nav-links a:hover {
+  color: var(--text);
+}
+
+@media (max-width: 640px) {
+  .cinema-navbar {
+    align-items: flex-start;
+    flex-direction: column;
+    gap: 14px;
+  }
+}
