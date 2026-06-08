@@ -1,0 +1,34 @@
+:host {
+    display: block;
+}
+
+h2 {
+    font-weight: 700;
+    border-left: 5px solid #e50914;   /* rosso cinema */
+    padding-left: 12px;
+    margin-bottom: 1.2rem;
+}
+
+/* intestazione tabella in rosso */
+.table thead th {
+    background-color: #e50914;
+    color: #fff;
+    border: none;
+}
+
+.table tbody tr:hover {
+    background-color: #fff0f0;          /* riga evidenziata al passaggio */
+}
+
+.table td {
+    vertical-align: middle;
+}
+
+.btn-primary {
+    background-color: #e50914;
+    border-color: #e50914;
+}
+.btn-primary:hover {
+    background-color: #b20710;
+    border-color: #b20710;
+}
