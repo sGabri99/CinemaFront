@@ -6,7 +6,7 @@ export const authInterceptor: HttpInterceptorFn = (req, next) => {
   }else{
     let copy = req.clone({
       setHeaders: {
-        Authorization: `Bearer ${localStorage.getItem('token')}`
+        Authorization: `Bearer ${localStorage.getItem('auth_token')}`
       }
     });
     return next(copy);
