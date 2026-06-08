@@ -1,0 +1,21 @@
+
+<<div class="container my-4">
+    <h2>Gestione generi</h2>
+
+    <form [formGroup]="form" (ngSubmit)="inserisci()" class="mb-3">
+        <label>Nuovo genere</label>
+        <div class="d-flex gap-2">
+            <input type="text" class="form-control" formControlName="nome">
+            <button type="submit" class="btn btn-primary" [disabled]="form.invalid">Aggiungi</button>
+        </div>
+    </form>
+
+    <ul class="list-group">
+        @for (genere of generi; track genere.id) {
+            <li class="list-group-item d-flex justify-content-between">
+                {{ genere.nome }}
+                <button class="btn btn-sm btn-danger" (click)="elimina(genere.id)">Elimina</button>
+            </li>
+        }
+    </ul>
+</div>

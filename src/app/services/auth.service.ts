@@ -1,12 +1,13 @@
 import { Injectable } from '@angular/core';
-import {HttpClient, HttpResponse} from '@angular/common/http';
-import {LoginRequestDTO} from '../dto/utente/request/login-request-dto';
-import {Observable, tap} from 'rxjs';
-import {InsertUtenteDTO} from '../dto/utente/request/insert-utente-dto';
-import {ResponseUtenteDTO} from '../dto/utente/response/response-utente-dto';
-import {EditPasswordRequest} from '../dto/resetpassword/request/edit-password-request';
-import {ResetPasswordResponse} from '../dto/resetpassword/response/reset-password-response';
-import {ResetPasswordRequest} from '../dto/resetpassword/request/reset-password-request';
+import { HttpClient, HttpResponse } from '@angular/common/http';
+import { LoginRequestDTO } from '../dto/utente/request/login-request-dto';
+import { Observable, tap } from 'rxjs';
+import { InsertUtenteDTO } from '../dto/utente/request/insert-utente-dto';
+import { ResponseUtenteDTO } from '../dto/utente/response/response-utente-dto';
+import { EditPasswordRequest } from '../dto/resetpassword/request/edit-password-request';
+import { ResetPasswordResponse } from '../dto/resetpassword/response/reset-password-response';
+import { ResetPasswordRequest } from '../dto/resetpassword/request/reset-password-request';
+import { jwtDecode } from 'jwt-decode';
 
 @Injectable({
   providedIn: 'root'
@@ -15,7 +16,7 @@ export class AuthService {
   private BASE_URL = 'http://localhost:8080';
   private TOKEN_KEY = 'auth_token';
 
-  constructor(private http: HttpClient) {}
+  constructor(private http: HttpClient) { }
 
   login(dto: LoginRequestDTO): Observable<HttpResponse<null>> {
     return this.http
@@ -82,4 +83,14 @@ export class AuthService {
     localStorage.removeItem(this.TOKEN_KEY);
   }
 
+  getRuolo(): string | null {
+    const token = this.getToken();
+    if (!token) return null;
+    try {
+      const decoded: any = jwtDecode(token);
+      return decoded.ruolo || null;
+    } catch (e) {
+      return null;
+    }
+  }
 }
