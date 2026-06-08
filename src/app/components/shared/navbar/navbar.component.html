@@ -5,6 +5,17 @@
     <nav class="nav-links" aria-label="Navigazione principale">
       <a routerLink="/home">Home</a>
       <a routerLink="/lista-film">Film</a>
+      <a routerLink="/lista-spettacoli">Spettacoli</a>
+      <div class="account-menu">
+        <button type="button" class="account-trigger" aria-haspopup="true">
+          Account
+          <span class="chevron">▾</span>
+        </button>
+        <div class="account-dropdown" role="menu">
+          <a routerLink="/login" role="menuitem">Login</a>
+          <a routerLink="/registrazione" role="menuitem">Registrazione</a>
+        </div>
+      </div>
     </nav>
   </div>
 </header>

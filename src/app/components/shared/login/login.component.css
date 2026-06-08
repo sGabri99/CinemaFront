@@ -26,6 +26,24 @@
     letter-spacing: -0.02em;
 }
 
+.form-label {
+    color: #fff !important;
+}
+
+.auth-page .text-muted,
+.auth-page .small,
+.auth-page p,
+.auth-page label,
+.auth-page .divider {
+    color: #fff !important;
+}
+
+.auth-page .alert-danger,
+.auth-page .alert-danger *,
+.auth-page .invalid-feedback {
+    color: #E50914 !important;
+}
+
 .auth-input {
     background-color: #111;
     border: 1px solid #333;

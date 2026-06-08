@@ -30,18 +30,82 @@
 }
 
 .nav-links {
+  align-items: center;
   display: flex;
   gap: 24px;
 }
 
-.nav-links a {
+.nav-links a,
+.account-trigger {
   color: var(--secondary);
   font-size: 0.95rem;
   text-decoration: none;
   transition: color 0.2s ease;
 }
 
-.nav-links a:hover {
+.nav-links a:hover,
+.account-menu:hover .account-trigger,
+.account-menu:focus-within .account-trigger {
+  color: var(--text);
+}
+
+.account-menu {
+  position: relative;
+}
+
+.account-menu::after {
+  content: '';
+  height: 14px;
+  left: 0;
+  position: absolute;
+  right: 0;
+  top: 100%;
+}
+
+.account-trigger {
+  align-items: center;
+  background: transparent;
+  border: 0;
+  cursor: pointer;
+  display: inline-flex;
+  gap: 6px;
+  padding: 0;
+}
+
+.chevron {
+  color: var(--primary);
+  font-size: 0.8rem;
+  line-height: 1;
+}
+
+.account-dropdown {
+  background: var(--surface, #1E1E1E);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  box-shadow: 0 16px 30px rgba(0, 0, 0, 0.35);
+  display: none;
+  min-width: 170px;
+  padding: 8px;
+  position: absolute;
+  right: 0;
+  top: calc(100% + 8px);
+  z-index: 20;
+}
+
+.account-menu:hover .account-dropdown,
+.account-menu:focus-within .account-dropdown {
+  display: grid;
+  gap: 4px;
+}
+
+.account-dropdown a {
+  border-radius: 6px;
+  color: var(--secondary);
+  padding: 10px 12px;
+}
+
+.account-dropdown a:hover {
+  background: rgba(229, 9, 20, 0.12);
   color: var(--text);
 }
 
@@ -50,5 +114,14 @@
     align-items: flex-start;
     flex-direction: column;
     gap: 14px;
+  }
+
+  .nav-links {
+    flex-wrap: wrap;
+  }
+
+  .account-dropdown {
+    left: 0;
+    right: auto;
   }
 }
