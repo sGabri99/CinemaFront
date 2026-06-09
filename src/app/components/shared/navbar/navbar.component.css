@@ -98,13 +98,22 @@
   gap: 4px;
 }
 
-.account-dropdown a {
+.account-dropdown a,
+.account-dropdown button {
+  background: transparent;
+  border: 0;
   border-radius: 6px;
   color: var(--secondary);
+  cursor: pointer;
+  font-family: inherit;
+  font-size: 0.95rem;
   padding: 10px 12px;
+  text-align: left;
+  text-decoration: none;
 }
 
-.account-dropdown a:hover {
+.account-dropdown a:hover,
+.account-dropdown button:hover {
   background: rgba(229, 9, 20, 0.12);
   color: var(--text);
 }
