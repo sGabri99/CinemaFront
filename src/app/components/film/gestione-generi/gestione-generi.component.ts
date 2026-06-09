@@ -7,16 +7,6 @@ import {InsertGenereDTO} from "../../../dto/genere/request/insert-genere-dto";
 
 @Component({
   selector: 'app-gestione-generi',
-  imports: [
-    ReactiveFormsModule
-  ],
-  templateUrl: './gestione-generi.component.html',
-  styleUrl: './gestione-generi.component.css'
-})
-
-
-@Component({
-  selector: 'app-gestione-generi',
   standalone: true,
   imports: [ReactiveFormsModule],
   templateUrl: './gestione-generi.component.html',
