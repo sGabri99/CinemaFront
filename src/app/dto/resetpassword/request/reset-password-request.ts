@@ -1,4 +1,6 @@
 export interface ResetPasswordRequest {
+  token: string;
   password: string;
-  confermaPassowrd:string;
+  confermaPassword: string;
 }
+

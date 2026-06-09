@@ -9,6 +9,9 @@ import {GestioneGenereComponent} from "./components/film/gestione-generi/gestion
 import {RegistrazioneComponent} from "./components/shared/registrazione/registrazione.component";
 import {LoginComponent} from "./components/shared/login/login.component";
 import {ListaSpettacoliComponent} from "./components/shared/lista-spettacoli/lista-spettacoli.component";
+import {ForgotPasswordComponent} from "./components/shared/forgot-password/forgot-password.component";
+import {ResetPasswordComponent} from "./components/shared/reset-password/reset-password.component";
+import {ProfiloComponent} from "./components/cliente/profilo/profilo.component";
 
 export const routes: Routes = [
   {path: '',pathMatch: 'full', redirectTo: 'home'},
@@ -21,5 +24,9 @@ export const routes: Routes = [
   { path: 'login', title: 'Login', component: LoginComponent },
   { path: 'registrazione', title: 'Registrazione', component: RegistrazioneComponent },
   { path: 'lista-spettacoli', title: 'Lista Spettacoli', component: ListaSpettacoliComponent },
+  { path: 'password-dimenticata', title: 'Password dimenticata', component: ForgotPasswordComponent },
+  { path: 'password-reset', title: 'Password reset', component: ResetPasswordComponent },
+  { path: 'profilo', title: 'Profilo', component: ProfiloComponent },
+
   {path: '**', title: 'Pagina non trovata', component: PageNotFoundComponent}
 ];

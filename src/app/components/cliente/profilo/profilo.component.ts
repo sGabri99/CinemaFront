@@ -1,0 +1,79 @@
+import { Component, OnInit } from '@angular/core';
+import { CommonModule } from '@angular/common';
+import { FormsModule } from '@angular/forms';
+import { Router } from '@angular/router';
+import { AuthService } from '../../../services/auth.service';
+import { EditPasswordRequest } from '../../../dto/resetpassword/request/edit-password-request';
+import { jwtDecode } from 'jwt-decode';
+
+@Component({
+  selector: 'app-profilo',
+  standalone: true,
+  imports: [CommonModule, FormsModule],
+  templateUrl: './profilo.component.html',
+  styleUrl: './profilo.component.css'
+})
+export class ProfiloComponent implements OnInit {
+  email = '';
+  ruolo = '';
+
+  dto: EditPasswordRequest = { email: '', passwordVecchia: '', passwordNuova: '' };
+  loading = false;
+  successo = false;
+  errore: string | null = null;
+  mostraVecchia = false;
+  mostraNuova = false;
+
+  constructor(
+    private authService: AuthService,
+    private router: Router
+  ) {}
+
+  ngOnInit(): void {
+    const token = this.authService.getToken();
+    if (!token) {
+      this.router.navigate(['/login']);
+      return;
+    }
+    try {
+      const decoded: any = jwtDecode(token);
+      this.email = decoded.sub || '';
+      this.ruolo = decoded.ruolo || '';
+      this.dto.email = this.email;
+    } catch (e) {
+      this.router.navigate(['/login']);
+    }
+  }
+
+  cambiaPassword(): void {
+    if (!this.dto.passwordVecchia || !this.dto.passwordNuova) {
+      this.errore = 'Compila tutti i campi.';
+      return;
+    }
+    this.loading = true;
+    this.errore = null;
+    this.successo = false;
+
+    this.authService.editPassword(this.dto).subscribe({
+      next: () => {
+        this.loading = false;
+        this.successo = true;
+        this.dto.passwordVecchia = '';
+        this.dto.passwordNuova = '';
+      },
+      error: (err) => {
+        this.loading = false;
+        if (err.status === 401 || err.status === 400) {
+          this.errore = 'Password attuale non corretta.';
+        } else {
+          this.errore = 'Errore durante il salvataggio. Riprova più tardi.';
+        }
+      }
+    });
+  }
+
+  logout(): void {
+    this.authService.logout();
+    this.router.navigate(['/home']);
+  }
+}
