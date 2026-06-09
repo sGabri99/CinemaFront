@@ -74,7 +74,7 @@
                         <input
                                 [type]="mostraPassword ? 'text' : 'password'"
                                 class="form-control auth-input pe-5"
-                                placeholder="••••••••"
+                                placeholder="Min. 8 caratteri, con maiuscola, minuscola, numero e simbolo (es. ! # $)"
                                 [(ngModel)]="dto.password"
                                 autocomplete="new-password"
                         />
@@ -83,6 +83,7 @@
                         </button>
                     </div>
                 </div>
+
 
                 <!-- Conferma Password -->
                 <div class="mb-4">
@@ -93,7 +94,7 @@
                                 class="form-control auth-input pe-5"
                                 [class.is-invalid]="dto.confermaPassword && !passwordMatch"
                                 [class.is-valid]="dto.confermaPassword && passwordMatch"
-                                placeholder="••••••••"
+                                placeholder="Le password devono coincidere"
                                 [(ngModel)]="dto.confermaPassword"
                                 autocomplete="new-password"
                         />

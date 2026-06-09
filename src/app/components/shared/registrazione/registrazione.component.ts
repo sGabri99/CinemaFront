@@ -68,6 +68,8 @@ export class RegistrazioneComponent {
         this.loading = false;
         if (err.status === 409) {
           this.errore = 'Email già registrata. Prova ad accedere.';
+        } else if (err.status === 400 && err.error?.errori?.password) {
+          this.errore = err.error.errori.password; // mostra "La password inserita non è valida."
         } else if (err.error?.messaggio) {
           this.errore = err.error.messaggio;
         } else {
