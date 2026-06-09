@@ -10,6 +10,7 @@ import { SpettacoloService } from '../../../services/spettacolo.service';
   selector: 'app-home',
   imports: [CommonModule, RouterLink],
   templateUrl: './home.component.html',
+  standalone: true,
   styleUrl: './home.component.css'
 })
 export class HomeComponent implements OnInit {

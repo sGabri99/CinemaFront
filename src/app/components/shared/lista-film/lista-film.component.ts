@@ -9,6 +9,7 @@ import { FilmService } from '../../../services/film.service';
   selector: 'app-lista-film',
   imports: [CommonModule, FormsModule, RouterLink],
   templateUrl: './lista-film.component.html',
+  standalone: true,
   styleUrl: './lista-film.component.css'
 })
 export class ListaFilmComponent implements OnInit {
