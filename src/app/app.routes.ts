@@ -6,6 +6,9 @@ import {DettaglioFilmComponent} from './components/shared/dettaglio-film/dettagl
 import {GestioneFilmComponent} from "./components/film/gestione-film/gestione-film.component";
 import {InserisciFilmComponent} from "./components/film/inserisci-film/inserisci-film.component";
 import {GestioneGenereComponent} from "./components/film/gestione-generi/gestione-generi.component";
+import {RegistrazioneComponent} from "./components/shared/registrazione/registrazione.component";
+import {LoginComponent} from "./components/shared/login/login.component";
+import {ListaSpettacoliComponent} from "./components/shared/lista-spettacoli/lista-spettacoli.component";
 
 export const routes: Routes = [
   {path: '',pathMatch: 'full', redirectTo: 'home'},
@@ -15,5 +18,8 @@ export const routes: Routes = [
   { path: 'gestione-film', title: 'Gestione film', component: GestioneFilmComponent },
   { path: 'inserisci-film', title: 'Inserisci film', component: InserisciFilmComponent },
   { path: 'gestione-generi', title: 'Gestione generi', component: GestioneGenereComponent },
+  { path: 'login', title: 'Login', component: LoginComponent },
+  { path: 'registrazione', title: 'Registrazione', component: RegistrazioneComponent },
+  { path: 'lista-spettacoli', title: 'Lista Spettacoli', component: ListaSpettacoliComponent },
   {path: '**', title: 'Pagina non trovata', component: PageNotFoundComponent}
 ];
