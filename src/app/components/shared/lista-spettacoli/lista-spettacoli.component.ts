@@ -73,7 +73,11 @@ export class ListaSpettacoliComponent implements OnInit {
     }
 
     formatOrario(ora: string): string {
-        return ora?.substring(0, 5) ?? '';
+        if (!ora) return '';
+        // Gestisce sia "2026-06-10 15:00:00" che "2026-06-10T15:00:00" che "15:00:00"
+        const timePart = ora.includes('T') ? ora.split('T')[1] :
+            ora.includes(' ') ? ora.split(' ')[1] : ora;
+        return timePart?.substring(0, 5) ?? '';
     }
 
     formatData(data: string): string {
