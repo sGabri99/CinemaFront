@@ -30,19 +30,11 @@ export class ProfiloComponent implements OnInit {
   ) {}
 
   ngOnInit(): void {
-    const token = this.authService.getToken();
-    if (!token) {
-      this.router.navigate(['/login']);
-      return;
-    }
-    try {
-      const decoded: any = jwtDecode(token);
-      this.email = decoded.sub || '';
-      this.ruolo = decoded.ruolo || '';
+
+      this.email = this.authService.getEmail()
+      this.ruolo = this.authService.getRuolo()
       this.dto.email = this.email;
-    } catch (e) {
-      this.router.navigate(['/login']);
-    }
+ 
   }
 
   cambiaPassword(): void {

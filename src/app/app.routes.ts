@@ -11,8 +11,9 @@ import {LoginComponent} from "./components/shared/login/login.component";
 import {ListaSpettacoliComponent} from "./components/shared/lista-spettacoli/lista-spettacoli.component";
 import {ForgotPasswordComponent} from "./components/shared/forgot-password/forgot-password.component";
 import {ResetPasswordComponent} from "./components/shared/reset-password/reset-password.component";
-import {ProfiloComponent} from "./components/cliente/profilo/profilo.component";
+import {ProfiloComponent} from "./components/loggato/profilo/profilo.component";
 import {staffGuard} from "./guards/staff.guard";
+import {authGuard} from "./guards/auth.guard";
 
 export const routes: Routes = [
   {path: '',pathMatch: 'full', redirectTo: 'home'},
@@ -27,7 +28,7 @@ export const routes: Routes = [
   { path: 'lista-spettacoli', title: 'Lista Spettacoli', component: ListaSpettacoliComponent },
   { path: 'password-dimenticata', title: 'Password dimenticata', component: ForgotPasswordComponent },
   { path: 'password-reset', title: 'Password reset', component: ResetPasswordComponent },
-  { path: 'profilo', title: 'Profilo', component: ProfiloComponent },
+  { path: 'profilo', title: 'Profilo', component: ProfiloComponent , canActivate: [authGuard]},
 
   { path: 'staff', loadComponent: () => import('./components/staff/staff-wrapper/staff-wrapper.component').then(m => m.StaffWrapperComponent)
     ,loadChildren: () => import('./routes/staff.routes').then(m => m.staffRoutes) },

@@ -93,4 +93,16 @@ export class AuthService {
       return null;
     }
   }
+
+  getEmail(): string | null {
+    const token = this.getToken();
+    if (!token) return null;
+    try {
+      const decoded: any = jwtDecode(token);
+      return decoded.sub || null;
+    } catch (e) {
+      return null;
+    }
+  }
+
 }
