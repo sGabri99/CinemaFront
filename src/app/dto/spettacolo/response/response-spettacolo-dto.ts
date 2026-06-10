@@ -1,6 +1,6 @@
 export interface ResponseSpettacoloDTO {
   id: number;
-  idFilm: number;
+  idFilm?: number;
   data: string;
   oraInizio: string;
   oraFine: string;
