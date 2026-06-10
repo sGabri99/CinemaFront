@@ -1,0 +1,17 @@
+<mat-nav-list>
+    <a mat-list-item routerLink="/profilo">Profilo</a>
+
+    @if (userRole === 'cliente') {
+        <a mat-list-item routerLink="/i-miei-biglietti">I miei biglietti</a>
+    }
+
+    @if (userRole === 'staff' || userRole === 'superadmin') {
+        <a mat-list-item routerLink="/gestione-generi">Gestione Generi</a>
+        <a mat-list-item routerLink="/gestione-film">Gestione Film</a>
+        <a mat-list-item routerLink="/gestione-spettacoli">Gestione Spettacoli</a>
+    }
+
+    @if (userRole === 'superadmin') {
+        <a mat-list-item routerLink="/crea-staff">Crea membro Staff</a>
+    }
+</mat-nav-list>
