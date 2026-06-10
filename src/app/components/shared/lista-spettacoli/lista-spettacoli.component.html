@@ -1,183 +1,139 @@
-<div class="lista-spettacoli-page">
+<main class="page">
+  <section class="page-hero">
+    <span class="tag">Programmazione</span>
+    <h1>Scegli lo spettacolo della tua serata.</h1>
+    <p>Filtra per data, seleziona un orario e prenota il posto per il film che vuoi vedere.</p>
+  </section>
 
-    <!-- Header con filtri -->
-    <div class="page-header">
-        <div class="container py-4">
-            <div class="d-flex flex-column flex-md-row justify-content-between align-items-start align-items-md-center gap-3">
-                <div>
-                    <h2 class="fw-bold text-white mb-1 text-uppercase">
-                        <i class="bi bi-calendar3 me-2 text-danger"></i>Spettacoli
-                    </h2>
-                    <p class="text-muted small mb-0">
-                        @if (dataSelezionata) {
-                            {{ totalFilmDelGiorno }} film in programma per la data selezionata
-                        } @else {
-                            Tutti gli spettacoli in programmazione
-                        }
-                    </p>
-                </div>
+  <section class="toolbar" aria-label="Filtro data spettacoli">
+    <label>
+      <span>Data di proiezione</span>
+      <input
+        type="date"
+        [(ngModel)]="dataSelezionata"
+        (change)="filtraPerData()"
+        [min]="oggi"
+      >
+    </label>
 
-                <!-- Filtro data -->
-                <div class="d-flex flex-wrap gap-2 align-items-center">
-                    <button class="btn btn-sm btn-danger fw-bold text-uppercase px-3" (click)="filtraOggi()">
-                        <i class="bi bi-calendar-check me-1"></i>Oggi
-                    </button>
-                    <input
-                            type="date"
-                            class="form-control form-control-sm date-picker"
-                            [(ngModel)]="dataSelezionata"
-                            (change)="filtraPerData()"
-                            [min]="oggi"
-                    />
-                    @if (dataSelezionata) {
-                        <button class="btn btn-sm btn-outline-secondary" (click)="resetFiltro()" title="Rimuovi filtro">
-                            Rimuovi Filtro
-                        </button>
-                    }
-                </div>
-            </div>
-        </div>
+    <div class="toolbar-actions">
+      <button type="button" class="btn btn-secondary" (click)="filtraOggi()">Oggi</button>
+      <button type="button" class="btn btn-ghost" (click)="resetFiltro()" [disabled]="!dataSelezionata">
+        Tutte
+      </button>
     </div>
+  </section>
 
-    <div class="container py-4">
+  @if (loading) {
+    <section class="empty-state">
+      <h2>Caricamento spettacoli...</h2>
+      <p>Sto recuperando la programmazione dal backend.</p>
+    </section>
+  }
 
-        <!-- Loading -->
-        @if (loading) {
-            <div class="text-center py-5">
-                <div class="spinner-border text-danger" role="status">
-                    <span class="visually-hidden">Caricamento...</span>
-                </div>
-                <p class="text-muted mt-3">Caricamento spettacoli...</p>
-            </div>
-        }
+  @if (errore) {
+    <section class="empty-state error">
+      <h2>Errore</h2>
+      <p>{{ errore }}</p>
+    </section>
+  }
 
-        <!-- Errore -->
-        @if (errore && !loading) {
-            <div class="alert alert-danger d-flex align-items-center gap-2 rounded-3" role="alert">
-                <i class="bi bi-exclamation-triangle-fill fs-5"></i>
-                <span>{{ errore }}</span>
-            </div>
-        }
+  @if (messaggio) {
+    <section class="empty-state success">
+      <h2>Prenotazione</h2>
+      <p>{{ messaggio }}</p>
+    </section>
+  }
 
-        <!-- Nessun risultato -->
-        @if (!loading && !errore && spettacoliFiltrati.length === 0) {
-            <div class="text-center py-5">
-                <i class="bi bi-calendar-x text-secondary" style="font-size: 3rem;"></i>
-                <p class="text-muted mt-3 fs-5">Nessuno spettacolo trovato</p>
-                @if (dataSelezionata) {
-                    <button class="btn btn-outline-danger btn-sm mt-2" (click)="resetFiltro()">
-                        Mostra tutti gli spettacoli
-                    </button>
+  @if (!loading && spettacoliFiltrati.length === 0 && !errore) {
+    <section class="empty-state">
+      <h2>Nessuno spettacolo trovato</h2>
+      <p>Modifica la data per visualizzare altri spettacoli.</p>
+    </section>
+  }
+
+  @if (!loading && spettacoliFiltrati.length > 0) {
+    @for (gruppo of gruppiPerData; track gruppo.data) {
+      <section class="day-section">
+        <header class="day-header">
+          <div class="date-badge">
+            <span>{{ gruppo.data | date:'dd' }}</span>
+            <small>{{ gruppo.data | date:'MMM' : '' : 'it' }}</small>
+          </div>
+          <div>
+            <h2>{{ formatData(gruppo.data) | titlecase }}</h2>
+            <p>{{ gruppo.filmsDelGiorno.length }} film in programma</p>
+          </div>
+        </header>
+
+        <div class="show-grid">
+          @for (entry of gruppo.filmsDelGiorno; track entry.filmKey) {
+            <article class="show-card">
+              <div class="poster">
+                @if (entry.film.urlLocandina) {
+                  <img [src]="entry.film.urlLocandina" [alt]="'Locandina ' + entry.film.titolo">
+                } @else {
+                  <span>POSTER</span>
                 }
-            </div>
-        }
+              </div>
 
-        <!-- Lista raggruppata per data → un card per film -->
-        @if (!loading && !errore && spettacoliFiltrati.length > 0) {
-            @for (gruppo of gruppiPerData; track gruppo.data) {
-                <div class="mb-5">
+              <div class="card-body">
+                <p class="eyebrow">{{ generiLabel(entry.film) }}</p>
+                <h3>{{ entry.film.titolo }}</h3>
 
-                    <!-- Intestazione data -->
-                    <div class="data-header d-flex align-items-center gap-3 mb-4">
-                        <div class="data-badge">
-                            <span class="data-giorno">{{ gruppo.data | date:'dd' }}</span>
-                            <span class="data-mese">{{ gruppo.data | date:'MMM' : '' : 'it' }}</span>
-                        </div>
-                        <div>
-                            <h5 class="text-white fw-bold mb-0">{{ formatData(gruppo.data) | titlecase }}</h5>
-                            <small class="text-muted">{{ gruppo.filmsDelGiorno.length }} film in programma</small>
-                        </div>
-                        <hr class="flex-grow-1 border-secondary m-0">
-                    </div>
+                <p class="movie-meta">
+                  @if (entry.film.durata) {
+                    <span>{{ durataLabel(entry.film.durata) }}</span>
+                  }
+                  @if (entry.film.attori) {
+                    <span>{{ entry.film.attori }}</span>
+                  }
+                </p>
 
-                    <!-- Una card per film -->
-                    <div class="d-flex flex-column gap-3">
-                        @for (entry of gruppo.filmsDelGiorno; track entry.film.id) {
-                            <div class="film-card">
-
-                                <!-- Poster -->
-                                <div class="film-poster">
-                                    @if (entry.film.urlLocandina) {
-                                        <img [src]="entry.film.urlLocandina" [alt]="entry.film.titolo" class="poster-img" />
-                                    } @else {
-                                        <div class="poster-placeholder">
-                                            <i class="bi bi-film"></i>
-                                        </div>
-                                    }
-                                </div>
-
-                                <!-- Info film + spettacoli -->
-                                <div class="film-content">
-
-                                    <!-- Titolo e generi -->
-                                    <div class="film-header">
-                                        <h4 class="film-titolo">{{ entry.film.titolo }}</h4>
-                                        @if (entry.film.nomeGeneri?.length) {
-                                            <div class="generi-list">
-                                                @for (g of entry.film.nomeGeneri; track g) {
-                                                    <span class="genere-tag">{{ g }}</span>
-                                                }
-                                            </div>
-                                        }
-                                    </div>
-
-                                    <!-- Descrizione -->
-                                    @if (entry.film.descrizione) {
-                                        <p class="film-descrizione">{{ entry.film.descrizione }}</p>
-                                    }
-
-                                    <!-- Lista spettacoli del giorno -->
-                                    <div class="spettacoli-list">
-                                        <div class="spettacoli-label">
-                                            <i class="bi bi-clock me-1"></i>Orari disponibili
-                                        </div>
-                                        <div class="spettacoli-items">
-                                            @for (s of entry.spettacoli; track s.id) {
-                                                <div class="spettacolo-row">
-                                                    <div class="spettacolo-orario">
-                                                        <span class="orario-badge">
-                                                            {{ formatOrario(s.oraInizio) }} – {{ formatOrario(s.oraFine) }}
-                                                        </span>
-                                                    </div>
-                                                    <div class="spettacolo-sala">
-                                                        <i class="bi bi-building me-1"></i>
-                                                        <span>{{ s.nomeSala }}</span>
-                                                    </div>
-                                                    <div class="spettacolo-posti"
-                                                         [class.posti-scarsi]="s.postiRimanenti > 0 && s.postiRimanenti <= 10"
-                                                         [class.posti-esauriti]="s.postiRimanenti === 0">
-                                                        <i class="bi bi-person-fill me-1"></i>
-                                                        @if (s.postiRimanenti === 0) {
-                                                            <span>Esaurito</span>
-                                                        } @else {
-                                                            <span>{{ s.postiRimanenti }} posti</span>
-                                                        }
-                                                    </div>
-
-                                                    <!-- Bottone Prenota: solo per CLIENTE loggato -->
-                                                    @if (isCliente()) {
-                                                        <a
-                                                                [routerLink]="['/cliente/acquisto-biglietti', s.id]"
-                                                                class="btn btn-prenota-inline"
-                                                                [class.disabled]="s.postiRimanenti === 0"
-                                                        >
-                                                            <i class="bi bi-ticket-perforated-fill me-1"></i>
-                                                            {{ s.postiRimanenti === 0 ? 'Esaurito' : 'Prenota' }}
-                                                        </a>
-                                                    }
-                                                </div>
-                                            }
-                                        </div>
-                                    </div>
-
-                                </div>
-                            </div>
-                        }
-                    </div>
-
+                <div class="time-area" aria-label="Orari disponibili">
+                  @for (s of entry.spettacoli; track s.id) {
+                    <button
+                      type="button"
+                      class="time-chip"
+                      [class.active]="isOrarioSelezionato(gruppo.data, entry.filmKey, s)"
+                      [disabled]="s.postiRimanenti === 0"
+                      (click)="selezionaSpettacolo(gruppo.data, entry.filmKey, s)"
+                      [title]="s.nomeSala + ' - ' + (s.postiRimanenti === 0 ? 'esaurito' : s.postiRimanenti + ' posti')"
+                    >
+                      {{ formatOrario(s.oraInizio) }} - {{ formatOrario(s.oraFine) }}
+                    </button>
+                  }
                 </div>
-            }
-        }
 
-    </div>
-</div>
+                @if (spettacoloSelezionato(gruppo.data, entry.filmKey); as selezionato) {
+                  <p class="selected-info">
+                    {{ selezionato.nomeSala }} - {{ selezionato.postiRimanenti }} posti
+                  </p>
+                }
+
+                <div class="card-actions">
+                  <button
+                    type="button"
+                    class="btn btn-primary"
+                    [disabled]="isPrenotazioneInCorso(gruppo.data, entry.filmKey) || !spettacoloSelezionato(gruppo.data, entry.filmKey)"
+                    (click)="prenota(gruppo.data, entry.filmKey)"
+                  >
+                    {{ isPrenotazioneInCorso(gruppo.data, entry.filmKey) ? 'Prenotazione...' : 'Prenota' }}
+                  </button>
+
+                  @if (entry.film.id) {
+                    <a [routerLink]="['/dettaglio-film', entry.film.id]" class="btn btn-outline">
+                      Dettaglio film
+                    </a>
+                  } @else {
+                    <button type="button" class="btn btn-outline" disabled>Dettaglio film</button>
+                  }
+                </div>
+              </div>
+            </article>
+          }
+        </div>
+      </section>
+    }
+  }
+</main>

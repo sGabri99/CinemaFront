@@ -6,11 +6,13 @@ import { forkJoin } from 'rxjs';
 import { SpettacoloService } from '../../../services/spettacolo.service';
 import { FilmService } from '../../../services/film.service';
 import { AuthService } from '../../../services/auth.service';
+import { BigliettoService } from '../../../services/biglietto.service';
 import { ResponseSpettacoloDTO } from '../../../dto/spettacolo/response/response-spettacolo-dto';
 import { ResponseFilmDTO } from '../../../dto/film/response/response-film-dto';
 import { Ruolo } from '../../../enums/ruolo';
 
 export interface SpettacoloPerFilm {
+    filmKey: string;
     film: ResponseFilmDTO;
     spettacoli: ResponseSpettacoloDTO[];
 }
@@ -33,6 +35,9 @@ export class ListaSpettacoliComponent implements OnInit {
     spettacoliFiltrati: ResponseSpettacoloDTO[] = [];
     loading = false;
     errore: string | null = null;
+    messaggio: string | null = null;
+    prenotazioniInCorso = new Set<string>();
+    spettacoliSelezionati: Record<string, ResponseSpettacoloDTO> = {};
 
     dataSelezionata: string = '';
     oggi: string = new Date().toISOString().split('T')[0];
@@ -40,7 +45,8 @@ export class ListaSpettacoliComponent implements OnInit {
     constructor(
         private spettacoloService: SpettacoloService,
         private filmService: FilmService,
-        private authService: AuthService
+        private authService: AuthService,
+        private bigliettoService: BigliettoService
     ) {}
 
     ngOnInit(): void {
@@ -60,6 +66,7 @@ export class ListaSpettacoliComponent implements OnInit {
                 this.spettacoli = spettacoli;
                 this.films = films;
                 this.spettacoliFiltrati = spettacoli;
+                this.inizializzaSelezioni();
                 this.loading = false;
             },
             error: () => {
@@ -75,6 +82,7 @@ export class ListaSpettacoliComponent implements OnInit {
             return;
         }
         this.spettacoliFiltrati = this.spettacoli.filter(s => s.data === this.dataSelezionata);
+        this.inizializzaSelezioni();
     }
 
     filtraOggi(): void {
@@ -85,14 +93,21 @@ export class ListaSpettacoliComponent implements OnInit {
     resetFiltro(): void {
         this.dataSelezionata = '';
         this.spettacoliFiltrati = this.spettacoli;
+        this.inizializzaSelezioni();
     }
 
     isCliente(): boolean {
         return this.authService.isLoggedIn() && this.authService.getRuolo() === Ruolo.CLIENTE;
     }
 
-    getFilmById(idFilm: number): ResponseFilmDTO | undefined {
+    getFilmById(idFilm?: number): ResponseFilmDTO | undefined {
+        if (!idFilm) return undefined;
         return this.films.find(f => f.id === idFilm);
+    }
+
+    getFilmBySpettacolo(spettacolo: ResponseSpettacoloDTO): ResponseFilmDTO | undefined {
+        return this.getFilmById(spettacolo.idFilm) ??
+            this.films.find(f => this.normalizzaTesto(f.titolo) === this.normalizzaTesto(spettacolo.nomeFilm));
     }
 
     formatOrario(ora: string): string {
@@ -108,16 +123,78 @@ export class ListaSpettacoliComponent implements OnInit {
         return d.toLocaleDateString('it-IT', { weekday: 'long', day: '2-digit', month: 'long', year: 'numeric' });
     }
 
-    // Raggruppa per data, poi per film all'interno della data
+    durataLabel(durata: number): string {
+        if (!durata) return '';
+        const ore = Math.floor(durata / 60);
+        const minuti = durata % 60;
+        return ore ? `${ore}h ${minuti}m` : `${minuti}m`;
+    }
+
+    generiLabel(film: ResponseFilmDTO): string {
+        return film.nomeGeneri?.length ? film.nomeGeneri.join(' / ') : 'Cinema';
+    }
+
+    selezionaSpettacolo(data: string, filmKey: string, spettacolo: ResponseSpettacoloDTO): void {
+        if (spettacolo.postiRimanenti === 0) return;
+        this.spettacoliSelezionati[this.selectionKey(data, filmKey)] = spettacolo;
+        this.messaggio = null;
+        this.errore = null;
+    }
+
+    spettacoloSelezionato(data: string, filmKey: string): ResponseSpettacoloDTO | undefined {
+        return this.spettacoliSelezionati[this.selectionKey(data, filmKey)];
+    }
+
+    isOrarioSelezionato(data: string, filmKey: string, spettacolo: ResponseSpettacoloDTO): boolean {
+        return this.spettacoloSelezionato(data, filmKey)?.id === spettacolo.id;
+    }
+
+    prenota(data: string, filmKey: string): void {
+        const spettacolo = this.spettacoloSelezionato(data, filmKey);
+
+        if (!this.isCliente()) {
+            this.errore = 'Per prenotare devi effettuare il login con un account cliente.';
+            this.messaggio = null;
+            return;
+        }
+
+        if (!spettacolo || spettacolo.postiRimanenti === 0) {
+            this.errore = 'Seleziona un orario disponibile.';
+            this.messaggio = null;
+            return;
+        }
+
+        const key = this.selectionKey(data, filmKey);
+        this.prenotazioniInCorso.add(key);
+        this.errore = null;
+        this.messaggio = null;
+
+        this.bigliettoService.insert({ idSpettacolo: spettacolo.id, numeroBiglietti: 1 }).subscribe({
+            next: () => {
+                spettacolo.postiRimanenti = Math.max(0, spettacolo.postiRimanenti - 1);
+                this.messaggio = `Prenotazione confermata per ${this.formatOrario(spettacolo.oraInizio)}.`;
+                this.prenotazioniInCorso.delete(key);
+            },
+            error: () => {
+                this.errore = 'Impossibile completare la prenotazione.';
+                this.prenotazioniInCorso.delete(key);
+            }
+        });
+    }
+
+    isPrenotazioneInCorso(data: string, filmKey: string): boolean {
+        return this.prenotazioniInCorso.has(this.selectionKey(data, filmKey));
+    }
+
     get gruppiPerData(): GruppoData[] {
-        // Mappa data -> (idFilm -> spettacoli[])
-        const mappaData = new Map<string, Map<number, ResponseSpettacoloDTO[]>>();
+        const mappaData = new Map<string, Map<string, ResponseSpettacoloDTO[]>>();
 
         for (const s of this.spettacoliFiltrati) {
             if (!mappaData.has(s.data)) mappaData.set(s.data, new Map());
             const mappaFilm = mappaData.get(s.data)!;
-            if (!mappaFilm.has(s.idFilm)) mappaFilm.set(s.idFilm, []);
-            mappaFilm.get(s.idFilm)!.push(s);
+            const filmKey = this.filmKeyFromSpettacolo(s);
+            if (!mappaFilm.has(filmKey)) mappaFilm.set(filmKey, []);
+            mappaFilm.get(filmKey)!.push(s);
         }
 
         return Array.from(mappaData.entries())
@@ -125,8 +202,9 @@ export class ListaSpettacoliComponent implements OnInit {
             .map(([data, mappaFilm]) => ({
                 data,
                 filmsDelGiorno: Array.from(mappaFilm.entries())
-                    .map(([idFilm, spettacoli]) => ({
-                        film: this.getFilmById(idFilm) ?? this.filmFallback(spettacoli[0].nomeFilm),
+                    .map(([filmKey, spettacoli]) => ({
+                        filmKey,
+                        film: this.getFilmBySpettacolo(spettacoli[0]) ?? this.filmFallback(spettacoli[0].nomeFilm),
                         spettacoli: spettacoli.sort((a, b) =>
                             this.formatOrario(a.oraInizio).localeCompare(this.formatOrario(b.oraInizio))
                         )
@@ -137,6 +215,32 @@ export class ListaSpettacoliComponent implements OnInit {
     // Fallback nel caso il film non sia ancora nel catalogo
     private filmFallback(nomeFilm: string): ResponseFilmDTO {
         return { id: 0, titolo: nomeFilm, descrizione: '', durata: 0, attori: '', urlLocandina: '', nomeGeneri: [] };
+    }
+
+    private inizializzaSelezioni(): void {
+        for (const gruppo of this.gruppiPerData) {
+            for (const entry of gruppo.filmsDelGiorno) {
+                const key = this.selectionKey(gruppo.data, entry.filmKey);
+                if (this.spettacoliSelezionati[key]) continue;
+
+                const primoDisponibile = entry.spettacoli.find(s => s.postiRimanenti > 0);
+                if (primoDisponibile) {
+                    this.spettacoliSelezionati[key] = primoDisponibile;
+                }
+            }
+        }
+    }
+
+    private filmKeyFromSpettacolo(spettacolo: ResponseSpettacoloDTO): string {
+        return spettacolo.idFilm ? `id-${spettacolo.idFilm}` : `titolo-${this.normalizzaTesto(spettacolo.nomeFilm)}`;
+    }
+
+    private normalizzaTesto(value: string): string {
+        return (value ?? '').trim().toLowerCase();
+    }
+
+    private selectionKey(data: string, filmKey: string): string {
+        return `${data}-${filmKey}`;
     }
 
     get totalFilmDelGiorno(): number {
