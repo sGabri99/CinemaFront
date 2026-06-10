@@ -10,7 +10,7 @@
                     </h2>
                     <p class="text-muted small mb-0">
                         @if (dataSelezionata) {
-                            Mostrando {{ spettacoliFiltrati.length }} spettacol{{ spettacoliFiltrati.length === 1 ? 'o' : 'i' }} per la data selezionata
+                            {{ totalFilmDelGiorno }} film in programma per la data selezionata
                         } @else {
                             Tutti gli spettacoli in programmazione
                         }
@@ -72,63 +72,109 @@
             </div>
         }
 
-        <!-- Lista spettacoli raggruppata per data -->
+        <!-- Lista raggruppata per data → un card per film -->
         @if (!loading && !errore && spettacoliFiltrati.length > 0) {
-            @for (gruppo of spettacoliPerData; track gruppo.data) {
+            @for (gruppo of gruppiPerData; track gruppo.data) {
                 <div class="mb-5">
-                    <!-- Data intestazione -->
-                    <div class="data-header d-flex align-items-center gap-3 mb-3">
+
+                    <!-- Intestazione data -->
+                    <div class="data-header d-flex align-items-center gap-3 mb-4">
                         <div class="data-badge">
                             <span class="data-giorno">{{ gruppo.data | date:'dd' }}</span>
                             <span class="data-mese">{{ gruppo.data | date:'MMM' : '' : 'it' }}</span>
                         </div>
                         <div>
                             <h5 class="text-white fw-bold mb-0">{{ formatData(gruppo.data) | titlecase }}</h5>
-                            <small class="text-muted">{{ gruppo.items.length }} spettacol{{ gruppo.items.length === 1 ? 'o' : 'i' }}</small>
+                            <small class="text-muted">{{ gruppo.filmsDelGiorno.length }} film in programma</small>
                         </div>
                         <hr class="flex-grow-1 border-secondary m-0">
                     </div>
 
-                    <!-- Cards spettacoli -->
-                    <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-3">
-                        @for (s of gruppo.items; track s.id) {
-                            <div class="col">
-                                <div class="spettacolo-card">
-                                    <div class="card-top">
-                                        <div class="film-nome">{{ s.nomeFilm }}</div>
-                                        <div class="orario-badge">
-                                            <i class="bi bi-clock me-1"></i>
-                                            {{ formatOrario(s.oraInizio) }} – {{ formatOrario(s.oraFine) }}
+                    <!-- Una card per film -->
+                    <div class="d-flex flex-column gap-3">
+                        @for (entry of gruppo.filmsDelGiorno; track entry.film.id) {
+                            <div class="film-card">
+
+                                <!-- Poster -->
+                                <div class="film-poster">
+                                    @if (entry.film.urlLocandina) {
+                                        <img [src]="entry.film.urlLocandina" [alt]="entry.film.titolo" class="poster-img" />
+                                    } @else {
+                                        <div class="poster-placeholder">
+                                            <i class="bi bi-film"></i>
                                         </div>
-                                    </div>
-                                    <div class="card-bottom">
-                                        <div class="d-flex justify-content-between align-items-center">
-                                            <div class="sala-info">
-                                                <i class="bi bi-building me-1 text-muted"></i>
-                                                <span class="text-muted small">{{ s.nomeSala }}</span>
-                                            </div>
-                                            <div class="posti-info" [class.posti-scarsi]="s.postiRimanenti <= 10" [class.posti-esauriti]="s.postiRimanenti === 0">
-                                                <i class="bi bi-person-fill me-1"></i>
-                                                @if (s.postiRimanenti === 0) {
-                                                    <span>Esaurito</span>
-                                                } @else {
-                                                    <span>{{ s.postiRimanenti }} posti</span>
+                                    }
+                                </div>
+
+                                <!-- Info film + spettacoli -->
+                                <div class="film-content">
+
+                                    <!-- Titolo e generi -->
+                                    <div class="film-header">
+                                        <h4 class="film-titolo">{{ entry.film.titolo }}</h4>
+                                        @if (entry.film.nomeGeneri?.length) {
+                                            <div class="generi-list">
+                                                @for (g of entry.film.nomeGeneri; track g) {
+                                                    <span class="genere-tag">{{ g }}</span>
                                                 }
                                             </div>
-                                        </div>
-                                        <a
-                                                [routerLink]="['/cliente/acquisto-biglietti', s.id]"
-                                                class="btn btn-prenota w-100 mt-3"
-                                                [class.disabled]="s.postiRimanenti === 0"
-                                        >
-                                            <i class="bi bi-ticket-perforated-fill me-2"></i>
-                                            {{ s.postiRimanenti === 0 ? 'Esaurito' : 'Prenota' }}
-                                        </a>
+                                        }
                                     </div>
+
+                                    <!-- Descrizione -->
+                                    @if (entry.film.descrizione) {
+                                        <p class="film-descrizione">{{ entry.film.descrizione }}</p>
+                                    }
+
+                                    <!-- Lista spettacoli del giorno -->
+                                    <div class="spettacoli-list">
+                                        <div class="spettacoli-label">
+                                            <i class="bi bi-clock me-1"></i>Orari disponibili
+                                        </div>
+                                        <div class="spettacoli-items">
+                                            @for (s of entry.spettacoli; track s.id) {
+                                                <div class="spettacolo-row">
+                                                    <div class="spettacolo-orario">
+                                                        <span class="orario-badge">
+                                                            {{ formatOrario(s.oraInizio) }} – {{ formatOrario(s.oraFine) }}
+                                                        </span>
+                                                    </div>
+                                                    <div class="spettacolo-sala">
+                                                        <i class="bi bi-building me-1"></i>
+                                                        <span>{{ s.nomeSala }}</span>
+                                                    </div>
+                                                    <div class="spettacolo-posti"
+                                                         [class.posti-scarsi]="s.postiRimanenti > 0 && s.postiRimanenti <= 10"
+                                                         [class.posti-esauriti]="s.postiRimanenti === 0">
+                                                        <i class="bi bi-person-fill me-1"></i>
+                                                        @if (s.postiRimanenti === 0) {
+                                                            <span>Esaurito</span>
+                                                        } @else {
+                                                            <span>{{ s.postiRimanenti }} posti</span>
+                                                        }
+                                                    </div>
+
+                                                    <!-- Bottone Prenota: solo per CLIENTE loggato -->
+                                                    @if (isCliente()) {
+                                                        <a
+                                                                [routerLink]="['/cliente/acquisto-biglietti', s.id]"
+                                                                class="btn btn-prenota-inline"
+                                                                [class.disabled]="s.postiRimanenti === 0"
+                                                        >
+                                                            <i class="bi bi-ticket-perforated-fill me-1"></i>
+                                                            {{ s.postiRimanenti === 0 ? 'Esaurito' : 'Prenota' }}
+                                                        </a>
+                                                    }
+                                                </div>
+                                            }
+                                        </div>
+                                    </div>
+
                                 </div>
                             </div>
                         }
                     </div>
+
                 </div>
             }
         }

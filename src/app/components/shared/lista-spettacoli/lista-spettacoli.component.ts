@@ -2,8 +2,23 @@ import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { RouterLink } from '@angular/router';
+import { forkJoin } from 'rxjs';
 import { SpettacoloService } from '../../../services/spettacolo.service';
+import { FilmService } from '../../../services/film.service';
+import { AuthService } from '../../../services/auth.service';
 import { ResponseSpettacoloDTO } from '../../../dto/spettacolo/response/response-spettacolo-dto';
+import { ResponseFilmDTO } from '../../../dto/film/response/response-film-dto';
+import { Ruolo } from '../../../enums/ruolo';
+
+export interface SpettacoloPerFilm {
+    film: ResponseFilmDTO;
+    spettacoli: ResponseSpettacoloDTO[];
+}
+
+export interface GruppoData {
+    data: string;
+    filmsDelGiorno: SpettacoloPerFilm[];
+}
 
 @Component({
     selector: 'app-lista-spettacoli',
@@ -14,6 +29,7 @@ import { ResponseSpettacoloDTO } from '../../../dto/spettacolo/response/response
 })
 export class ListaSpettacoliComponent implements OnInit {
     spettacoli: ResponseSpettacoloDTO[] = [];
+    films: ResponseFilmDTO[] = [];
     spettacoliFiltrati: ResponseSpettacoloDTO[] = [];
     loading = false;
     errore: string | null = null;
@@ -21,7 +37,11 @@ export class ListaSpettacoliComponent implements OnInit {
     dataSelezionata: string = '';
     oggi: string = new Date().toISOString().split('T')[0];
 
-    constructor(private spettacoloService: SpettacoloService) {}
+    constructor(
+        private spettacoloService: SpettacoloService,
+        private filmService: FilmService,
+        private authService: AuthService
+    ) {}
 
     ngOnInit(): void {
         this.caricaTutti();
@@ -31,10 +51,15 @@ export class ListaSpettacoliComponent implements OnInit {
         this.loading = true;
         this.errore = null;
         this.dataSelezionata = '';
-        this.spettacoloService.findAll().subscribe({
-            next: (data) => {
-                this.spettacoli = data;
-                this.spettacoliFiltrati = data;
+
+        forkJoin({
+            spettacoli: this.spettacoloService.findAll(),
+            films: this.filmService.findAll()
+        }).subscribe({
+            next: ({ spettacoli, films }) => {
+                this.spettacoli = spettacoli;
+                this.films = films;
+                this.spettacoliFiltrati = spettacoli;
                 this.loading = false;
             },
             error: () => {
@@ -49,18 +74,7 @@ export class ListaSpettacoliComponent implements OnInit {
             this.spettacoliFiltrati = this.spettacoli;
             return;
         }
-        this.loading = true;
-        this.errore = null;
-        this.spettacoloService.findByData(this.dataSelezionata).subscribe({
-            next: (data) => {
-                this.spettacoliFiltrati = data;
-                this.loading = false;
-            },
-            error: () => {
-                this.errore = 'Errore nel filtrare per data.';
-                this.loading = false;
-            }
-        });
+        this.spettacoliFiltrati = this.spettacoli.filter(s => s.data === this.dataSelezionata);
     }
 
     filtraOggi(): void {
@@ -69,12 +83,20 @@ export class ListaSpettacoliComponent implements OnInit {
     }
 
     resetFiltro(): void {
-        this.caricaTutti();
+        this.dataSelezionata = '';
+        this.spettacoliFiltrati = this.spettacoli;
+    }
+
+    isCliente(): boolean {
+        return this.authService.isLoggedIn() && this.authService.getRuolo() === Ruolo.CLIENTE;
+    }
+
+    getFilmById(idFilm: number): ResponseFilmDTO | undefined {
+        return this.films.find(f => f.id === idFilm);
     }
 
     formatOrario(ora: string): string {
         if (!ora) return '';
-        // Gestisce sia "2026-06-10 15:00:00" che "2026-06-10T15:00:00" che "15:00:00"
         const timePart = ora.includes('T') ? ora.split('T')[1] :
             ora.includes(' ') ? ora.split(' ')[1] : ora;
         return timePart?.substring(0, 5) ?? '';
@@ -82,20 +104,42 @@ export class ListaSpettacoliComponent implements OnInit {
 
     formatData(data: string): string {
         if (!data) return '';
-        const d = new Date(data);
+        const d = new Date(data + 'T00:00:00');
         return d.toLocaleDateString('it-IT', { weekday: 'long', day: '2-digit', month: 'long', year: 'numeric' });
     }
 
-    // Raggruppa spettacoli per data
-    get spettacoliPerData(): { data: string; items: ResponseSpettacoloDTO[] }[] {
-        const mappa = new Map<string, ResponseSpettacoloDTO[]>();
+    // Raggruppa per data, poi per film all'interno della data
+    get gruppiPerData(): GruppoData[] {
+        // Mappa data -> (idFilm -> spettacoli[])
+        const mappaData = new Map<string, Map<number, ResponseSpettacoloDTO[]>>();
+
         for (const s of this.spettacoliFiltrati) {
-            const key = s.data;
-            if (!mappa.has(key)) mappa.set(key, []);
-            mappa.get(key)!.push(s);
+            if (!mappaData.has(s.data)) mappaData.set(s.data, new Map());
+            const mappaFilm = mappaData.get(s.data)!;
+            if (!mappaFilm.has(s.idFilm)) mappaFilm.set(s.idFilm, []);
+            mappaFilm.get(s.idFilm)!.push(s);
         }
-        return Array.from(mappa.entries())
+
+        return Array.from(mappaData.entries())
             .sort(([a], [b]) => a.localeCompare(b))
-            .map(([data, items]) => ({ data, items }));
+            .map(([data, mappaFilm]) => ({
+                data,
+                filmsDelGiorno: Array.from(mappaFilm.entries())
+                    .map(([idFilm, spettacoli]) => ({
+                        film: this.getFilmById(idFilm) ?? this.filmFallback(spettacoli[0].nomeFilm),
+                        spettacoli: spettacoli.sort((a, b) =>
+                            this.formatOrario(a.oraInizio).localeCompare(this.formatOrario(b.oraInizio))
+                        )
+                    }))
+            }));
+    }
+
+    // Fallback nel caso il film non sia ancora nel catalogo
+    private filmFallback(nomeFilm: string): ResponseFilmDTO {
+        return { id: 0, titolo: nomeFilm, descrizione: '', durata: 0, attori: '', urlLocandina: '', nomeGeneri: [] };
+    }
+
+    get totalFilmDelGiorno(): number {
+        return this.gruppiPerData.reduce((acc, g) => acc + g.filmsDelGiorno.length, 0);
     }
 }
