@@ -17,19 +17,10 @@ export class HomeComponent implements OnInit {
   films: ResponseFilmDTO[] = [];
   spettacoli: ResponseSpettacoloDTO[] = [];
 
-  readonly filmFallback: ResponseFilmDTO[] = [
-    { id: 1, titolo: 'Notte Rossa', descrizione: 'Un thriller d azione tra luci al neon, inseguimenti e misteri da risolvere.', durata: 125, attori: 'Marta Leone, Luca Ferri', urlLocandina: '', nomeGeneri: ['Azione', 'Thriller'] },
-    { id: 2, titolo: 'Oltre le Stelle', descrizione: 'Un viaggio fantascientifico tra memoria, spazio profondo e nuove rotte.', durata: 118, attori: 'Elena Riva, Paolo Neri', urlLocandina: '', nomeGeneri: ['Fantascienza'] },
-    { id: 3, titolo: 'Ultimo Ciak', descrizione: 'Un set cinematografico diventa il centro di una indagine pericolosa.', durata: 107, attori: 'Giulia Serra, Andrea Costa', urlLocandina: '', nomeGeneri: ['Thriller'] },
-    { id: 4, titolo: 'La Sala 7', descrizione: 'Una sala riaperta dopo anni ospita uno spettacolo non previsto.', durata: 102, attori: 'Sara Conti, Marco Belli', urlLocandina: '', nomeGeneri: ['Horror'] }
-  ];
-
-  readonly spettacoliFallback: ResponseSpettacoloDTO[] = [
-    { id: 1, data: '2026-06-08', oraInizio: '2026-06-08T16:30:00', oraFine: '2026-06-08T18:30:00', postiRimanenti: 84, idBiglietti: [], nomeSala: 'Sala 1', nomeFilm: 'Notte Rossa' },
-    { id: 2, data: '2026-06-08', oraInizio: '2026-06-08T19:15:00', oraFine: '2026-06-08T21:15:00', postiRimanenti: 42, idBiglietti: [], nomeSala: 'Sala 1', nomeFilm: 'Notte Rossa' },
-    { id: 3, data: '2026-06-08', oraInizio: '2026-06-08T21:20:00', oraFine: '2026-06-08T23:10:00', postiRimanenti: 56, idBiglietti: [], nomeSala: 'Sala 2', nomeFilm: 'Oltre le Stelle' },
-    { id: 4, data: '2026-06-08', oraInizio: '2026-06-08T23:15:00', oraFine: '2026-06-09T00:50:00', postiRimanenti: 21, idBiglietti: [], nomeSala: 'Sala 7', nomeFilm: 'La Sala 7' }
-  ];
+  loadingFilm = false;
+  loadingSpettacoli = false;
+  erroreFilm: string | null = null;
+  erroreSpettacoli: string | null = null;
 
   constructor(
     private filmService: FilmService,
@@ -37,23 +28,16 @@ export class HomeComponent implements OnInit {
   ) {}
 
   ngOnInit(): void {
-    this.filmService.findAll().subscribe({
-      next: (films) => this.films = films,
-      error: () => this.films = []
-    });
-
-    this.spettacoloService.findAll().subscribe({
-      next: (spettacoli) => this.spettacoli = spettacoli,
-      error: () => this.spettacoli = []
-    });
+    this.caricaFilm();
+    this.caricaSpettacoli();
   }
 
   get filmInEvidenza(): ResponseFilmDTO[] {
-    return (this.films.length ? this.films : this.filmFallback).slice(0, 4);
+    return this.films.slice(0, 4);
   }
 
   get spettacoliOggi(): ResponseSpettacoloDTO[] {
-    return (this.spettacoli.length ? this.spettacoli : this.spettacoliFallback).slice(0, 4);
+    return this.spettacoli.slice(0, 4);
   }
 
   durataLabel(minuti: number): string {
@@ -73,5 +57,39 @@ export class HomeComponent implements OnInit {
 
   posterClass(index: number): string {
     return ['poster red', 'poster dark-red', 'poster gray', 'poster'][index % 4];
+  }
+
+  private caricaFilm(): void {
+    this.loadingFilm = true;
+    this.erroreFilm = null;
+
+    this.filmService.findAll().subscribe({
+      next: (films) => {
+        this.films = films;
+        this.loadingFilm = false;
+      },
+      error: () => {
+        this.films = [];
+        this.erroreFilm = 'Impossibile caricare i film dal backend.';
+        this.loadingFilm = false;
+      }
+    });
+  }
+
+  private caricaSpettacoli(): void {
+    this.loadingSpettacoli = true;
+    this.erroreSpettacoli = null;
+
+    this.spettacoloService.findAll().subscribe({
+      next: (spettacoli) => {
+        this.spettacoli = spettacoli;
+        this.loadingSpettacoli = false;
+      },
+      error: () => {
+        this.spettacoli = [];
+        this.erroreSpettacoli = 'Impossibile caricare gli spettacoli dal backend.';
+        this.loadingSpettacoli = false;
+      }
+    });
   }
 }

@@ -19,7 +19,17 @@
     </label>
   </section>
 
-  <section class="movie-grid" *ngIf="filmFiltrati.length; else nessunFilm">
+  <section class="empty-state" *ngIf="loading">
+    <h2>Caricamento film...</h2>
+    <p>Sto recuperando i titoli dal backend.</p>
+  </section>
+
+  <section class="empty-state error" *ngIf="!loading && errore">
+    <h2>Errore</h2>
+    <p>{{ errore }}</p>
+  </section>
+
+  <section class="movie-grid" *ngIf="!loading && !errore && filmFiltrati.length; else nessunFilm">
     <article class="movie-card" *ngFor="let film of filmFiltrati; let i = index">
       <div [class]="posterClass(i)" *ngIf="!film.urlLocandina">
         <span>POSTER</span>
@@ -37,9 +47,9 @@
   </section>
 
   <ng-template #nessunFilm>
-    <section class="empty-state">
+    <section class="empty-state" *ngIf="!loading && !errore">
       <h2>Nessun film trovato</h2>
-      <p>Modifica i filtri per visualizzare altri titoli.</p>
+      <p>{{ films.length ? 'Modifica i filtri per visualizzare altri titoli.' : 'Nessun film disponibile dal backend.' }}</p>
     </section>
   </ng-template>
 </main>

@@ -21,18 +21,18 @@ export class FilmService {
 
 
   findAll(): Observable<ResponseFilmDTO[]> {
-    return this.http.get<ResponseFilmDTO[]>(`${this.BASE_URL}/staff/film`);
+    return this.http.get<ResponseFilmDTO[]>(`${this.BASE_URL}/film`);
   }
 
 
   findById(id: number): Observable<ResponseFilmDTO> {
-    return this.http.get<ResponseFilmDTO>(`${this.BASE_URL}/staff/film/${id}`);
+    return this.http.get<ResponseFilmDTO>(`${this.BASE_URL}/film/${id}`);
   }
 
 
   findByIdGenere(idGenere: number): Observable<ResponseFilmDTO[]> {
     return this.http.get<ResponseFilmDTO[]>(
-      `${this.BASE_URL}/staff/film/genere/${idGenere}`
+      `${this.BASE_URL}/film/genere/${idGenere}`
     );
   }
 

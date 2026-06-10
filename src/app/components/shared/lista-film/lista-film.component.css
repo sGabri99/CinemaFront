@@ -192,6 +192,11 @@ h2 {
   padding: 32px;
 }
 
+.empty-state.error,
+.empty-state.error p {
+  color: var(--primary);
+}
+
 @media (max-width: 980px) {
   .movie-grid {
     grid-template-columns: repeat(2, 1fr);
