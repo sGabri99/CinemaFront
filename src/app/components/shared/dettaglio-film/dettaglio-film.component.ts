@@ -15,22 +15,10 @@ import { SpettacoloService } from '../../../services/spettacolo.service';
 export class DettaglioFilmComponent implements OnInit {
   film?: ResponseFilmDTO;
   spettacoli: ResponseSpettacoloDTO[] = [];
-
-  readonly filmFallback: ResponseFilmDTO = {
-    id: 1,
-    titolo: 'Notte Rossa',
-    descrizione: 'Un thriller d azione ambientato tra luci al neon, inseguimenti e misteri da risolvere prima dell alba.',
-    durata: 125,
-    attori: 'Marta Leone, Luca Ferri',
-    urlLocandina: '',
-    nomeGeneri: ['Azione', 'Thriller']
-  };
-
-  readonly spettacoliFallback: ResponseSpettacoloDTO[] = [
-    { id: 1, data: '2026-06-08', oraInizio: '2026-06-08T16:30:00', oraFine: '2026-06-08T18:30:00', postiRimanenti: 84, idBiglietti: [], nomeSala: 'Sala 1', nomeFilm: 'Notte Rossa' },
-    { id: 2, data: '2026-06-08', oraInizio: '2026-06-08T19:15:00', oraFine: '2026-06-08T21:15:00', postiRimanenti: 42, idBiglietti: [], nomeSala: 'Sala 1', nomeFilm: 'Notte Rossa' },
-    { id: 3, data: '2026-06-09', oraInizio: '2026-06-09T22:00:00', oraFine: '2026-06-10T00:00:00', postiRimanenti: 36, idBiglietti: [], nomeSala: 'Sala 3', nomeFilm: 'Notte Rossa' }
-  ];
+  loadingFilm = false;
+  loadingSpettacoli = false;
+  erroreFilm: string | null = null;
+  erroreSpettacoli: string | null = null;
 
   constructor(
     private route: ActivatedRoute,
@@ -42,14 +30,6 @@ export class DettaglioFilmComponent implements OnInit {
     const id = Number(this.route.snapshot.paramMap.get('id'));
     this.caricaFilm(id);
     this.caricaSpettacoli(id);
-  }
-
-  get filmCorrente(): ResponseFilmDTO {
-    return this.film ?? this.filmFallback;
-  }
-
-  get spettacoliVisibili(): ResponseSpettacoloDTO[] {
-    return this.spettacoli.length ? this.spettacoli : this.spettacoliFallback;
   }
 
   durataLabel(minuti: number): string {
@@ -73,12 +53,23 @@ export class DettaglioFilmComponent implements OnInit {
 
   private caricaFilm(id: number): void {
     if (!id) {
+      this.erroreFilm = 'Film non valido.';
       return;
     }
 
+    this.loadingFilm = true;
+    this.erroreFilm = null;
+
     this.filmService.findById(id).subscribe({
-      next: (film) => this.film = film,
-      error: () => this.film = undefined
+      next: (film) => {
+        this.film = film;
+        this.loadingFilm = false;
+      },
+      error: () => {
+        this.film = undefined;
+        this.erroreFilm = 'Impossibile caricare il film dal backend.';
+        this.loadingFilm = false;
+      }
     });
   }
 
@@ -87,9 +78,19 @@ export class DettaglioFilmComponent implements OnInit {
       return;
     }
 
+    this.loadingSpettacoli = true;
+    this.erroreSpettacoli = null;
+
     this.spettacoloService.findByIdFilm(id).subscribe({
-      next: (spettacoli) => this.spettacoli = spettacoli,
-      error: () => this.spettacoli = []
+      next: (spettacoli) => {
+        this.spettacoli = spettacoli;
+        this.loadingSpettacoli = false;
+      },
+      error: () => {
+        this.spettacoli = [];
+        this.erroreSpettacoli = 'Impossibile caricare gli spettacoli del film.';
+        this.loadingSpettacoli = false;
+      }
     });
   }
 }

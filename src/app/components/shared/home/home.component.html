@@ -24,7 +24,13 @@
       <a routerLink="/lista-film" class="btn btn-secondary">Vedi tutti</a>
     </div>
 
-    <div class="movie-grid">
+    <div class="status-card" *ngIf="loadingFilm">Caricamento film...</div>
+    <div class="status-card error" *ngIf="!loadingFilm && erroreFilm">{{ erroreFilm }}</div>
+    <div class="status-card" *ngIf="!loadingFilm && !erroreFilm && filmInEvidenza.length === 0">
+      Nessun film disponibile.
+    </div>
+
+    <div class="movie-grid" *ngIf="!loadingFilm && !erroreFilm && filmInEvidenza.length > 0">
       <article class="movie-card" *ngFor="let film of filmInEvidenza; let i = index">
         <div [class]="posterClass(i)" *ngIf="!film.urlLocandina">
           <span>POSTER</span>
@@ -48,7 +54,13 @@
       </div>
     </div>
 
-    <div class="schedule">
+    <div class="status-card" *ngIf="loadingSpettacoli">Caricamento spettacoli...</div>
+    <div class="status-card error" *ngIf="!loadingSpettacoli && erroreSpettacoli">{{ erroreSpettacoli }}</div>
+    <div class="status-card" *ngIf="!loadingSpettacoli && !erroreSpettacoli && spettacoliOggi.length === 0">
+      Nessuno spettacolo disponibile.
+    </div>
+
+    <div class="schedule" *ngIf="!loadingSpettacoli && !erroreSpettacoli && spettacoliOggi.length > 0">
       <article class="schedule-card" *ngFor="let spettacolo of spettacoliOggi; let i = index">
         <h3>{{ spettacolo.nomeFilm }}</h3>
         <p class="movie-meta">{{ spettacolo.nomeSala }} - {{ spettacolo.postiRimanenti }} posti disponibili</p>

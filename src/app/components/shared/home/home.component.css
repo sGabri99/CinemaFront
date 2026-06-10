@@ -121,6 +121,18 @@ h1 {
   grid-template-columns: repeat(4, 1fr);
 }
 
+.status-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  color: var(--text);
+  padding: 24px;
+}
+
+.status-card.error {
+  color: var(--primary);
+}
+
 .movie-card,
 .schedule-card {
   background: var(--surface);
