@@ -39,7 +39,7 @@ export class FilmService {
 
   findByTitolo(titolo: string): Observable<LongOmdbResponseApiDto[]> {
     return this.http.get<LongOmdbResponseApiDto[]>(
-      `${this.BASE_URL}/staff/film/titolo`,
+      `${this.BASE_URL}/film/titolo`,
       { params: { titolo } }
     );
   }
