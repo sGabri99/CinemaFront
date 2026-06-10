@@ -1,36 +1,74 @@
-<div class="container mt-5 text-light">
-    <div class="bg-dark p-4 rounded-4 shadow mb-4">
-        <h2 class="mb-3 text-uppercase fw-bold text-danger">Ricerca Film & Importazione Catalogo</h2>
-        <p class="text-muted small">Cerca i titoli elaborati dal server per importarli nel catalogo ufficiale del cinema.</p>
+<main class="cinema-page">
+    <section class="hero">
+        <div class="hero-content">
+            <span class="tag">Pannello Staff</span>
+            <h1>Catalogo Globale OMDB</h1>
+            <p>Cerca pellicole cinematografiche sul database globale e importale con un click nel server locale del cinema.</p>
 
-        <div class="input-group">
-            <input type="text" class="form-control bg-secondary text-white border-0 py-3"
-                   [(ngModel)]="stringaRicerca" placeholder="Scrivi il titolo del film (es. Interstellar)..."
-                   (keyup.enter)="ricerca()">
-            <button class="btn btn-danger px-4" (click)="ricerca()">CERCA</button>
+            <div class="buttons">
+                <a routerLink="/staff/biglietti-utente" class="btn btn-secondary">Biglietti Utente</a>
+                <a routerLink="/staff/gestione-spettacoli" class="btn btn-secondary">Gestione Spettacoli</a>
+                <a routerLink="/staff/ricerca-omdb" class="btn btn-primary">Ricerca OMDB</a>
+            </div>
         </div>
-    </div>
+    </section>
 
-    <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-lg-4 g-4">
-        @for (f of filmTrovati; track f.imdbId) {
-            <div class="col">
-                <div class="card h-100 bg-dark text-white border border-secondary rounded-4 overflow-hidden">
-                    <div style="aspect-ratio: 2/3; overflow: hidden; background-color: #222;">
-                        <img [src]="f.poster && f.poster !== 'N/A' ? f.poster : 'https://via.placeholder.com/300x450?text=No+Poster'"
-                             class="w-100 h-100 object-fit-cover" alt="Poster Film">
-                    </div>
-                    <div class="card-body d-flex flex-column justify-content-between">
-                        <div>
-                            <h5 class="fw-bold mb-1 text-truncate">{{ f.title}}</h5>
-                            <p class="text-muted small mb-3">Anno: {{ f.year}}</p>
+    <section class="content-section">
+        <div class="section-header">
+            <div>
+                <h2>Cerca un titolo</h2>
+                <p>Digita il nome del film per intero o parzialmente per interrogarlo.</p>
+            </div>
+        </div>
+
+        <div class="search-container">
+            <div class="search-box">
+                <input type="text" [(ngModel)]="stringaRicerca" placeholder="Es. Inception, Matrix, Interstellar..." class="search-input">
+                <button class="btn btn-primary" (click)="ricerca()">REPERISCI FILM</button>
+            </div>
+        </div>
+
+        <div class="section-header">
+            <h2>Risultati trovati</h2>
+        </div>
+
+        <div class="movie-grid">
+            @for (film of filmTrovati; track film.title) {
+                <article class="movie-card">
+
+                    @if (!film.poster || film.poster === 'N/A') {
+                        <div class="poster dark-red">
+                            <span>NO IMAGE</span>
                         </div>
-                        <button class="btn btn-outline-danger w-100 fw-bold text-uppercase small py-2"
-                                (click)="aggiungi(f)">
-                            Aggiungi Film
+                    } @else {
+                        <img class="poster-image" [src]="film.poster" [alt]="'Locandina ' + film.title">
+                    }
+
+                    <div class="movie-info">
+                        <h3 class="movie-title" [title]="film.title">
+                            {{ film.title }}
+                        </h3>
+
+                        <p class="movie-runtime">
+                            ⏱️ {{ film.runtime }}
+                        </p>
+
+                        <p class="movie-actors">
+                            👥 {{ film.actors }}
+                        </p>
+
+                        <button class="btn btn-primary" (click)="aggiungi(film)">
+                            📥 Importa nel Cinema
                         </button>
                     </div>
-                </div>
+                </article>
+            }
+        </div>
+
+        @if (filmTrovati.length === 0) {
+            <div class="empty-state">
+                Digita una parola chiave sopra e clicca su "Reperisci Film" per popolare la griglia.
             </div>
         }
-    </div>
-</div>
+    </section>
+</main>

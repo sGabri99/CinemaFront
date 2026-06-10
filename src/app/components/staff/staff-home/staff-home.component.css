@@ -1,0 +1,164 @@
+:host {
+    --background: #121212;
+    --surface: #1E1E1E;
+    --primary: #E50914;
+    --secondary: #B3B3B3;
+    --text: #FFFFFF;
+    --border: #2a2a2a;
+    display: block;
+    background-color: var(--background);
+    color: var(--text);
+    min-height: 100vh;
+    font-family: Arial, Helvetica, sans-serif;
+}
+
+.cinema-page {
+    background: var(--background);
+}
+
+.hero {
+    align-items: center;
+    background:
+            linear-gradient(to right, rgba(18, 18, 18, 0.96), rgba(18, 18, 18, 0.58)),
+            linear-gradient(135deg, #2b0003, #121212 60%);
+    display: flex;
+    min-height: 350px;
+    padding: 60px 24px;
+}
+
+.hero-content,
+.content-section {
+    margin: 0 auto;
+    max-width: 1200px;
+    width: 100%;
+}
+
+.tag {
+    background: rgba(229, 9, 20, 0.15);
+    border-radius: 999px;
+    color: var(--primary);
+    display: inline-block;
+    font-size: 0.85rem;
+    font-weight: 700;
+    margin-bottom: 20px;
+    padding: 6px 12px;
+}
+
+h1 {
+    font-size: clamp(2.2rem, 5vw, 4rem);
+    line-height: 1.1;
+    margin: 0 0 16px;
+    color: var(--text);
+}
+
+.hero p,
+.section-header p {
+    color: var(--secondary);
+    font-size: 1.1rem;
+    max-width: 600px;
+}
+
+/* Griglia Azioni dello Staff */
+.content-section {
+    padding: 60px 24px;
+}
+
+.section-header {
+    margin-bottom: 40px;
+}
+
+.section-header h2 {
+    font-size: 2rem;
+    margin: 0 0 8px;
+    color: var(--text);
+}
+
+.action-grid {
+    display: grid;
+    gap: 32px;
+    grid-template-columns: repeat(3, 1fr);
+}
+
+/* Card Interamente Cliccabili */
+.action-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 20px;
+    overflow: hidden;
+    cursor: pointer;
+    display: flex;
+    flex-column: var(--surface);
+    flex-direction: column;
+    transition: border-color 0.25s ease, transform 0.25s ease, box-shadow 0.25s ease;
+}
+
+.action-card:hover {
+    border-color: var(--primary);
+    transform: translateY(-8px);
+    box-shadow: 0 12px 30px rgba(0, 0, 0, 0.5);
+}
+
+/* Icone in cima alle card */
+.card-icon-wrapper {
+    height: 140px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.ticket-theme {
+    background: linear-gradient(145deg, #2b1c00, #151515);
+}
+
+.schedule-theme {
+    background: linear-gradient(145deg, #2b0003, #151515);
+}
+
+.omdb-theme {
+    background: linear-gradient(145deg, #112233, #151515);
+}
+
+.action-icon {
+    font-size: 3.5rem;
+}
+
+/* Corpo Testuale */
+.card-body-content {
+    padding: 30px;
+    display: flex;
+    flex-direction: column;
+    flex-grow: 1;
+}
+
+.card-body-content h3 {
+    color: var(--text);
+    margin: 0 0 12px;
+    font-size: 1.4rem;
+}
+
+.card-body-content p {
+    color: var(--secondary);
+    font-size: 0.95rem;
+    line-height: 1.5;
+    margin: 0 0 24px;
+    flex-grow: 1;
+}
+
+.action-link-text {
+    color: var(--primary);
+    font-weight: 700;
+    font-size: 0.95rem;
+    transition: color 0.2s ease;
+}
+
+.action-card:hover .action-link-text {
+    color: #ff333f;
+}
+
+/* Responsività */
+@media (max-width: 960px) {
+    .action-grid {
+        grid-template-columns: 1fr;
+        gap: 24px;
+    }
+}

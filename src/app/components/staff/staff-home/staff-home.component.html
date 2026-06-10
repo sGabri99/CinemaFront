@@ -1,0 +1,48 @@
+<main class="cinema-page">
+    <section class="hero">
+        <div class="hero-content">
+            <span class="tag">Pannello Operatore Cinema</span>
+            <h1>Area Riservata Staff</h1>
+            <p>Seleziona una delle attività sottostanti per accedere agli strumenti di gestione del palinsesto e dei titoli d'accesso.</p>
+        </div>
+    </section>
+
+    <section class="content-section">
+        <div class="section-header">
+            <div>
+                <h2>Operazioni Disponibili</h2>
+                <p>Clicca su una scheda per aprire il rispettivo modulo di lavoro.</p>
+            </div>
+        </div>
+
+        <div class="action-grid">
+
+            <article class="action-card" routerLink="/staff/biglietti-utente">
+                <div class="card-body-content">
+                    <h3>Biglietti Utente</h3>
+                    <p>Visualizza i biglietti emessi a sistema filtrandoli per ID utente e annulla le prenotazioni errate o rimborsate.</p>
+                    <span class="action-link-text">Apri gestione biglietti →</span>
+                </div>
+            </article>
+
+            <article class="action-card" routerLink="/staff/gestione-spettacoli">
+                <div class="card-body-content">
+                    <h3>Palinsesto Spettacoli</h3>
+                    <p>Programma le proiezioni dei film nelle sale del cinema impostando date, orari di inizio/fine e monitorando i posti rimasti.</p>
+                    <span class="action-link-text">Apri palinsesto spettacoli →</span>
+                </div>
+            </article>
+
+            <article class="action-card" routerLink="/staff/ricerca">
+                <div class="card-body-content">
+                    <h3>Ricerca Film OMDB</h3>
+                    <p>Interroga l'API globale dei film in lingua originale per importare locandine, trame e dettagli direttamente sul server locale.</p>
+                    <span class="action-link-text">Apri importazione film →</span>
+                </div>
+            </article>
+
+        </div>
+    </section>
+
+    <router-outlet></router-outlet>
+</main>

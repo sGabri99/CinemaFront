@@ -1,0 +1,267 @@
+/* ==========================================================================
+   CONFIGURAZIONE TEMA SCURO LOCALE
+   ========================================================================== */
+:host {
+    --background: #121212;
+    --surface: #1E1E1E;
+    --primary: #E50914;
+    --secondary: #B3B3B3;
+    --text: #FFFFFF;
+    --border: #2a2a2a;
+    display: block;
+
+    /* Forza lo sfondo scuro e il testo bianco */
+    background-color: var(--background);
+    color: var(--text);
+    min-height: 100vh;
+    font-family: Arial, Helvetica, sans-serif;
+}
+
+/* ==========================================================================
+   STRUTTURA E HERO
+   ========================================================================== */
+.cinema-page {
+    background: var(--background);
+    color: var(--text);
+}
+
+.hero {
+    align-items: center;
+    background:
+            linear-gradient(to right, rgba(18, 18, 18, 0.96), rgba(18, 18, 18, 0.58)),
+            linear-gradient(135deg, #2b0003, #121212 60%);
+    display: flex;
+    min-height: 400px;
+    padding: 60px 24px;
+}
+
+.hero-content,
+.content-section {
+    margin: 0 auto;
+    max-width: 1200px;
+    width: 100%;
+}
+
+.tag {
+    background: rgba(229, 9, 20, 0.15);
+    border-radius: 999px;
+    color: var(--primary);
+    display: inline-block;
+    font-size: 0.85rem;
+    font-weight: 700;
+    margin-bottom: 20px;
+    padding: 6px 12px;
+}
+
+h1 {
+    font-size: clamp(2.2rem, 5vw, 4rem);
+    line-height: 1.1;
+    margin: 0 0 24px;
+    max-width: 680px;
+    color: var(--text) !important;
+}
+
+.hero p,
+.section-header p,
+.movie-meta {
+    color: var(--secondary);
+}
+
+/* ==========================================================================
+   BOTTONI
+   ========================================================================== */
+.buttons {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 16px;
+}
+
+.btn {
+    border-radius: 8px;
+    display: inline-block;
+    font-weight: 700;
+    padding: 14px 24px;
+    text-align: center;
+    text-decoration: none;
+    transition: opacity 0.2s ease, transform 0.2s ease;
+    border: none;
+    cursor: pointer;
+}
+
+.btn:hover {
+    opacity: 0.9;
+    transform: translateY(-2px);
+}
+
+.btn-primary {
+    background: var(--primary);
+    color: var(--text);
+}
+
+.btn-secondary {
+    background: var(--surface);
+    border: 1px solid #333;
+    color: var(--text);
+}
+
+/* ==========================================================================
+   LAYOUT A DUE COLONNE (FORM PANELS & PALINSESTO)
+   ========================================================================== */
+.content-section {
+    padding: 60px 24px;
+}
+
+.dashboard-layout {
+    display: grid;
+    grid-template-columns: clamp(300px, 30vw, 400px) 1fr;
+    gap: 40px;
+}
+
+/* Sidebar Box Form */
+.form-sidebar {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    padding: 32px;
+    border-radius: 16px;
+    height: fit-content;
+}
+
+.form-title {
+    margin-top: 0;
+    margin-bottom: 24px;
+    font-size: 1.5rem;
+    color: var(--primary);
+}
+
+.form-group {
+    margin-bottom: 20px;
+}
+
+.form-label {
+    display: block;
+    margin-bottom: 8px;
+    font-size: 0.85rem;
+    color: var(--secondary);
+}
+
+.form-input {
+    width: 100%;
+    padding: 12px;
+    background: var(--background);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    color: var(--text);
+    box-sizing: border-box;
+}
+
+.form-input:focus {
+    outline: none;
+    border-color: var(--primary);
+}
+
+.time-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+    margin-bottom: 28px;
+}
+
+/* ==========================================================================
+   COLONNA PALINSESTO ATTIVO (LISTA ROW)
+   ========================================================================== */
+.section-header {
+    align-items: end;
+    display: flex;
+    gap: 20px;
+    justify-content: space-between;
+    margin-bottom: 32px;
+}
+
+.section-header h2 {
+    font-size: 2rem;
+    margin: 0;
+    color: var(--text);
+}
+
+.schedule {
+    display: grid;
+    gap: 24px;
+}
+
+.schedule-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    padding: 24px;
+}
+
+.schedule-row-card {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 20px;
+}
+
+.schedule-badge-id {
+    margin-bottom: 8px;
+    font-size: 0.75rem;
+}
+
+.schedule-title {
+    margin: 8px 0;
+    color: var(--text);
+}
+
+.schedule-info-meta {
+    margin: 0;
+}
+
+.schedule-actions-box {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+}
+
+.time-list-static {
+    margin-top: 0;
+    display: flex;
+    gap: 10px;
+}
+
+.time {
+    background: #292929;
+    border-radius: 6px;
+    color: var(--text);
+    font-size: 0.9rem;
+    padding: 8px 12px;
+}
+
+.time.featured {
+    background: var(--primary);
+    font-weight: 700;
+}
+
+.btn-icon-delete {
+    border-color: var(--primary) !important;
+    color: var(--primary) !important;
+    padding: 10px 16px;
+}
+
+/* Responsività */
+@media (max-width: 992px) {
+    .dashboard-layout {
+        grid-template-columns: 1fr;
+    }
+}
+
+@media (max-width: 640px) {
+    .schedule-row-card {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+    .schedule-actions-box {
+        width: 100%;
+        justify-content: space-between;
+    }
+}

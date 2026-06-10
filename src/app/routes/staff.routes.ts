@@ -3,6 +3,12 @@ import {BigliettiUtenteComponent} from "../components/staff/biglietti-utente/big
 
 export const staffRoutes: Routes = [
     {
+        path: '',
+        title: 'Staff - Dashboard',
+        loadComponent: () => import('../components/staff/staff-home/staff-home.component')
+            .then(m => m.StaffHomeComponent)
+    },
+    {
         path: 'biglietti-utente',
         title: 'Biglietti Utente',
         loadComponent: () => import('../components/staff/biglietti-utente/biglietti-utente.component')

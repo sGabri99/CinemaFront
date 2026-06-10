@@ -1,48 +1,56 @@
-<div class="container mt-5 text-black bg-dark p-4 rounded-4 shadow">
-    <h2 class="mb-4 text-uppercase fw-bold text-danger">Biglietti Utente</h2>
+<main class="cinema-page">
+    <section class="hero">
+        <div class="hero-content">
+            <span class="tag">Pannello Staff</span>
+            <h1>Biglietti Utente</h1>
+            <p>Gestione, monitoraggio e cancellazione dei biglietti acquistati dai clienti della piattaforma.</p>
 
-    <div class="row g-3 align-items-center mb-4">
-        <div class="col-md-8">
-            <input type="number" class="form-control bg-secondary text-white border-0 py-2.5"
-                   [(ngModel)]="idUtenteCercato" placeholder="Inserisci ID Utente">
+            <div class="buttons">
+                <a routerLink="/staff/biglietti-utente" class="btn btn-primary">Biglietti Utente</a>
+                <a routerLink="/staff/gestione-spettacoli" class="btn btn-secondary">Gestione Spettacoli</a>
+                <a routerLink="/staff/ricerca" class="btn btn-secondary">Ricerca</a>
+            </div>
         </div>
-        <div class="col-md-4">
-            <button class="btn btn-danger w-100 py-2.5 fw-bold" (click)="cerca()">Cerca Biglietti</button>
-        </div>
-    </div>
+    </section>
 
-    @if (biglietti.length > 0) {
-        <div class="table-responsive">
-            <table class="table table-dark table-hover align-middle">
-                <thead>
-                <tr class="text-danger">
-                    <th>ID Biglietto</th>
-                    <th>Nome Utente</th>
-                    <th>ID Spettacolo</th>
-                    <th class="text-end">Azioni</th>
-                </tr>
-                </thead>
-                <tbody>
-                    @for (b of biglietti; track b.id) {
-                        <tr>
-                            <td><span class="badge bg-secondary">#{{ b.id }}</span></td>
-                            <td>{{ b.nomeUtente }}</td>
-                            <td>
-                <span class="text-warning">
-                  <i class="bi bi-film me-1"></i> Spettacolo ID: {{ b.idSpettacolo }}
-                </span>
-                            </td>
-                            <td class="text-end">
-                                <button class="btn btn-sm btn-outline-danger" (click)="cancellaBiglietto(b.id)">
-                                    <i class="bi bi-trash me-1"></i> Annulla Biglietto
-                                </button>
-                            </td>
-                        </tr>
-                    }
-                </tbody>
-            </table>
+    <section class="content-section">
+        <div class="section-header">
+            <div>
+                <h2>Strumenti di Ricerca</h2>
+                <p>Inserisci l'ID numerico dell'utente per filtrare la tabella dei biglietti emessi.</p>
+            </div>
         </div>
-    } @else {
-        <p class="text-muted text-center py-4">Nessun biglietto trovato per questo utente.</p>
-    }
-</div>
+
+        <div class="filter-container">
+            <div class="filter-box">
+                <input type="number" [(ngModel)]="idUtenteCercato" placeholder="ID Utente (es. 12)" class="filter-input">
+                <button class="btn btn-primary" (click)="cerca()">CERCA BIGLIETTI</button>
+            </div>
+        </div>
+
+        <div class="section-header">
+            <h2>Biglietti Trovati</h2>
+        </div>
+
+        @if (biglietti.length > 0) {
+            <div class="schedule">
+                @for (b of biglietti; track b.id) {
+                    <article class="schedule-card">
+                        <span class="tag ticket-badge">ID Biglietto: #{{ b.id }}</span>
+                        <h3 class="ticket-holder">{{ b.nomeUtente }}</h3>
+                        <p class="movie-meta ticket-meta">
+                            <span class="ticket-meta-highlight">ID Spettacolo: {{ b.idSpettacolo }}</span>
+                        </p>
+                        <button class="btn btn-secondary btn-delete-action" (click)="cancellaBiglietto(b.id)">
+                            Annulla Biglietto
+                        </button>
+                    </article>
+                }
+            </div>
+        } @else {
+            <div class="empty-state">
+                Nessun biglietto trovato per i criteri inseriti.
+            </div>
+        }
+    </section>
+</main>

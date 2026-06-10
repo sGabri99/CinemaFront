@@ -1,89 +1,94 @@
-<div class="container mt-5 text-light">
-    <div class="row g-4">
+<main class="cinema-page">
+    <section class="hero">
+        <div class="hero-content">
+            <span class="tag">Pannello Staff</span>
+            <h1>Palinsesto Spettacoli</h1>
+            <p>Pianifica i film nelle sale del cinema impostando orari di programmazione, date e tracciando i posti rimanenti.</p>
 
-        <div class="col-lg-4">
-            <div class="bg-dark p-4 rounded-4 shadow border border-secondary">
-                <h4 class="mb-3 text-uppercase fw-bold text-danger">Nuovo Spettacolo</h4>
+            <div class="buttons">
+                <a routerLink="/staff/biglietti-utente" class="btn btn-secondary">Biglietti Utente</a>
+                <a routerLink="/staff/gestione-spettacoli" class="btn btn-primary">Gestione Spettacoli</a>
+                <a routerLink="/staff/ricerca" class="btn btn-secondary">Ricerca</a>
+            </div>
+        </div>
+    </section>
+
+    <section class="content-section">
+        <div class="dashboard-layout">
+
+            <aside class="form-sidebar">
+                <h3 class="form-title">Nuovo Spettacolo</h3>
+
                 <form [formGroup]="formSpettacolo" (ngSubmit)="salvaSpettacolo()">
-
-                    <div class="mb-3">
-                        <label class="form-label small text-muted">ID Film</label>
-                        <input type="number" formControlName="idFilm" class="form-control bg-secondary text-white border-0">
+                    <div class="form-group">
+                        <label class="form-label">ID Film</label>
+                        <input type="number" formControlName="idFilm" class="form-input">
                     </div>
 
-                    <div class="mb-3">
-                        <label class="form-label small text-muted">ID Sala</label>
-                        <input type="number" formControlName="idSala" class="form-control bg-secondary text-white border-0">
+                    <div class="form-group">
+                        <label class="form-label">ID Sala</label>
+                        <input type="number" formControlName="idSala" class="form-input">
                     </div>
 
-                    <div class="mb-3">
-                        <label class="form-label small text-muted">Data</label>
-                        <input type="date" formControlName="data" class="form-control bg-secondary text-white border-0">
+                    <div class="form-group">
+                        <label class="form-label">Data Spettacolo</label>
+                        <input type="date" formControlName="data" class="form-input">
                     </div>
 
-                    <div class="row">
-                        <div class="col-md-6 mb-3">
-                            <label class="form-label small text-muted">Ora Inizio</label>
-                            <input type="time" formControlName="oraInizio" class="form-control bg-secondary text-white border-0">
+                    <div class="time-row">
+                        <div>
+                            <label class="form-label">Inizio</label>
+                            <input type="time" formControlName="oraInizio" class="form-input">
                         </div>
-                        <div class="col-md-6 mb-3">
-                            <label class="form-label small text-muted">Ora Fine</label>
-                            <input type="time" formControlName="oraFine" class="form-control bg-secondary text-white border-0">
+                        <div>
+                            <label class="form-label">Fine</label>
+                            <input type="time" formControlName="oraFine" class="form-input">
                         </div>
                     </div>
 
-                    <button type="submit" [disabled]="formSpettacolo.invalid" class="btn btn-danger w-100 fw-bold py-2 mt-2">
-                        Aggiungi Spettacolo
+                    <button type="submit" [disabled]="formSpettacolo.invalid" class="btn btn-primary" style="width: 100%;">
+                        PROGRAMMA SPETTACOLO
                     </button>
                 </form>
-            </div>
-        </div>
+            </aside>
 
-        <div class="col-lg-8">
-            <div class="bg-dark p-4 rounded-4 shadow">
-                <h4 class="mb-4 text-uppercase fw-bold text-white">Programmazione Attiva</h4>
-                <div class="table-responsive">
-                    <table class="table table-dark table-hover align-middle">
-                        <thead>
-                        <tr class="text-danger small text-uppercase">
-                            <th>#</th>
-                            <th>Film</th>
-                            <th>Sala</th>
-                            <th>Data</th>
-                            <th>Orario (Inizio - Fine)</th>
-                            <th>Posti Liberi</th>
-                            <th class="text-end">Azioni</th>
-                        </tr>
-                        </thead>
-                        <tbody>
-                            @for (s of spettacoli; track s.id) {
-                                <tr>
-                                    <td><span class="text-muted">#{{ s.id }}</span></td>
-                                    <td><strong class="text-white">{{ s.nomeFilm }}</strong></td>
-                                    <td><span class="badge bg-secondary">{{ s.nomeSala }}</span></td>
-                                    <td>{{ s.data }}</td>
-                                    <td>
-                    <span class="text-warning">
-                      <i class="bi bi-clock me-1"></i> {{ s.oraInizio }} - {{ s.oraFine }}
-                    </span>
-                                    </td>
-                                    <td>
-                    <span [class]="s.postiRimanenti > 20 ? 'text-success fw-bold' : 'text-danger fw-bold'">
-                      {{ s.postiRimanenti }} posti
-                    </span>
-                                    </td>
-                                    <td class="text-end">
-                                        <button class="btn btn-sm btn-outline-danger" (click)="elimina(s.id)">
-                                            <i class="bi bi-trash"></i>
-                                        </button>
-                                    </td>
-                                </tr>
-                            }
-                        </tbody>
-                    </table>
+            <main>
+                <div class="section-header" style="margin-bottom: 24px;">
+                    <div>
+                        <h2>Programmazione Attiva</h2>
+                        <p>Lista di tutti gli spettacoli registrati a sistema.</p>
+                    </div>
                 </div>
-            </div>
-        </div>
 
-    </div>
-</div>
+                <div class="schedule" style="grid-template-columns: 1fr;">
+                    @for (s of spettacoli; track s.id) {
+                        <article class="schedule-card schedule-row-card">
+                            <div>
+                                <span class="tag schedule-badge-id">ID: #{{ s.id }}</span>
+                                <h3 class="schedule-title">{{ s.nomeFilm }}</h3>
+                                <p class="movie-meta schedule-info-meta">
+                                    <span>📍 {{ s.nomeSala }}</span> •
+                                    <span>🗓️ {{ s.data }}</span> •
+                                    <span [style.color]="s.postiRimanenti > 15 ? 'var(--text)' : 'var(--primary)'">
+                    {{ s.postiRimanenti }} posti rimasti
+                  </span>
+                                </p>
+                            </div>
+
+                            <div class="schedule-actions-box">
+                                <div class="time-list time-list-static">
+                                    <span class="time featured">{{ s.oraInizio }}</span>
+                                    <span class="time">{{ s.oraFine }}</span>
+                                </div>
+                                <button class="btn btn-secondary btn-icon-delete" (click)="elimina(s.id)">
+                                    🗑️
+                                </button>
+                            </div>
+                        </article>
+                    }
+                </div>
+            </main>
+
+        </div>
+    </section>
+</main>

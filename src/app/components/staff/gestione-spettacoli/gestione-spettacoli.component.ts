@@ -3,12 +3,15 @@ import {ResponseSpettacoloDTO} from "../../../dto/spettacolo/response/response-s
 import {FormControl, FormGroup, ReactiveFormsModule, Validators} from "@angular/forms";
 import {SpettacoloService} from "../../../services/spettacolo.service";
 import {InsertSpettacoloDTO} from "../../../dto/spettacolo/request/insert-spettacolo-dto";
+import {RouterLink} from "@angular/router";
+import {CommonModule} from "@angular/common";
 
 @Component({
   selector: 'app-gestione-spettacoli',
   standalone: true,
   imports: [
-    ReactiveFormsModule
+    ReactiveFormsModule,CommonModule,
+    RouterLink
   ],
   templateUrl: './gestione-spettacoli.component.html',
   styleUrl: './gestione-spettacoli.component.css'
