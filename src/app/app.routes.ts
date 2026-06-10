@@ -12,15 +12,16 @@ import {ListaSpettacoliComponent} from "./components/shared/lista-spettacoli/lis
 import {ForgotPasswordComponent} from "./components/shared/forgot-password/forgot-password.component";
 import {ResetPasswordComponent} from "./components/shared/reset-password/reset-password.component";
 import {ProfiloComponent} from "./components/cliente/profilo/profilo.component";
+import {staffGuard} from "./guards/staff.guard";
 
 export const routes: Routes = [
   {path: '',pathMatch: 'full', redirectTo: 'home'},
   {path: 'home', title: 'HomePage', component: HomeComponent },
   {path: 'lista-film', title: 'Lista film', component: ListaFilmComponent },
   {path: 'dettaglio-film/:id', title: 'Dettaglio film', component: DettaglioFilmComponent },
-  { path: 'gestione-film', title: 'Gestione film', component: GestioneFilmComponent },
-  { path: 'inserisci-film', title: 'Inserisci film', component: InserisciFilmComponent },
-  { path: 'gestione-generi', title: 'Gestione generi', component: GestioneGenereComponent },
+  { path: 'gestione-film', title: 'Gestione film', component: GestioneFilmComponent , canActivate: [staffGuard] },
+  { path: 'inserisci-film', title: 'Inserisci film', component: InserisciFilmComponent, canActivate: [staffGuard] },
+  { path: 'gestione-generi', title: 'Gestione generi', component: GestioneGenereComponent , canActivate: [staffGuard]},
   { path: 'login', title: 'Login', component: LoginComponent },
   { path: 'registrazione', title: 'Registrazione', component: RegistrazioneComponent },
   { path: 'lista-spettacoli', title: 'Lista Spettacoli', component: ListaSpettacoliComponent },
