@@ -28,7 +28,8 @@ export const routes: Routes = [
   { path: 'password-reset', title: 'Password reset', component: ResetPasswordComponent },
   { path: 'profilo', title: 'Profilo', component: ProfiloComponent },
 
-  { path: 'staff', loadChildren: () => import('./routes/staff.routes').then(m => m.staffRoutes) },
+  { path: 'staff', loadComponent: () => import('./components/staff/staff-wrapper/staff-wrapper.component').then(m => m.StaffWrapperComponent)
+    ,loadChildren: () => import('./routes/staff.routes').then(m => m.staffRoutes) },
 
   {path: '**', title: 'Pagina non trovata', component: PageNotFoundComponent}
 ];

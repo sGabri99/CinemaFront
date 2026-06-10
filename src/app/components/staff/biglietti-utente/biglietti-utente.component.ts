@@ -2,12 +2,15 @@ import { Component } from '@angular/core';
 import {BigliettoService} from "../../../services/biglietto.service";
 import {ResponseBigliettoDTO} from "../../../dto/biglietto/response/response-biglietto-dto";
 import {FormsModule} from "@angular/forms";
+import {RouterLink} from "@angular/router";
+import {CommonModule} from "@angular/common";
 
 @Component({
   selector: 'app-biglietti-utente',
   standalone: true,
   imports: [
-    FormsModule
+    FormsModule,CommonModule,
+    RouterLink
   ],
   templateUrl: './biglietti-utente.component.html',
   styleUrl: './biglietti-utente.component.css'
