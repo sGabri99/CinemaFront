@@ -36,7 +36,7 @@
                         <select formControlName="idSala" class="form-input" style="color: white; background: #1a1a1a;">
                             <option [value]="null" disabled selected>-- Seleziona una sala --</option>
                             @for (s of listaSale; track s.id) {
-                                <option [value]="s.id">{{ s | json }}</option>
+                                <option [value]="s.id">{{ s.nome }}</option>
                             }
                         </select>
                     </div>
