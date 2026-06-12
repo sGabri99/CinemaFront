@@ -1,9 +1,8 @@
-import {Component, OnInit} from '@angular/core';
-import {ResponseGenereDTO} from "../../../dto/genere/response/response-genere-dto";
-import {FormControl, FormGroup, ReactiveFormsModule, Validators} from "@angular/forms";
-import {GenereService} from "../../../services/genere.service";
-import {InsertGenereDTO} from "../../../dto/genere/request/insert-genere-dto";
-
+import { Component, OnInit } from '@angular/core';
+import { ResponseGenereDTO } from "../../../dto/genere/response/response-genere-dto";
+import { FormControl, FormGroup, ReactiveFormsModule, Validators } from "@angular/forms";
+import { GenereService } from "../../../services/genere.service";
+import { InsertGenereDTO } from "../../../dto/genere/request/insert-genere-dto";
 
 @Component({
   selector: 'app-gestione-generi',
@@ -32,9 +31,11 @@ export class GestioneGenereComponent implements OnInit {
     const dto: InsertGenereDTO = {
       nome: this.form.value.nome!
     };
-    this.genereService.insert(dto).subscribe(nuovo => {
-      this.generi.push(nuovo);
+    this.genereService.insert(dto).subscribe(() => {
       this.form.reset();
+      this.genereService.findAll().subscribe(generi => {
+        this.generi = generi;
+      });
     });
   }
 

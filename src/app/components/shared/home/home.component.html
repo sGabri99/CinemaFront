@@ -50,23 +50,25 @@
     <div class="section-header">
       <div>
         <h2>Programmazione di oggi</h2>
-        <p>Scegli l orario piu comodo per te.</p>
+        <p>Scegli l'orario piu comodo per te.</p>
       </div>
     </div>
 
     <div class="status-card" *ngIf="loadingSpettacoli">Caricamento spettacoli...</div>
     <div class="status-card error" *ngIf="!loadingSpettacoli && erroreSpettacoli">{{ erroreSpettacoli }}</div>
     <div class="status-card" *ngIf="!loadingSpettacoli && !erroreSpettacoli && spettacoliOggi.length === 0">
-      Nessuno spettacolo disponibile.
+      Nessuno spettacolo disponibile oggi.
     </div>
 
     <div class="schedule" *ngIf="!loadingSpettacoli && !erroreSpettacoli && spettacoliOggi.length > 0">
-      <article class="schedule-card" *ngFor="let spettacolo of spettacoliOggi; let i = index">
+      <article class="schedule-card" *ngFor="let spettacolo of spettacoliOggi" [class.on-air]="spettacoloInCorso(spettacolo)">
         <h3>{{ spettacolo.nomeFilm }}</h3>
         <p class="movie-meta">{{ spettacolo.nomeSala }} - {{ spettacolo.postiRimanenti }} posti disponibili</p>
         <div class="time-list">
-          <span class="time" [class.featured]="i % 2 === 0">{{ orario(spettacolo.oraInizio) }}</span>
-          <span class="time">{{ orario(spettacolo.oraFine) }}</span>
+          <span class="time" [class.featured]="spettacoloInCorso(spettacolo)">
+            {{ fasciaOraria(spettacolo) }}
+          </span>
+          <span class="live-badge" *ngIf="spettacoloInCorso(spettacolo)">In corso</span>
         </div>
       </article>
     </div>

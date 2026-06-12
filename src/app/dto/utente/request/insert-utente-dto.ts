@@ -1,7 +1,9 @@
-export interface InsertUtenteDTO {
+export interface InsertUtenteDto {
   nome: string;
   cognome: string;
   email: string;
-  password:string;
-  confermaPassword:string;
+  ruolo: string; // Qui passerai 'STAFF' o 'SUPERADMIN'
+  telefono?: string;
+  password?: string;
+  confermaPassword?: string;
 }

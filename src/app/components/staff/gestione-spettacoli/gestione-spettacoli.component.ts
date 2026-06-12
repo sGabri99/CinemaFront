@@ -45,22 +45,39 @@ export class GestioneSpettacoliComponent implements OnInit{
     })
   }
 
-  salvaSpettacolo(){
-    if(this.formSpettacolo.valid){
-      const spettacolo = this.formSpettacolo.value as InsertSpettacoloDTO;
+    salvaSpettacolo() {
+        if (this.formSpettacolo.valid) {
+            const formValue = this.formSpettacolo.value;
 
-      this.spettacoloService.insert(spettacolo).subscribe({
-        next:() => {
-          alert('Spettacolo inserito con successo');
-          this.formSpettacolo.reset();
-          this.caricaSpettacoli();
-        },
-        error: (err) => {
-          console.log('Errore durante l\'inserimento del spettacolo');
+            const dataSpettacolo = formValue.data; // YYYY-MM-DD
+            const inizio = formValue.oraInizio;    // HH:mm
+            const fine = formValue.oraFine;        // HH:mm
+
+            const localDateTimeInizio = `${dataSpettacolo}T${inizio}:00`;
+            const localDateTimeFine = `${dataSpettacolo}T${fine}:00`;
+
+            const spettacolo: InsertSpettacoloDTO = {
+                idFilm: formValue.idFilm ? Number(formValue.idFilm) : 0,
+                idSala: formValue.idSala ? Number(formValue.idSala) : 0,
+                data: dataSpettacolo || '',
+                oraInizio: localDateTimeInizio, // Ora inviato correttamente come LocalDateTime string
+                oraFine: localDateTimeFine     // Ora inviato correttamente come LocalDateTime string
+            };
+
+            console.log("JSON Corretto inviato a Spring:", spettacolo);
+
+            this.spettacoloService.insert(spettacolo).subscribe({
+                next: () => {
+                    alert('Spettacolo inserito con successo');
+                    this.formSpettacolo.reset();
+                    this.caricaSpettacoli();
+                },
+                error: (err) => {
+                    console.error("Errore durante l'inserimento dello spettacolo", err);
+                }
+            });
         }
-      })
     }
-  }
 
   elimina(id: number){
     if(confirm('Vuoi rimuovere lo spettacolo?')){

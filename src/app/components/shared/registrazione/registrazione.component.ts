@@ -3,7 +3,7 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Router, RouterLink } from '@angular/router';
 import { AuthService } from '../../../services/auth.service';
-import { InsertUtenteDTO } from '../../../dto/utente/request/insert-utente-dto';
+import { InsertUtenteDto } from '../../../dto/utente/request/insert-utente-dto';
 
 @Component({
   selector: 'app-registrazione',
@@ -13,13 +13,18 @@ import { InsertUtenteDTO } from '../../../dto/utente/request/insert-utente-dto';
   styleUrl: './registrazione.component.css'
 })
 export class RegistrazioneComponent {
-  dto: InsertUtenteDTO = {
+  dto: InsertUtenteDto = {
     nome: '',
     cognome: '',
     email: '',
-    password: '',
-    confermaPassword: ''
+    ruolo: 'CLIENTE',
+    telefono: ''
   };
+
+// Gestiamo le password come variabili separate del componente,
+// così non fanno arrabbiare l'oggetto "dto"
+  password = '';
+  confermaPassword = '';
 
   loading = false;
   successo = false;

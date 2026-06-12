@@ -69,13 +69,26 @@ h1 {
 }
 
 .btn {
+  border: 0;
   border-radius: 8px;
   display: inline-block;
   font-weight: 700;
+  outline: 0;
   padding: 14px 24px;
+  box-shadow: none;
   text-align: center;
   text-decoration: none;
   transition: opacity 0.2s ease, transform 0.2s ease;
+}
+
+.btn:focus,
+.btn:focus-visible,
+.btn:active {
+  background: rgba(229, 9, 20, 0.13);
+  border: 1px solid rgba(229, 9, 20, 0.38);
+  box-shadow: none;
+  color: #ff6b73;
+  outline: 0;
 }
 
 .btn:hover {
@@ -141,6 +154,8 @@ h1 {
 }
 
 .movie-card {
+  display: flex;
+  flex-direction: column;
   overflow: hidden;
   transition: border-color 0.2s ease, transform 0.2s ease;
 }
@@ -184,6 +199,9 @@ h1 {
 }
 
 .movie-info {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
   padding: 20px;
 }
 
@@ -198,6 +216,7 @@ h1 {
 }
 
 .movie-info .btn {
+  margin-top: auto;
   padding: 11px 16px;
   width: 100%;
 }
@@ -210,6 +229,10 @@ h1 {
 
 .schedule-card {
   padding: 24px;
+}
+
+.schedule-card.on-air {
+  border-color: var(--primary);
 }
 
 .schedule-card h3 {
@@ -234,6 +257,19 @@ h1 {
 .time.featured {
   background: var(--primary);
   font-weight: 700;
+}
+
+.live-badge {
+  align-items: center;
+  background: rgba(229, 9, 20, 0.15);
+  border: 1px solid rgba(229, 9, 20, 0.35);
+  border-radius: 6px;
+  color: var(--primary);
+  display: inline-flex;
+  font-size: 0.78rem;
+  font-weight: 800;
+  padding: 8px 12px;
+  text-transform: uppercase;
 }
 
 @media (max-width: 900px) {
