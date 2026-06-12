@@ -1,8 +1,7 @@
-
-<div class="containe my-4">
+<div class="container my-4">
     <h2>Gestione film</h2>
 
-    <a class ="btn btn-primary mb-3" routerLink="/inserisci-film">+ Nuovo film</a>
+    <a class="btn btn-primary mb-3" routerLink="/inserisci-film">+ Nuovo film</a>
 
     <table class="table">
         <thead>
@@ -14,19 +13,16 @@
         </tr>
         </thead>
         <tbody>
-            @for(film of films; track film.id){
+            @for(film of films; track film.id) {
                 <tr>
                     <td>{{ film.titolo }}</td>
                     <td>{{ film.durata }}</td>
-                    <td>{{ film.nomeGeneri}}</td>
+                    <td>{{ film.nomeGeneri }}</td>
                     <td>
                         <button class="btn btn-sm btn-danger" (click)="elimina(film.id)">Elimina</button>
                     </td>
                 </tr>
             }
         </tbody>
-
-
     </table>
-
 </div>

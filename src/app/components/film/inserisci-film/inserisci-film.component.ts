@@ -55,8 +55,9 @@ export class InserisciFilmComponent implements OnInit {
       urlLocandina: this.form.value.urlLocandina!,
       idGeneri: this.generiSelezionati
     };
-    this.filmService.insert(dto).subscribe(() => {
-      this.router.navigateByUrl('/gestione-film');
+    this.filmService.insert(dto).subscribe({
+      next: () => this.router.navigateByUrl('/gestione-film'),
+      error: (err) => console.error('ERRORE:', err)  // 👈 aggiunto
     });
   }
 }
