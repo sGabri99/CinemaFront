@@ -52,24 +52,52 @@ export class RicercaComponent {
     });
   }
 
-  aggiungi(filmScelto: any) {
-    const insertFilm: InsertFilmDTO = {
-      titolo: filmScelto.Title,
-      descrizione: filmScelto.Plot || '',
-      durata: filmScelto.Runtime && filmScelto.Runtime !== 'N/A' ? Number(filmScelto.Runtime.replace(' min', '')) : 0,
-      attori: filmScelto.Actors || '',
-      urlLocandina: filmScelto.Poster && filmScelto.Poster !== 'N/A' ? filmScelto.Poster : '',
-      idGeneri: [1]
-    };
+private eseguiInserimento(filmScelto:any){
+  const insertFilm: InsertFilmDTO = {
+    titolo: filmScelto.Title,
+    descrizione: filmScelto.Plot || '',
+    durata: filmScelto.Runtime && filmScelto.Runtime !== 'N/A' ? Number(filmScelto.Runtime.replace(' min', '')) : 0,
+    attori: filmScelto.Actors || '',
+    urlLocandina: filmScelto.Poster && filmScelto.Poster !== 'N/A' ? filmScelto.Poster : '',
+    imdbID: filmScelto.imdbID && filmScelto.imdbID !== 'N/A' ? filmScelto.imdbID : '',
 
-    this.filmService.insert(insertFilm).subscribe({
-      next: (res: ResponseFilmDTO) => {
-        alert(`"${res.titolo}" salvato con successo.`);
+    idGeneri: [1]
+  };
+
+  this.filmService.insert(insertFilm).subscribe({
+    next: (res: ResponseFilmDTO) => {
+      alert(`"${res.titolo}" salvato con successo.`);
+    },
+    error: (err) => {
+      console.error('Errore durante il salvataggio del film.', err);
+    }
+  });
+
+}
+
+
+
+
+
+
+  aggiungi(filmScelto: any) {
+    const imdbId = filmScelto.imdbID;
+
+    this.filmService.existsByImdbId(imdbId).subscribe({
+      next: (esiste: boolean) => {
+        if (esiste) {
+          alert("Attenzione: questo film è già presente nel database!");
+        } else {
+          this.eseguiInserimento(filmScelto);
+        }
       },
       error: (err) => {
-        console.error('Errore durante il salvataggio del film.', err);
+        console.error("Errore durante il controllo di esistenza", err);
       }
     });
   }
+
+
+
 
 }

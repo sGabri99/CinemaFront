@@ -5,4 +5,5 @@ export interface InsertFilmDTO {
   attori:string;
   urlLocandina:string;
   idGeneri:number[];
+  imdbID:string;
 }

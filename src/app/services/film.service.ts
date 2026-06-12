@@ -56,4 +56,10 @@ export class FilmService {
   removeById(id: number): Observable<void> {
     return this.http.delete<void>(`${this.BASE_URL}/staff/film/${id}`);
   }
+  existsByImdbId(id: string): Observable<boolean> {
+    return this.http.get<boolean>(`${this.BASE_URL}/staff/film/check-exists`, {
+      params: { id: id }
+    });
+  }
+
 }

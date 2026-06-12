@@ -53,7 +53,9 @@ export class InserisciFilmComponent implements OnInit {
       durata: this.form.value.durata!,
       attori: this.form.value.attori!,
       urlLocandina: this.form.value.urlLocandina!,
-      idGeneri: this.generiSelezionati
+      idGeneri: this.generiSelezionati,
+      imdbID:null
+
     };
     this.filmService.insert(dto).subscribe({
       next: () => this.router.navigateByUrl('/gestione-film'),

@@ -10,5 +10,5 @@ export interface LongOmdbResponseApiDto{
   Plot:string;
   Poster:string;
   imdbRating:string;
-  imdbId:string;
+  imdbID:string;
 }
