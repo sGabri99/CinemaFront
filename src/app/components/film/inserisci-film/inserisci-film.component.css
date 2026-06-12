@@ -9,7 +9,6 @@ h2 {
     margin-bottom: 1.5rem;
 }
 
-/* il form dentro una "scheda" chiara con angoli arrotondati */
 form {
     max-width: 640px;
     background: #fff;
@@ -22,24 +21,45 @@ form {
 label {
     font-weight: 600;
     margin-bottom: 4px;
+    color: #212529;
 }
 
-/* quando clicchi un campo, il bordo diventa rosso */
+.form-control {
+    background-color: #fff;
+    color: #212529;
+    border-color: #ced4da;
+}
+
 .form-control:focus {
+    background-color: #fff;
+    color: #212529;
     border-color: #e50914;
     box-shadow: 0 0 0 0.2rem rgba(229, 9, 20, 0.15);
+}
+
+.form-check-label {
+    color: #212529;
+}
+
+.form-check-input {
+    background-color: #fff;
+    border-color: #ced4da;
 }
 
 .btn-primary {
     background-color: #e50914;
     border-color: #e50914;
+    color: #fff;
     padding: 10px 28px;
     font-weight: 600;
 }
+
 .btn-primary:hover {
     background-color: #b20710;
     border-color: #b20710;
+    color: #fff;
 }
+
 .btn-primary:disabled {
     background-color: #e5a0a3;
     border-color: #e5a0a3;

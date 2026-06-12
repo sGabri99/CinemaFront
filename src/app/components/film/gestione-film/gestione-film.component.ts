@@ -22,8 +22,9 @@ export class GestioneFilmComponent implements OnInit {
   }
 
   elimina(id: number): void {
-    this.filmService.removeById(id).subscribe(() => {
-      this.films = this.films.filter(film => film.id !== id);
+    this.filmService.removeById(id).subscribe({
+      next: () => this.films = this.films.filter(film => film.id !== id),
+      error: (err) => console.error('Errore eliminazione:', err)
     });
   }
 }
