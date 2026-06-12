@@ -50,7 +50,7 @@ export class AuthService {
 
   editPassword(dto: EditPasswordRequest): Observable<ResetPasswordResponse> {
     return this.http.patch<ResetPasswordResponse>(
-      `${this.BASE_URL}/cliente/edit_password`,
+      `${this.BASE_URL}/edit_password`,
       dto
     );
   }

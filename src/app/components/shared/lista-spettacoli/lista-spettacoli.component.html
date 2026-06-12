@@ -115,10 +115,10 @@
                   <button
                     type="button"
                     class="btn btn-primary"
-                    [disabled]="isPrenotazioneInCorso(gruppo.data, entry.filmKey) || !spettacoloSelezionato(gruppo.data, entry.filmKey)"
+                    [disabled]="!spettacoloSelezionato(gruppo.data, entry.filmKey)"
                     (click)="prenota(gruppo.data, entry.filmKey)"
                   >
-                    {{ isPrenotazioneInCorso(gruppo.data, entry.filmKey) ? 'Prenotazione...' : 'Prenota' }}
+                    Prenota
                   </button>
 
                   @if (entry.film.id) {
@@ -135,5 +135,14 @@
         </div>
       </section>
     }
+  }
+
+  @if (modaleAperta && filmInAcquisto && spettacoloInAcquisto) {
+    <app-acquisto-biglietto
+      [film]="filmInAcquisto"
+      [spettacolo]="spettacoloInAcquisto"
+      (chiudi)="chiudiModaleAcquisto()"
+      (acquistoConfermato)="onAcquistoConfermato()"
+    ></app-acquisto-biglietto>
   }
 </main>

@@ -5,10 +5,13 @@ import { ResponseFilmDTO } from '../../../dto/film/response/response-film-dto';
 import { ResponseSpettacoloDTO } from '../../../dto/spettacolo/response/response-spettacolo-dto';
 import { FilmService } from '../../../services/film.service';
 import { SpettacoloService } from '../../../services/spettacolo.service';
+import { AuthService } from '../../../services/auth.service';
+import { Ruolo } from '../../../enums/ruolo';
+import { AcquistoBigliettoComponent } from '../acquisto-biglietto/acquisto-biglietto.component';
 
 @Component({
   selector: 'app-dettaglio-film',
-  imports: [CommonModule, RouterLink],
+  imports: [CommonModule, RouterLink, AcquistoBigliettoComponent],
   templateUrl: './dettaglio-film.component.html',
   styleUrl: './dettaglio-film.component.css'
 })
@@ -20,10 +23,17 @@ export class DettaglioFilmComponent implements OnInit {
   erroreFilm: string | null = null;
   erroreSpettacoli: string | null = null;
 
+  // Modale di acquisto biglietto
+  modaleAperta = false;
+  spettacoloInAcquisto: ResponseSpettacoloDTO | null = null;
+  erroreAcquisto: string | null = null;
+  messaggioAcquisto: string | null = null;
+
   constructor(
     private route: ActivatedRoute,
     private filmService: FilmService,
-    private spettacoloService: SpettacoloService
+    private spettacoloService: SpettacoloService,
+    private authService: AuthService
   ) {}
 
   ngOnInit(): void {
@@ -49,6 +59,40 @@ export class DettaglioFilmComponent implements OnInit {
 
   dataLabel(data: string): string {
     return data || 'Oggi';
+  }
+
+  isCliente(): boolean {
+    return this.authService.isLoggedIn() && this.authService.getRuolo() === Ruolo.CLIENTE;
+  }
+
+  prenota(spettacolo: ResponseSpettacoloDTO): void {
+    if (!this.isCliente()) {
+      this.erroreAcquisto = 'Per prenotare devi effettuare il login con un account cliente.';
+      this.messaggioAcquisto = null;
+      return;
+    }
+
+    if (spettacolo.postiRimanenti === 0) {
+      this.erroreAcquisto = 'Spettacolo esaurito.';
+      this.messaggioAcquisto = null;
+      return;
+    }
+
+    this.erroreAcquisto = null;
+    this.messaggioAcquisto = null;
+    this.spettacoloInAcquisto = spettacolo;
+    this.modaleAperta = true;
+  }
+
+  chiudiModaleAcquisto(): void {
+    this.modaleAperta = false;
+    this.spettacoloInAcquisto = null;
+  }
+
+  onAcquistoConfermato(): void {
+    this.messaggioAcquisto = 'Acquisto confermato.';
+    this.erroreAcquisto = null;
+    this.chiudiModaleAcquisto();
   }
 
   private caricaFilm(id: number): void {
