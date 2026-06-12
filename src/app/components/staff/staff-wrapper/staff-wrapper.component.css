@@ -9,3 +9,53 @@
 .admin-link:hover {
     background-color: rgba(229, 9, 20, 0.1);
 }
+
+/* --- DA QUI IN POI INCOLLA IL NUOVO CODICE --- */
+
+/* Contenitore principale dell'interfaccia Staff/Admin */
+.staff-layout {
+    display: flex;
+    background-color: #121212; /* Sfondo scuro coerente con la Home */
+    min-height: 100vh;
+    color: #ffffff;
+}
+
+/* Stile per la barra laterale o menu di navigazione dello staff */
+.staff-sidebar {
+    width: 260px;
+    background-color: #1a1a1a; /* Leggermente più chiaro per staccare dal fondo */
+    border-right: 1px solid #2c2c2c;
+    padding: 20px;
+}
+
+/* Link del menu dello staff */
+.staff-nav-link {
+    display: block;
+    color: #b3b3b3;
+    padding: 12px 15px;
+    border-radius: 6px;
+    text-decoration: none;
+    margin-bottom: 8px;
+    font-weight: 500;
+    transition: all 0.2s ease;
+}
+
+/* Quando si passa sopra ai link normali dello staff */
+.staff-nav-link:hover {
+    background-color: #262626;
+    color: #ffffff;
+}
+
+/* Link speciale ed esclusivo per il SuperAdmin (Crea Staff) */
+.superadmin-exclusive-link {
+    color: #ff0000; /* Rosso acceso coordinato Cinema Aurora */
+    font-weight: bold;
+    border: 1px solid rgba(255, 0, 0, 0.3);
+    background-color: rgba(255, 0, 0, 0.05);
+}
+
+.superadmin-exclusive-link:hover {
+    background-color: #e50914;
+    color: #ffffff !important;
+    box-shadow: 0 0 15px rgba(229, 9, 20, 0.4);
+}
