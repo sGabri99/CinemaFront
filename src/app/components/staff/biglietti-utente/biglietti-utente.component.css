@@ -110,6 +110,12 @@ h1 {
     border: 1px solid #333;
     color: var(--text);
 }
+.filter-input{
+    border-radius: 5px;
+    padding: 5px;
+    margin-right: 10px;
+    background: #ced4da;
+}
 
 /* ==========================================================================
    SEZIONE RICERCA (STRUMENTI DI RICERCA)

@@ -58,7 +58,7 @@ export class InserisciFilmComponent implements OnInit {
 
     };
     this.filmService.insert(dto).subscribe({
-      next: () => this.router.navigateByUrl('/gestione-film'),
+      next: () => this.router.navigate(['/gestione-film'], { queryParams: { filmInserito: 'true' } }),
       error: (err) => console.error('ERRORE:', err)
     });
   }
