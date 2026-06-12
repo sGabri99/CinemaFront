@@ -45,31 +45,39 @@ export class GestioneSpettacoliComponent implements OnInit{
     })
   }
 
-  salvaSpettacolo() {
-      if (this.formSpettacolo.valid) {
-          const formValue = this.formSpettacolo.value;
+    salvaSpettacolo() {
+        if (this.formSpettacolo.valid) {
+            const formValue = this.formSpettacolo.value;
 
-          const spettacolo: InsertSpettacoloDTO = {
-              idFilm: formValue.idFilm ? Number(formValue.idFilm) : 0,
-              idSala: formValue.idSala ? Number(formValue.idSala) : 0,
-              data: formValue.data || '',
-              oraInizio: formValue.oraInizio || '',
-              oraFine: formValue.oraFine || ''
-          };
+            const dataSpettacolo = formValue.data; // YYYY-MM-DD
+            const inizio = formValue.oraInizio;    // HH:mm
+            const fine = formValue.oraFine;        // HH:mm
 
-          this.spettacoloService.insert(spettacolo).subscribe({
-              next: () => {
-                  alert('Spettacolo inserito con successo');
+            const localDateTimeInizio = `${dataSpettacolo}T${inizio}:00`;
+            const localDateTimeFine = `${dataSpettacolo}T${fine}:00`;
+
+            const spettacolo: InsertSpettacoloDTO = {
+                idFilm: formValue.idFilm ? Number(formValue.idFilm) : 0,
+                idSala: formValue.idSala ? Number(formValue.idSala) : 0,
+                data: dataSpettacolo || '',
+                oraInizio: localDateTimeInizio, // Ora inviato correttamente come LocalDateTime string
+                oraFine: localDateTimeFine     // Ora inviato correttamente come LocalDateTime string
+            };
+
+            console.log("JSON Corretto inviato a Spring:", spettacolo);
+
+            this.spettacoloService.insert(spettacolo).subscribe({
+                next: () => {
+                    alert('Spettacolo inserito con successo');
                     this.formSpettacolo.reset();
                     this.caricaSpettacoli();
                 },
                 error: (err) => {
                     console.error("Errore durante l'inserimento dello spettacolo", err);
-                    alert("Impossibile inserire lo spettacolo. Verifica i dati o i permessi dello staff.");
                 }
-          });
-      }
-  }
+            });
+        }
+    }
 
   elimina(id: number){
     if(confirm('Vuoi rimuovere lo spettacolo?')){

@@ -8,7 +8,7 @@
             <div class="buttons">
                 <a routerLink="/staff/biglietti-utente" class="btn btn-secondary">Biglietti Utente</a>
                 <a routerLink="/staff/gestione-spettacoli" class="btn btn-secondary">Gestione Spettacoli</a>
-                <a routerLink="/staff/ricerca-omdb" class="btn btn-primary">Ricerca OMDB</a>
+                <a routerLink="/staff/ricerca" class="btn btn-primary">Ricerca OMDB</a>
             </div>
         </div>
     </section>
@@ -33,28 +33,28 @@
         </div>
 
         <div class="movie-grid">
-            @for (film of filmTrovati; track film.title) {
+            @for (film of filmTrovati; track film.Title) {
                 <article class="movie-card">
 
-                    @if (!film.poster || film.poster === 'N/A') {
+                    @if (!film.Poster || film.Poster === 'N/A') {
                         <div class="poster dark-red">
                             <span>NO IMAGE</span>
                         </div>
                     } @else {
-                        <img class="poster-image" [src]="film.poster" [alt]="'Locandina ' + film.title">
+                        <img class="poster-image" [src]="film.Poster" [alt]="'Locandina ' + film.Title">
                     }
 
                     <div class="movie-info">
-                        <h3 class="movie-title" [title]="film.title">
-                            {{ film.title }}
+                        <h3 class="movie-title" [title]="film.Title">
+                            {{ film.Title }}
                         </h3>
 
                         <p class="movie-runtime">
-                            ⏱️ {{ film.runtime }}
+                            ⏱️ {{ film.Runtime }}
                         </p>
 
                         <p class="movie-actors">
-                            👥 {{ film.actors }}
+                            👥 {{ film.Actors }}
                         </p>
 
                         <button class="btn btn-primary" (click)="aggiungi(film)">

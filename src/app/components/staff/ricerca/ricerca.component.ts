@@ -29,16 +29,29 @@ export class RicercaComponent {
     if(!this.stringaRicerca.trim()) return;
 
     this.filmService.findByTitolo(this.stringaRicerca).subscribe({
-      next: (res) =>{
-        this.filmTrovati = res;
-        if(this.filmTrovati.length === 0){
-          alert('Nessun film trovato');
+      next: (res: any) => {
+        console.log("Dati ricevuti dal server:", res);
+
+        // Verifichiamo se la risposta è un array valido e non vuoto
+        if (Array.isArray(res) && res.length > 0) {
+          this.filmTrovati = res;
+        }
+        // Se il backend ti ha mandato l'oggetto singolo anziché l'array per i film nuovi
+        else if (res && res.Title) {
+          this.filmTrovati = [res];
+        }
+        // Se la risposta è vuota o contiene un errore di OMDb (es. Response: "False")
+        else {
+          this.filmTrovati = [];
+          alert('Film non trovato nel database globale di OMDb.');
         }
       },
-      error: (err) =>{
-        console.log('Errore durante la ricerca');
+      error: (err) => {
+        console.error('Errore durante la chiamata al backend:', err);
+        this.filmTrovati = [];
+        alert('Impossibile recuperare il film. Controlla la console del backend Spring Boot per vedere l\'errore SQL o di API.');
       }
-    })
+    });
   }
 
   aggiungi(filmScelto: any) {
