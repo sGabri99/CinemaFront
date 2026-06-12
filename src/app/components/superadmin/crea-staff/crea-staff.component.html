@@ -1,0 +1,28 @@
+<div class="container">
+    <h2>Gestione Staff</h2>
+
+    <form [formGroup]="staffForm" (ngSubmit)="onSubmit()">
+        <div>
+            <input formControlName="nome" placeholder="Nome">
+            <input formControlName="cognome" placeholder="Cognome">
+            <input formControlName="email" type="email" placeholder="Email">
+            <input formControlName="password" type="password" placeholder="Password">
+            <input formControlName="confermaPassword" type="password" placeholder="Conferma Password">
+        </div>
+
+        <button type="submit" [disabled]="staffForm.invalid">Aggiungi Staff</button>
+    </form>
+
+    <hr>
+
+    <h3>Lista Staff</h3>
+    <ul>
+        @for (staff of listaStaff; track staff.email) {
+            <li>
+                {{ staff.nome }} {{ staff.cognome }} - {{ staff.email }}
+            </li>
+        } @empty {
+            <li>Nessuno staff presente.</li>
+        }
+    </ul>
+</div>

@@ -8,6 +8,7 @@ import { EditPasswordRequest } from '../dto/resetpassword/request/edit-password-
 import { ResetPasswordResponse } from '../dto/resetpassword/response/reset-password-response';
 import { ResetPasswordRequest } from '../dto/resetpassword/request/reset-password-request';
 import { jwtDecode } from 'jwt-decode';
+import {ResponseUtenteDataDTO} from "../dto/utente/response/response-utente-data-dto";
 
 @Injectable({
   providedIn: 'root'
@@ -69,6 +70,14 @@ export class AuthService {
       dto
     );
   }
+
+  getAllStaff(): Observable<ResponseUtenteDataDTO[]> {
+    return this.http.get<ResponseUtenteDataDTO[]>(`${this.BASE_URL}/admin/lista_staff`);
+  }
+
+
+
+
 
 
   getToken(): string | null {

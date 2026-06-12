@@ -21,7 +21,7 @@
                 <a mat-list-item routerLink="gestione-spettacoli" routerLinkActive="active-link">Gestione Spettacoli</a>
             }
 
-            @if (userRole === 'superadmin') {
+            @if (userRole === 'SUPERADMIN') {
                 <a mat-list-item routerLink="crea-staff" routerLinkActive="active-link">Crea membro Staff</a>
             }
         </mat-nav-list>

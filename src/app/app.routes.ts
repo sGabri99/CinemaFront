@@ -15,6 +15,8 @@ import {ProfiloComponent} from "./components/loggato/profilo/profilo.component";
 import {staffGuard} from "./guards/staff.guard";
 import {authGuard} from "./guards/auth.guard";
 import {DashboardComponent} from "./components/loggato/dashboard/dashboard.component";
+import {CreaStaffComponent} from "./components/superadmin/crea-staff/crea-staff.component";
+import {adminGuard} from "./guards/admin.guard";
 
 export const routes: Routes = [
   {path: '',pathMatch: 'full', redirectTo: 'home'},
@@ -36,6 +38,7 @@ export const routes: Routes = [
       { path: 'gestione-film', component: GestioneFilmComponent },
       { path: 'gestione-generi', title: 'Gestione generi', component: GestioneGenereComponent , canActivate: [staffGuard]},
       { path: 'gestione-film', title: 'Gestione film', component: GestioneFilmComponent , canActivate: [staffGuard] },
+      { path: 'crea-staff', title: 'Crea staff', component: CreaStaffComponent , canActivate: [adminGuard] },
 
 
 
