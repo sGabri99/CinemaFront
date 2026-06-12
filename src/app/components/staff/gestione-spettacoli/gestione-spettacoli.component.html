@@ -4,14 +4,14 @@
         <div class="dashboard-layout">
 
             <aside class="form-sidebar">
-                <h3 class="form-title">Nuovo Spettacolo</h3>
+                <h2 class="form-title">Nuovo Spettacolo</h2>
 
                 <form [formGroup]="formSpettacolo" (ngSubmit)="salvaSpettacolo()">
 
                     <div class="form-group">
                         <label class="form-label">Scegli Film</label>
                         <select formControlName="idFilm" class="form-input" style="color: white; background: #1a1a1a;">
-                            <option [value]="null" disabled selected>-- Seleziona un film --</option>
+                            <option [value]="null" disabled selected >-- Seleziona un film --</option>
                             @for (f of listaFilm; track f.id) {
                                 <option [value]="f.id">{{ f.titolo }}</option>
                             }

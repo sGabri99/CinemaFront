@@ -115,7 +115,7 @@ h1 {
    SEZIONE RICERCA (STRUMENTI DI RICERCA)
    ========================================================================== */
 .search-container {
-    background: var(--surface);
+    background: #292929;
     border: 1px solid var(--border);
     padding: 32px;
     border-radius: 16px;
@@ -126,6 +126,7 @@ h1 {
     display: flex;
     gap: 16px;
     flex-wrap: wrap;
+
 }
 
 .search-input {

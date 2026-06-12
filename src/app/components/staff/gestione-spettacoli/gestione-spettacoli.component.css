@@ -145,6 +145,7 @@ h1 {
 }
 
 .form-input {
+    color-scheme: dark;
     width: 100%;
     padding: 12px;
     background: var(--background);
@@ -152,6 +153,20 @@ h1 {
     border-radius: 8px;
     color: var(--text);
     box-sizing: border-box;
+
+    /* per togliere la freccietta dell'option */
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    appearance: none;
+
+    
+
+    cursor: pointer;
+}
+.form-input option{
+    background-color: var(--background) !important;
+    color: white !important;
+    padding: 10px;
 }
 
 .form-input:focus {
