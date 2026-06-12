@@ -1,0 +1,11 @@
+
+.admin-link {
+    color: #ff3333;
+    font-weight: bold;
+    border-left: 3px solid #e50914;
+    padding-left: 10px;
+}
+
+.admin-link:hover {
+    background-color: rgba(229, 9, 20, 0.1);
+}

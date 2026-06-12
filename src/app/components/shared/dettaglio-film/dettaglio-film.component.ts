@@ -50,7 +50,7 @@ export class DettaglioFilmComponent implements OnInit {
   }
 
   generiLabel(film: ResponseFilmDTO): string {
-    return film.nomeGeneri?.length ? film.nomeGeneri.join(' / ') : 'Cinema';
+    return film.nomeGeneri?.length ? film.nomeGeneri.join(' / ') : 'Genere non specificato';
   }
 
   orario(isoDateTime: string): string {
