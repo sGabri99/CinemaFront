@@ -45,21 +45,30 @@ export class GestioneSpettacoliComponent implements OnInit{
     })
   }
 
-  salvaSpettacolo(){
-    if(this.formSpettacolo.valid){
-      const spettacolo = this.formSpettacolo.value as InsertSpettacoloDTO;
+  salvaSpettacolo() {
+      if (this.formSpettacolo.valid) {
+          const formValue = this.formSpettacolo.value;
 
-      this.spettacoloService.insert(spettacolo).subscribe({
-        next:() => {
-          alert('Spettacolo inserito con successo');
-          this.formSpettacolo.reset();
-          this.caricaSpettacoli();
-        },
-        error: (err) => {
-          console.log('Errore durante l\'inserimento del spettacolo');
-        }
-      })
-    }
+          const spettacolo: InsertSpettacoloDTO = {
+              idFilm: formValue.idFilm ? Number(formValue.idFilm) : 0,
+              idSala: formValue.idSala ? Number(formValue.idSala) : 0,
+              data: formValue.data || '',
+              oraInizio: formValue.oraInizio || '',
+              oraFine: formValue.oraFine || ''
+          };
+
+          this.spettacoloService.insert(spettacolo).subscribe({
+              next: () => {
+                  alert('Spettacolo inserito con successo');
+                    this.formSpettacolo.reset();
+                    this.caricaSpettacoli();
+                },
+                error: (err) => {
+                    console.error("Errore durante l'inserimento dello spettacolo", err);
+                    alert("Impossibile inserire lo spettacolo. Verifica i dati o i permessi dello staff.");
+                }
+          });
+      }
   }
 
   elimina(id: number){
