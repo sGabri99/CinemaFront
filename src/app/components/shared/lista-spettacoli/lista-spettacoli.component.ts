@@ -43,6 +43,21 @@ export class ListaSpettacoliComponent implements OnInit {
     dataSelezionata: string = '';
     oggi: string = new Date().toISOString().split('T')[0];
 
+    /**
+     * Restituisce true se lo spettacolo non è ancora iniziato.
+     * Confronta data + oraInizio con il momento attuale.
+     */
+    isFuturo(spettacolo: ResponseSpettacoloDTO): boolean {
+        const timePart = spettacolo.oraInizio.includes('T')
+            ? spettacolo.oraInizio.split('T')[1]
+            : spettacolo.oraInizio.includes(' ')
+                ? spettacolo.oraInizio.split(' ')[1]
+                : spettacolo.oraInizio;
+        const ora = timePart?.substring(0, 5) ?? '00:00'; // "HH:mm"
+        const dataOraSpettacolo = new Date(`${spettacolo.data}T${ora}:00`);
+        return dataOraSpettacolo > new Date();
+    }
+
     // Modale di acquisto biglietto
     modaleAperta = false;
     filmInAcquisto: ResponseFilmDTO | null = null;
@@ -69,9 +84,9 @@ export class ListaSpettacoliComponent implements OnInit {
             films: this.filmService.findAll()
         }).subscribe({
             next: ({ spettacoli, films }) => {
-                this.spettacoli = spettacoli;
+                this.spettacoli = spettacoli.filter(s => this.isFuturo(s));
                 this.films = films;
-                this.spettacoliFiltrati = spettacoli;
+                this.spettacoliFiltrati = this.spettacoli;
                 this.inizializzaSelezioni();
                 this.loading = false;
             },
