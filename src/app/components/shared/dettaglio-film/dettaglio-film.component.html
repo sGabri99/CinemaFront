@@ -45,7 +45,7 @@
       </div>
 
       <div class="status-card error" *ngIf="erroreAcquisto">{{ erroreAcquisto }}</div>
-      <div class="status-card success" *ngIf="messaggioAcquisto">{{ messaggioAcquisto }}</div>
+      <div class="status-card success m-5" *ngIf="messaggioAcquisto">{{ messaggioAcquisto }}</div>
 
       <div class="status-card" *ngIf="loadingSpettacoli">Caricamento spettacoli...</div>
       <div class="status-card error" *ngIf="!loadingSpettacoli && erroreSpettacoli">{{ erroreSpettacoli }}</div>
