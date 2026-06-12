@@ -1,83 +1,80 @@
 <main class="detail-page">
-  <a routerLink="/lista-film" class="back-link">Torna alla lista film</a>
+    <a routerLink="/lista-film" class="back-link">Torna alla lista film</a>
 
-  <section class="status-card" *ngIf="loadingFilm">
-    Caricamento film...
-  </section>
-
-  <section class="status-card error" *ngIf="!loadingFilm && erroreFilm">
-    {{ erroreFilm }}
-  </section>
-
-  <ng-container *ngIf="!loadingFilm && !erroreFilm && film as filmCorrente">
-    <section class="detail-hero">
-      <div class="poster-shell">
-        <div class="poster" *ngIf="!filmCorrente.urlLocandina">POSTER</div>
-        <img *ngIf="filmCorrente.urlLocandina" [src]="filmCorrente.urlLocandina" [alt]="'Locandina ' + filmCorrente.titolo">
-      </div>
-
-      <div class="detail-copy">
-        <span class="tag">{{ generiLabel(filmCorrente) }}</span>
-        <h1>{{ filmCorrente.titolo }}</h1>
-        <p class="description">{{ filmCorrente.descrizione }}</p>
-
-        <div class="meta-grid">
-          <div>
-            <span>Durata</span>
-            <strong>{{ durataLabel(filmCorrente.durata) }}</strong>
-          </div>
-          <div>
-            <span>Cast</span>
-            <strong>{{ filmCorrente.attori }}</strong>
-          </div>
-        </div>
-
-        <a href="#spettacoli" class="btn btn-primary">Vedi spettacoli</a>
-      </div>
+    <section class="status-card" *ngIf="loadingFilm">
+        Caricamento film...
     </section>
 
-    <section id="spettacoli" class="schedule-section">
-      <div class="section-header">
-        <div>
-          <h2>Spettacoli disponibili</h2>
-          <p>Seleziona un orario e procedi con la prenotazione.</p>
-        </div>
-      </div>
-
-      <div class="status-card error" *ngIf="erroreAcquisto">{{ erroreAcquisto }}</div>
-      <div class="status-card success m-5" *ngIf="messaggioAcquisto">{{ messaggioAcquisto }}</div>
-
-      <div class="status-card" *ngIf="loadingSpettacoli">Caricamento spettacoli...</div>
-      <div class="status-card error" *ngIf="!loadingSpettacoli && erroreSpettacoli">{{ erroreSpettacoli }}</div>
-      <div class="status-card" *ngIf="!loadingSpettacoli && !erroreSpettacoli && spettacoli.length === 0">
-        Nessuno spettacolo disponibile per questo film.
-      </div>
-
-      <div class="schedule-grid" *ngIf="!loadingSpettacoli && !erroreSpettacoli && spettacoli.length > 0">
-        <article class="schedule-card" *ngFor="let spettacolo of spettacoli; let i = index">
-          <div>
-            <p class="date">{{ dataLabel(spettacolo.data) }}</p>
-            <h3>{{ spettacolo.nomeSala }}</h3>
-            <p class="movie-meta">{{ spettacolo.postiRimanenti }} posti disponibili</p>
-          </div>
-
-          <div class="time-list">
-            <span class="time" [class.featured]="i === 0">{{ orario(spettacolo.oraInizio) }}</span>
-            <span class="time">{{ orario(spettacolo.oraFine) }}</span>
-          </div>
-
-          <button type="button" class="btn btn-primary" [disabled]="spettacolo.postiRimanenti === 0" (click)="prenota(spettacolo)">Prenota</button>
-        </article>
-      </div>
+    <section class="status-card error" *ngIf="!loadingFilm && erroreFilm">
+        {{ erroreFilm }}
     </section>
-  </ng-container>
 
-  @if (modaleAperta && film && spettacoloInAcquisto) {
-    <app-acquisto-biglietto
-      [film]="film"
-      [spettacolo]="spettacoloInAcquisto"
-      (chiudi)="chiudiModaleAcquisto()"
-      (acquistoConfermato)="onAcquistoConfermato()"
-    ></app-acquisto-biglietto>
-  }
+    <ng-container *ngIf="!loadingFilm && !erroreFilm && film as filmCorrente">
+        <section class="detail-hero">
+            <div class="poster-shell">
+                <div class="poster" *ngIf="!filmCorrente.urlLocandina">POSTER</div>
+                <img *ngIf="filmCorrente.urlLocandina" [src]="filmCorrente.urlLocandina" [alt]="'Locandina ' + filmCorrente.titolo">
+            </div>
+
+            <div class="detail-copy">
+                <span class="tag">{{ generiLabel(filmCorrente) }}</span>
+                <h1>{{ filmCorrente.titolo }}</h1>
+                <p class="description">{{ filmCorrente.descrizione }}</p>
+
+                <div class="meta-grid">
+                    <div>
+                        <span>Durata</span>
+                        <strong>{{ durataLabel(filmCorrente.durata) }}</strong>
+                    </div>
+                    <div>
+                        <span>Cast</span>
+                        <strong>{{ filmCorrente.attori }}</strong>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="spettacoli" class="schedule-section">
+            <div class="section-header">
+                <div>
+                    <h2>Spettacoli disponibili</h2>
+                    <p>Seleziona un orario e procedi con la prenotazione.</p>
+                </div>
+            </div>
+
+            <div class="status-card error" *ngIf="erroreAcquisto">{{ erroreAcquisto }}</div>
+            <div class="status-card success m-5" *ngIf="messaggioAcquisto">{{ messaggioAcquisto }}</div>
+
+            <div class="status-card" *ngIf="loadingSpettacoli">Caricamento spettacoli...</div>
+            <div class="status-card error" *ngIf="!loadingSpettacoli && erroreSpettacoli">{{ erroreSpettacoli }}</div>
+            <div class="status-card" *ngIf="!loadingSpettacoli && !erroreSpettacoli && spettacoli.length === 0">
+                Nessuno spettacolo disponibile per questo film.
+            </div>
+
+            <div class="schedule-grid" *ngIf="!loadingSpettacoli && !erroreSpettacoli && spettacoli.length > 0">
+                <article class="schedule-card" *ngFor="let spettacolo of spettacoli; let i = index">
+                    <div>
+                        <p class="date">{{ dataLabel(spettacolo.data) }}</p>
+                        <h3>{{ spettacolo.nomeSala }}</h3>
+                        <p class="movie-meta">{{ spettacolo.postiRimanenti }} posti disponibili</p>
+                    </div>
+
+                    <div class="time-list">
+                        <span class="time">{{ orario(spettacolo.oraInizio) }} - {{ orario(spettacolo.oraFine) }}</span>
+                    </div>
+
+                    <button type="button" class="btn btn-primary" [disabled]="spettacolo.postiRimanenti === 0" (click)="prenota(spettacolo)">Prenota</button>
+                </article>
+            </div>
+        </section>
+    </ng-container>
+
+    @if (modaleAperta && film && spettacoloInAcquisto) {
+        <app-acquisto-biglietto
+                [film]="film"
+                [spettacolo]="spettacoloInAcquisto"
+                (chiudi)="chiudiModaleAcquisto()"
+                (acquistoConfermato)="onAcquistoConfermato()"
+        ></app-acquisto-biglietto>
+    }
 </main>

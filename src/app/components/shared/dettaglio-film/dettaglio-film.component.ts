@@ -13,6 +13,7 @@ import { AcquistoBigliettoComponent } from '../acquisto-biglietto/acquisto-bigli
   selector: 'app-dettaglio-film',
   imports: [CommonModule, RouterLink, AcquistoBigliettoComponent],
   templateUrl: './dettaglio-film.component.html',
+  standalone: true,
   styleUrl: './dettaglio-film.component.css'
 })
 export class DettaglioFilmComponent implements OnInit {
@@ -30,10 +31,10 @@ export class DettaglioFilmComponent implements OnInit {
   messaggioAcquisto: string | null = null;
 
   constructor(
-    private route: ActivatedRoute,
-    private filmService: FilmService,
-    private spettacoloService: SpettacoloService,
-    private authService: AuthService
+      private route: ActivatedRoute,
+      private filmService: FilmService,
+      private spettacoloService: SpettacoloService,
+      private authService: AuthService
   ) {}
 
   ngOnInit(): void {
@@ -58,7 +59,12 @@ export class DettaglioFilmComponent implements OnInit {
   }
 
   dataLabel(data: string): string {
-    return data || 'Oggi';
+    if (!data) return 'Oggi';
+
+    const [anno, mese, giorno] = data.split('-');
+    if (!anno || !mese || !giorno) return data;
+
+    return `${giorno}/${mese}/${anno}`;
   }
 
   isCliente(): boolean {
