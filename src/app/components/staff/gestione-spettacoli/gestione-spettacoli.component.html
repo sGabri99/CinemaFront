@@ -74,7 +74,7 @@
                 <div class="schedule" style="grid-template-columns: 1fr;">
                     @for (s of spettacoli; track s.id) {
                         <article class="schedule-card schedule-row-card">
-                            <div>
+                            <div class="movie-info-block">
                                 <span class="tag schedule-badge-id">ID: #{{ s.id }}</span>
                                 <h3 class="schedule-title">{{ s.nomeFilm }}</h3>
                                 <p class="movie-meta schedule-info-meta">
@@ -88,8 +88,8 @@
 
                             <div class="schedule-actions-box">
                                 <div class="time-list time-list-static">
-                                    <span class="time featured">{{ s.oraInizio }}</span>
-                                    <span class="time">{{ s.oraFine }}</span>
+                                    <span class="time featured">{{ s.oraInizio | date:'HH:mm' }}</span>
+                                    <span class="time">{{ s.oraFine | date:'HH:mm' }}</span>
                                 </div>
                                 <button class="btn btn-secondary btn-icon-delete" (click)="elimina(s.id)">
                                     🗑️

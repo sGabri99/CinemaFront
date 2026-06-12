@@ -197,15 +197,20 @@ h1 {
 
 .schedule-row-card {
     display: flex;
-    justify-content: space-between;
-    align-items: center;
-    flex-wrap: wrap;
-    gap: 20px;
+    flex-direction: column;
+    gap: 16px;
+    padding: 20px;
+    background: #1e1e1e;
+    border-radius: 12px;
 }
 
 .schedule-badge-id {
     margin-bottom: 8px;
     font-size: 0.75rem;
+}
+
+.movie-info-block{
+    width: 100%;
 }
 
 .schedule-title {
@@ -219,6 +224,7 @@ h1 {
 
 .schedule-actions-box {
     display: flex;
+    justify-content: space-between;
     align-items: center;
     gap: 20px;
 }
@@ -235,6 +241,9 @@ h1 {
     color: var(--text);
     font-size: 0.9rem;
     padding: 8px 12px;
+    min-width: 70px;
+    text-align: center;
+    display: inline-block;
 }
 
 .time.featured {
