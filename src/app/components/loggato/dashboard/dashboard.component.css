@@ -27,7 +27,6 @@
     color: var(--text);
 }
 
-/* Voci nav */
 .sidebar .mat-mdc-list-item {
     border-radius: 8px !important;
     margin: 2px 12px !important;
@@ -36,7 +35,6 @@
     transition: background 0.15s ease, color 0.15s ease !important;
 }
 
-/* Forza il colore del testo su tutte le componenti del link */
 .sidebar .mat-mdc-list-item,
 .sidebar .mat-mdc-list-item .mdc-list-item__primary-text,
 .sidebar .mat-mdc-list-item .mat-mdc-list-item-content {
