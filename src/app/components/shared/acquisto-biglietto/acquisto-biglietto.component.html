@@ -1,0 +1,91 @@
+<div class="modal-overlay" (click)="chiudiModale()">
+  <div class="modal-content" (click)="$event.stopPropagation()">
+
+    <button type="button" class="btn-close" (click)="chiudiModale()" aria-label="Chiudi">×</button>
+
+    <header class="modal-header">
+      <span class="tag">Riepilogo acquisto</span>
+      <h2>Conferma il tuo biglietto</h2>
+    </header>
+
+    <div class="ticket-summary">
+      <div class="poster">
+        @if (film.urlLocandina) {
+          <img [src]="film.urlLocandina" [alt]="'Locandina ' + film.titolo">
+        } @else {
+          <span>POSTER</span>
+        }
+      </div>
+
+      <div class="info">
+        <h3>{{ film.titolo }}</h3>
+
+        @if (film.durata) {
+          <p class="meta">{{ durataLabel(film.durata) }}</p>
+        }
+
+        @if (film.descrizione) {
+          <p class="trama">{{ film.descrizione }}</p>
+        }
+
+        <dl class="dettagli-spettacolo">
+          <div class="riga">
+            <dt>Data</dt>
+            <dd>{{ formatData(spettacolo.data) | titlecase }}</dd>
+          </div>
+          <div class="riga">
+            <dt>Orario</dt>
+            <dd>{{ formatOrario(spettacolo.oraInizio) }} - {{ formatOrario(spettacolo.oraFine) }}</dd>
+          </div>
+          <div class="riga">
+            <dt>Sala</dt>
+            <dd>{{ spettacolo.nomeSala }} @if (tipoSala) { <span class="badge">{{ tipoSala }}</span> }</dd>
+          </div>
+          <div class="riga">
+            <dt>Posti disponibili</dt>
+            <dd>{{ postiDisponibili }}</dd>
+          </div>
+        </dl>
+      </div>
+    </div>
+
+    <section class="acquirente">
+      <h4>Dettagli acquirente</h4>
+      <p>{{ emailAcquirente ?? 'Utente non identificato' }}</p>
+    </section>
+
+    <section class="quantita">
+      <h4>Numero biglietti</h4>
+      <div class="stepper">
+        <button type="button" (click)="decrementa()" [disabled]="numeroBiglietti <= 1">−</button>
+        <span>{{ numeroBiglietti }}</span>
+        <button type="button" (click)="incrementa()" [disabled]="numeroBiglietti >= postiDisponibili">+</button>
+      </div>
+    </section>
+
+    <section class="riepilogo-costi">
+      <div class="riga">
+        <span>Prezzo unitario</span>
+        <span>{{ prezzoUnitario | currency:'EUR' }}</span>
+      </div>
+      <div class="riga totale">
+        <span>Totale da pagare</span>
+        <span>{{ totale | currency:'EUR' }}</span>
+      </div>
+    </section>
+
+    @if (errore) {
+      <p class="errore">{{ errore }}</p>
+    }
+
+    <div class="modal-actions">
+      <button type="button" class="btn btn-outline" (click)="chiudiModale()" [disabled]="loading">
+        Annulla
+      </button>
+      <button type="button" class="btn btn-primary" (click)="confermaAcquisto()" [disabled]="loading || postiDisponibili === 0">
+        {{ loading ? 'Acquisto in corso...' : 'Acquista' }}
+      </button>
+    </div>
+
+  </div>
+</div>

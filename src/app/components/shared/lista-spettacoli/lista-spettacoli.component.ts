@@ -10,6 +10,7 @@ import { BigliettoService } from '../../../services/biglietto.service';
 import { ResponseSpettacoloDTO } from '../../../dto/spettacolo/response/response-spettacolo-dto';
 import { ResponseFilmDTO } from '../../../dto/film/response/response-film-dto';
 import { Ruolo } from '../../../enums/ruolo';
+import { AcquistoBigliettoComponent } from '../acquisto-biglietto/acquisto-biglietto.component';
 
 export interface SpettacoloPerFilm {
     filmKey: string;
@@ -25,7 +26,7 @@ export interface GruppoData {
 @Component({
     selector: 'app-lista-spettacoli',
     standalone: true,
-    imports: [CommonModule, FormsModule, RouterLink],
+    imports: [CommonModule, FormsModule, RouterLink, AcquistoBigliettoComponent],
     templateUrl: './lista-spettacoli.component.html',
     styleUrl: './lista-spettacoli.component.css'
 })
@@ -41,6 +42,11 @@ export class ListaSpettacoliComponent implements OnInit {
 
     dataSelezionata: string = '';
     oggi: string = new Date().toISOString().split('T')[0];
+
+    // Modale di acquisto biglietto
+    modaleAperta = false;
+    filmInAcquisto: ResponseFilmDTO | null = null;
+    spettacoloInAcquisto: ResponseSpettacoloDTO | null = null;
 
     constructor(
         private spettacoloService: SpettacoloService,
@@ -164,22 +170,29 @@ export class ListaSpettacoliComponent implements OnInit {
             return;
         }
 
-        const key = this.selectionKey(data, filmKey);
-        this.prenotazioniInCorso.add(key);
         this.errore = null;
         this.messaggio = null;
 
-        this.bigliettoService.insert({ idSpettacolo: spettacolo.id, numeroBiglietti: 1 }).subscribe({
-            next: () => {
-                spettacolo.postiRimanenti = Math.max(0, spettacolo.postiRimanenti - 1);
-                this.messaggio = `Prenotazione confermata per ${this.formatOrario(spettacolo.oraInizio)}.`;
-                this.prenotazioniInCorso.delete(key);
-            },
-            error: () => {
-                this.errore = 'Impossibile completare la prenotazione.';
-                this.prenotazioniInCorso.delete(key);
-            }
-        });
+        const entry = this.gruppiPerData
+            .find(g => g.data === data)?.filmsDelGiorno
+            .find(e => e.filmKey === filmKey);
+
+        this.filmInAcquisto = entry?.film ?? null;
+        this.spettacoloInAcquisto = spettacolo;
+        this.modaleAperta = true;
+    }
+
+    chiudiModaleAcquisto(): void {
+        this.modaleAperta = false;
+        this.filmInAcquisto = null;
+        this.spettacoloInAcquisto = null;
+    }
+
+    onAcquistoConfermato(): void {
+        const orario = this.spettacoloInAcquisto ? this.formatOrario(this.spettacoloInAcquisto.oraInizio) : '';
+        this.messaggio = `Acquisto confermato per ${orario}.`;
+        this.errore = null;
+        this.chiudiModaleAcquisto();
     }
 
     isPrenotazioneInCorso(data: string, filmKey: string): boolean {
