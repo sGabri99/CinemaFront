@@ -25,24 +25,7 @@
     min-height: 350px;
     padding: 60px 24px;
 }
-.dashboard-container {
-    padding: 40px;
-    background-color: #121212;
-    min-height: 100vh;
-}
 
-.welcome-title {
-    color: #ffffff;
-    font-size: 2rem;
-    font-weight: bold;
-    margin-bottom: 10px;
-}
-
-.welcome-subtitle {
-    color: #aaaaaa;
-    font-size: 1rem;
-    margin-bottom: 30px;
-}
 .hero-content,
 .content-section {
     margin: 0 auto;
