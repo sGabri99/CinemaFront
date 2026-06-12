@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { ResponseFilmDTO } from '../../../dto/film/response/response-film-dto';
 import { ResponseSpettacoloDTO } from '../../../dto/spettacolo/response/response-spettacolo-dto';
@@ -13,14 +13,16 @@ import { SpettacoloService } from '../../../services/spettacolo.service';
   standalone: true,
   styleUrl: './home.component.css'
 })
-export class HomeComponent implements OnInit {
+export class HomeComponent implements OnInit, OnDestroy {
   films: ResponseFilmDTO[] = [];
   spettacoli: ResponseSpettacoloDTO[] = [];
+  adesso = new Date();
 
   loadingFilm = false;
   loadingSpettacoli = false;
   erroreFilm: string | null = null;
   erroreSpettacoli: string | null = null;
+  private timerAggiornamento?: ReturnType<typeof setInterval>;
 
   constructor(
     private filmService: FilmService,
@@ -30,6 +32,15 @@ export class HomeComponent implements OnInit {
   ngOnInit(): void {
     this.caricaFilm();
     this.caricaSpettacoli();
+    this.timerAggiornamento = setInterval(() => {
+      this.adesso = new Date();
+    }, 60000);
+  }
+
+  ngOnDestroy(): void {
+    if (this.timerAggiornamento) {
+      clearInterval(this.timerAggiornamento);
+    }
   }
 
   get filmInEvidenza(): ResponseFilmDTO[] {
@@ -37,7 +48,10 @@ export class HomeComponent implements OnInit {
   }
 
   get spettacoliOggi(): ResponseSpettacoloDTO[] {
-    return this.spettacoli.slice(0, 4);
+    const oggi = this.dataLocaleOggi();
+    return this.spettacoli
+      .filter(spettacolo => spettacolo.data === oggi)
+      .sort((a, b) => this.timestampSpettacolo(a.oraInizio, a.data) - this.timestampSpettacolo(b.oraInizio, b.data));
   }
 
   durataLabel(minuti: number): string {
@@ -51,8 +65,21 @@ export class HomeComponent implements OnInit {
   }
 
   orario(isoDateTime: string): string {
-    const parti = isoDateTime.split('T');
-    return parti.length > 1 ? parti[1].slice(0, 5) : isoDateTime.slice(0, 5);
+    if (!isoDateTime) return '';
+    const timePart = isoDateTime.includes('T') ? isoDateTime.split('T')[1] :
+      isoDateTime.includes(' ') ? isoDateTime.split(' ')[1] : isoDateTime;
+    return timePart.slice(0, 5);
+  }
+
+  fasciaOraria(spettacolo: ResponseSpettacoloDTO): string {
+    return `${this.orario(spettacolo.oraInizio)} - ${this.orario(spettacolo.oraFine)}`;
+  }
+
+  spettacoloInCorso(spettacolo: ResponseSpettacoloDTO): boolean {
+    const ora = this.adesso.getTime();
+    const inizio = this.timestampSpettacolo(spettacolo.oraInizio, spettacolo.data);
+    const fine = this.timestampSpettacolo(spettacolo.oraFine, spettacolo.data);
+    return ora >= inizio && ora <= fine;
   }
 
   posterClass(index: number): string {
@@ -79,8 +106,9 @@ export class HomeComponent implements OnInit {
   private caricaSpettacoli(): void {
     this.loadingSpettacoli = true;
     this.erroreSpettacoli = null;
+    const oggi = this.dataLocaleOggi();
 
-    this.spettacoloService.findAll().subscribe({
+    this.spettacoloService.findByData(oggi).subscribe({
       next: (spettacoli) => {
         this.spettacoli = spettacoli;
         this.loadingSpettacoli = false;
@@ -91,5 +119,18 @@ export class HomeComponent implements OnInit {
         this.loadingSpettacoli = false;
       }
     });
+  }
+
+  private dataLocaleOggi(): string {
+    const anno = this.adesso.getFullYear();
+    const mese = String(this.adesso.getMonth() + 1).padStart(2, '0');
+    const giorno = String(this.adesso.getDate()).padStart(2, '0');
+    return `${anno}-${mese}-${giorno}`;
+  }
+
+  private timestampSpettacolo(value: string, data: string): number {
+    if (!value) return 0;
+    const normalized = value.includes('T') || value.includes(' ') ? value.replace(' ', 'T') : `${data}T${value}`;
+    return new Date(normalized).getTime();
   }
 }
