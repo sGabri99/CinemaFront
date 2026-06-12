@@ -5,6 +5,8 @@ import {SpettacoloService} from "../../../services/spettacolo.service";
 import {InsertSpettacoloDTO} from "../../../dto/spettacolo/request/insert-spettacolo-dto";
 import {RouterLink} from "@angular/router";
 import {CommonModule} from "@angular/common";
+import {FilmService} from "../../../services/film.service";
+import {SalaService} from "../../../services/sala.service";
 
 @Component({
   selector: 'app-gestione-spettacoli',
@@ -19,6 +21,9 @@ import {CommonModule} from "@angular/common";
 export class GestioneSpettacoliComponent implements OnInit{
 
   spettacoli: ResponseSpettacoloDTO[] = [];
+  listaFilm: any[] = [];
+  listaSale: any[] = [];
+
 
   formSpettacolo = new FormGroup({
     idFilm: new FormControl<number | null>(null, Validators.required),
@@ -28,10 +33,12 @@ export class GestioneSpettacoliComponent implements OnInit{
     oraFine: new FormControl('', Validators.required)
   });
 
-  constructor(private spettacoloService: SpettacoloService) { }
+  constructor(private spettacoloService: SpettacoloService, private filmService: FilmService,private salaService: SalaService) { }
 
   ngOnInit(): void {
     this.caricaSpettacoli();
+    this.caricaFilm();
+    this.caricaSale();
   }
 
   caricaSpettacoli(){
@@ -45,39 +52,61 @@ export class GestioneSpettacoliComponent implements OnInit{
     })
   }
 
-    salvaSpettacolo() {
-        if (this.formSpettacolo.valid) {
-            const formValue = this.formSpettacolo.value;
-
-            const dataSpettacolo = formValue.data; // YYYY-MM-DD
-            const inizio = formValue.oraInizio;    // HH:mm
-            const fine = formValue.oraFine;        // HH:mm
-
-            const localDateTimeInizio = `${dataSpettacolo}T${inizio}:00`;
-            const localDateTimeFine = `${dataSpettacolo}T${fine}:00`;
-
-            const spettacolo: InsertSpettacoloDTO = {
-                idFilm: formValue.idFilm ? Number(formValue.idFilm) : 0,
-                idSala: formValue.idSala ? Number(formValue.idSala) : 0,
-                data: dataSpettacolo || '',
-                oraInizio: localDateTimeInizio, // Ora inviato correttamente come LocalDateTime string
-                oraFine: localDateTimeFine     // Ora inviato correttamente come LocalDateTime string
-            };
-
-            console.log("JSON Corretto inviato a Spring:", spettacolo);
-
-            this.spettacoloService.insert(spettacolo).subscribe({
-                next: () => {
-                    alert('Spettacolo inserito con successo');
-                    this.formSpettacolo.reset();
-                    this.caricaSpettacoli();
-                },
-                error: (err) => {
-                    console.error("Errore durante l'inserimento dello spettacolo", err);
-                }
-            });
-        }
+  caricaFilm() {
+      // Chiamata al backend per prendere tutti i film disponibili
+      this.filmService.findAll().subscribe({
+          next: (res) => {
+              this.listaFilm = res;
+              },
+            error: (err) => {
+                console.error('Errore nel caricamento dei film per la select', err);
+            }
+        });
     }
+
+    caricaSale() {
+        // Chiamata al backend per prendere tutte le sale disponibili
+        this.salaService.findAll().subscribe({
+            next: (res) => {
+                this.listaSale = res;
+            },
+            error: (err) => {
+                console.error('Errore nel caricamento delle sale per la select', err);
+            }
+        });
+    }
+
+  salvaSpettacolo() {
+      if (this.formSpettacolo.valid) {
+          const formValue = this.formSpettacolo.value;
+
+          const dataSpettacolo = formValue.data; // YYYY-MM-DD
+          const inizio = formValue.oraInizio;    // HH:mm
+          const fine = formValue.oraFine;        // HH:mm
+
+          const localDateTimeInizio = `${dataSpettacolo}T${inizio}:00`;
+          const localDateTimeFine = `${dataSpettacolo}T${fine}:00`;
+
+          const spettacolo: InsertSpettacoloDTO = {
+              idFilm: formValue.idFilm ? Number(formValue.idFilm) : 0,
+              idSala: formValue.idSala ? Number(formValue.idSala) : 0,
+              data: dataSpettacolo || '',
+              oraInizio: localDateTimeInizio,
+              oraFine: localDateTimeFine
+          };
+
+          this.spettacoloService.insert(spettacolo).subscribe({
+              next: () => {
+                  console.log('Spettacolo inserito con successo');
+                  this.formSpettacolo.reset();
+                  this.caricaSpettacoli();
+                  },
+              error: (err) => {
+                  console.error("Errore durante l'inserimento dello spettacolo", err);
+              }
+          });
+      }
+  }
 
   elimina(id: number){
     if(confirm('Vuoi rimuovere lo spettacolo?')){
