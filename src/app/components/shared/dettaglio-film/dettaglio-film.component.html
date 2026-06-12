@@ -44,6 +44,9 @@
         </div>
       </div>
 
+      <div class="status-card error" *ngIf="erroreAcquisto">{{ erroreAcquisto }}</div>
+      <div class="status-card success m-5" *ngIf="messaggioAcquisto">{{ messaggioAcquisto }}</div>
+
       <div class="status-card" *ngIf="loadingSpettacoli">Caricamento spettacoli...</div>
       <div class="status-card error" *ngIf="!loadingSpettacoli && erroreSpettacoli">{{ erroreSpettacoli }}</div>
       <div class="status-card" *ngIf="!loadingSpettacoli && !erroreSpettacoli && spettacoli.length === 0">
@@ -63,9 +66,18 @@
             <span class="time">{{ orario(spettacolo.oraFine) }}</span>
           </div>
 
-          <button type="button" class="btn btn-primary">Prenota</button>
+          <button type="button" class="btn btn-primary" [disabled]="spettacolo.postiRimanenti === 0" (click)="prenota(spettacolo)">Prenota</button>
         </article>
       </div>
     </section>
   </ng-container>
+
+  @if (modaleAperta && film && spettacoloInAcquisto) {
+    <app-acquisto-biglietto
+      [film]="film"
+      [spettacolo]="spettacoloInAcquisto"
+      (chiudi)="chiudiModaleAcquisto()"
+      (acquistoConfermato)="onAcquistoConfermato()"
+    ></app-acquisto-biglietto>
+  }
 </main>

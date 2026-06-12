@@ -5,12 +5,12 @@
 
 html {
   @include mat.theme((
-    color: (
-      theme-type: light,
-      primary: mat.$azure-palette,
-      tertiary: mat.$blue-palette,
-    ),
-    typography: Roboto,
-    density: 0,
+          color: (
+                  theme-type: dark,
+                  primary: mat.$azure-palette,
+                  tertiary: mat.$blue-palette,
+          ),
+          typography: Roboto,
+          density: 0,
   ));
 }

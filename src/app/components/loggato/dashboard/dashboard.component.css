@@ -1,0 +1,71 @@
+.dashboard-container {
+    height: 100vh;
+    background-color: var(--background) !important;
+}
+
+.mat-sidenav-container {
+    background-color: var(--background) !important;
+}
+
+.sidebar {
+    background-color: var(--background) !important;
+    border-right: 1px solid var(--border) !important;
+    width: 240px;
+    padding-top: 24px;
+}
+
+.sidebar-brand span {
+    color: var(--primary);
+}
+
+.sidebar-section-label {
+    padding: 0 20px 8px;
+    font-size: 10px;
+    font-weight: 600;
+    letter-spacing: 1.2px;
+    text-transform: uppercase;
+    color: var(--text);
+}
+
+/* Voci nav */
+.sidebar .mat-mdc-list-item {
+    border-radius: 8px !important;
+    margin: 2px 12px !important;
+    height: 44px !important;
+    font-size: 14px !important;
+    transition: background 0.15s ease, color 0.15s ease !important;
+}
+
+/* Forza il colore del testo su tutte le componenti del link */
+.sidebar .mat-mdc-list-item,
+.sidebar .mat-mdc-list-item .mdc-list-item__primary-text,
+.sidebar .mat-mdc-list-item .mat-mdc-list-item-content {
+    color: var(--secondary) !important;
+}
+
+.sidebar .mat-mdc-list-item:hover {
+    background-color: var(--surface) !important;
+}
+
+.sidebar .mat-mdc-list-item:hover,
+.sidebar .mat-mdc-list-item:hover .mdc-list-item__primary-text {
+    color: var(--text) !important;
+}
+
+.sidebar .active-link {
+    background-color: var(--primary) !important;
+}
+
+.sidebar .active-link,
+.sidebar .active-link .mdc-list-item__primary-text {
+    color: var(--text) !important;
+}
+
+.dashboard-content {
+    background-color: var(--background) !important;
+    overflow-y: auto;
+}
+
+.mat-drawer-side {
+    border-right: none !important;
+}
