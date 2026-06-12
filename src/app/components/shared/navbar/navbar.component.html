@@ -13,7 +13,7 @@
         </button>
         <div class="account-dropdown" role="menu">
           @if (isLoggedIn()) {
-            <a routerLink="/profilo" role="menuitem">Profilo</a>
+            <a routerLink="/profilo" role="menuitem">Dashboard</a>
             <button type="button" role="menuitem" (click)="logout()">Logout</button>
           } @else {
             <a routerLink="/login" role="menuitem">Login</a>

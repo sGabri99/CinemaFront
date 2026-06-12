@@ -1,8 +1,20 @@
 /* You can add global styles to this file, and also import other style files */
+:root {
+  --background: #121212;
+  --surface: #1E1E1E;
+  --primary: #E50914;
+  --secondary: #B3B3B3;
+  --text: #FFFFFF;
+  --border: #2a2a2a;
+}
+
 
 html,
 body {
   min-height: 100%;
+  background-color: var(--background);
+  color: var(--text);
+  margin: 0;
 }
 
 body {

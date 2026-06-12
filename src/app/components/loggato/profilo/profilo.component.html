@@ -1,66 +1,67 @@
-<main class="container py-5">
-    <div class="row justify-content-center">
-        <div class="col-md-6 col-lg-5">
+<div class="profilo-page">
 
-            <div class="card shadow-sm mb-4">
-                <div class="card-body d-flex align-items-center gap-3">
-                    <div class="bg-sec p-3 rounded-circle text-white">
-                        <i class="bi bi-person-fill fs-3"></i>
-                    </div>
-                    <div>
-                        <h1 class="h5 mb-0">{{ email }}</h1>
-                        <span class="badge" style="background-color: var(--primary);">{{ ruolo }}</span>
-                    </div>
-                </div>
+    <div class="page-title">Il mio profilo</div>
+
+    <div class="user-header">
+        <div class="user-avatar">
+            <i class="bi bi-person-fill"></i>
+        </div>
+        <div>
+            <div class="user-email">{{ email }}</div>
+            <span class="user-role-badge">{{ ruolo }}</span>
+        </div>
+    </div>
+
+    <div class="section-card">
+        <div class="section-title">
+            <i class="bi bi-shield-lock"></i>
+            Cambia password
+        </div>
+        <div class="section-subtitle">Aggiorna la password del tuo account</div>
+
+        @if (successo) {
+            <div class="alert-ok">
+                <i class="bi bi-check-circle-fill"></i> Password aggiornata con successo
             </div>
-
-            <div class="card shadow-sm p-4">
-                <h2 class="h4 mb-3"><i class="bi bi-shield-lock me-2 text-pri"></i>Cambia password</h2>
-                <p class="text-sec small">Aggiorna la password del tuo account.</p>
-
-                @if (successo) {
-                    <div class="alert alert-success border-0 py-2 d-flex align-items-center gap-2">
-                        <i class="bi bi-check-circle-fill"></i> Password aggiornata!
-                    </div>
-                }
-
-                @if (errore) {
-                    <div class="alert alert-danger border-0 py-2 d-flex align-items-center gap-2">
-                        <i class="bi bi-exclamation-circle-fill"></i> {{ errore }}
-                    </div>
-                }
-
-                <div class="mb-3">
-                    <label class="form-label text-uppercase small text-sec">Password attuale</label>
-                    <div class="input-group">
-                        <input [type]="mostraVecchia ? 'text' : 'password'" class="form-control bg-input border-0" [(ngModel)]="dto.passwordVecchia" />
-                        <button class="btn btn-secondary-custom" (click)="mostraVecchia = !mostraVecchia">
-                            <i class="bi" [class.bi-eye]="!mostraVecchia" [class.bi-eye-slash]="mostraVecchia"></i>
-                        </button>
-                    </div>
-                </div>
-
-                <div class="mb-4">
-                    <label class="form-label text-uppercase small text-sec">Nuova password</label>
-                    <div class="input-group">
-                        <input [type]="mostraNuova ? 'text' : 'password'" class="form-control bg-input border-0" [(ngModel)]="dto.passwordNuova" />
-                        <button class="btn btn-secondary-custom" (click)="mostraNuova = !mostraNuova">
-                            <i class="bi" [class.bi-eye]="!mostraNuova" [class.bi-eye-slash]="mostraNuova"></i>
-                        </button>
-                    </div>
-                </div>
-
-                <button class="btn btn-primary-custom w-100 fw-bold" (click)="cambiaPassword()" [disabled]="loading">
-                    @if (loading) { <span class="spinner-border spinner-border-sm me-2"></span> Salvataggio... }
-                    @else { <i class="bi bi-floppy me-2"></i>Salva password }
-                </button>
+        }
+        @if (errore) {
+            <div class="alert-err">
+                <i class="bi bi-exclamation-circle-fill"></i> {{ errore }}
             </div>
+        }
 
-            <div class="text-center mt-4">
-                <button class="btn btn-outline-secondary btn-sm text-sec" (click)="logout()">
-                    <i class="bi bi-box-arrow-right me-2"></i>Disconnetti
+        <div class="field-group">
+            <label>Password attuale</label>
+            <div class="field-input">
+                <input [type]="mostraVecchia ? 'text' : 'password'"
+                       [(ngModel)]="dto.passwordVecchia"
+                       placeholder="••••••••" />
+                <button (click)="mostraVecchia = !mostraVecchia">
+                    <i class="bi" [class.bi-eye]="!mostraVecchia" [class.bi-eye-slash]="mostraVecchia"></i>
                 </button>
             </div>
         </div>
+
+        <div class="field-group">
+            <label>Nuova password</label>
+            <div class="field-input">
+                <input [type]="mostraNuova ? 'text' : 'password'"
+                       [(ngModel)]="dto.passwordNuova"
+                       placeholder="••••••••" />
+                <button (click)="mostraNuova = !mostraNuova">
+                    <i class="bi" [class.bi-eye]="!mostraNuova" [class.bi-eye-slash]="mostraNuova"></i>
+                </button>
+            </div>
+        </div>
+
+        <button class="btn-save" (click)="cambiaPassword()" [disabled]="loading">
+            @if (loading) {
+                <span class="spinner-border spinner-border-sm"></span> Salvataggio...
+            } @else {
+                <i class="bi bi-floppy"></i> Salva password
+            }
+        </button>
     </div>
-</main>
+
+
+</div>

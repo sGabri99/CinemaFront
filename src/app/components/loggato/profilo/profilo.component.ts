@@ -4,7 +4,7 @@ import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
 import { AuthService } from '../../../services/auth.service';
 import { EditPasswordRequest } from '../../../dto/resetpassword/request/edit-password-request';
-import { jwtDecode } from 'jwt-decode';
+
 
 @Component({
   selector: 'app-profilo',
