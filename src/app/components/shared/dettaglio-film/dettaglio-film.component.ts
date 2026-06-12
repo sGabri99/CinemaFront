@@ -133,7 +133,7 @@ export class DettaglioFilmComponent implements OnInit {
 
     this.spettacoloService.findByIdFilm(id).subscribe({
       next: (spettacoli) => {
-        this.spettacoli = spettacoli;
+        this.spettacoli = spettacoli.filter(s => this.isFuturo(s));
         this.loadingSpettacoli = false;
       },
       error: () => {
@@ -142,5 +142,16 @@ export class DettaglioFilmComponent implements OnInit {
         this.loadingSpettacoli = false;
       }
     });
+  }
+
+  private isFuturo(spettacolo: ResponseSpettacoloDTO): boolean {
+    const timePart = spettacolo.oraInizio.includes('T')
+        ? spettacolo.oraInizio.split('T')[1]
+        : spettacolo.oraInizio.includes(' ')
+            ? spettacolo.oraInizio.split(' ')[1]
+            : spettacolo.oraInizio;
+    const ora = timePart?.substring(0, 5) ?? '00:00';
+    const dataOra = new Date(`${spettacolo.data}T${ora}:00`);
+    return dataOra > new Date();
   }
 }
