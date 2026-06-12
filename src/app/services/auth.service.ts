@@ -11,6 +11,11 @@ import {ResponseUtenteDataDTO} from "../dto/utente/response/response-utente-data
 import { InsertUtenteDto } from '../dto/utente/request/insert-utente-dto';
 import { ResponseUtenteDto } from '../dto/utente/response/response-utente-dto';
 
+export function getAllStaff() {
+
+}
+
+
 @Injectable({
   providedIn: 'root'
 })
@@ -113,4 +118,7 @@ export class AuthService {
     }
   }
 
+
+
+  
 }
