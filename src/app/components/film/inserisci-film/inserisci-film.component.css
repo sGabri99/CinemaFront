@@ -46,6 +46,11 @@ label {
     border-color: #ced4da;
 }
 
+.form-check-input:checked {
+    background-color: #e50914;
+    border-color: #e50914;
+}
+
 .btn-primary {
     background-color: #e50914;
     border-color: #e50914;

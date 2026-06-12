@@ -1,5 +1,7 @@
 :host {
     display: block;
+    min-height: 100%;
+    padding-bottom: 48px;
 }
 
 h2 {
@@ -24,8 +26,18 @@ h2 {
 .btn-primary {
     background-color: #e50914;
     border-color: #e50914;
+    white-space: nowrap;
 }
 .btn-primary:hover {
     background-color: #b20710;
     border-color: #b20710;
+}
+
+.btn-danger {
+    background-color: #b20710;
+    border-color: #b20710;
+}
+.btn-danger:hover {
+    background-color: #7d0008;
+    border-color: #7d0008;
 }
