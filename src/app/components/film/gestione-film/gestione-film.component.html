@@ -1,6 +1,14 @@
 <div class="container my-4">
     <h2>Gestione film</h2>
 
+    <!-- Banner di successo: appare solo dopo inserimento film -->
+    @if (filmInserito) {
+        <div class="alert-success">
+            <span class="alert-icon">✓</span>
+            Film inserito con successo!
+        </div>
+    }
+
     <a class="btn btn-primary mb-3" routerLink="/inserisci-film">+ Nuovo film</a>
 
     <table class="table">
