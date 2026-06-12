@@ -6,7 +6,7 @@ export const staffGuard: CanActivateFn = () => {
   const auth = inject(AuthService);
   const router = inject(Router);
   const ruolo = auth.getRuolo();
-  if (ruolo === 'STAFF' ) return true;
-  router.navigateByUrl('/**');
+  if (ruolo === 'STAFF' || ruolo === 'SUPERADMIN') return true;
+  router.navigateByUrl('/home');
   return false;
 };

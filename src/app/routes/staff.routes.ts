@@ -25,5 +25,11 @@ export const staffRoutes: Routes = [
         title: 'Ricerca Catalogo',
         loadComponent: () => import('../components/staff/ricerca/ricerca.component')
             .then(m => m.RicercaComponent)
+    },
+    {
+        path: 'gestione-staff',
+        title: 'Gestione Staff - SuperAdmin',
+        loadComponent: () => import('../components/staff/gestione-staff/gestione-staff.component')
+            .then(m => m.GestioneStaffComponent)
     }
-]
+];
