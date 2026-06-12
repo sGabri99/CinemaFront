@@ -41,27 +41,24 @@ export class RicercaComponent {
     })
   }
 
-  aggiungi(filmScelto: LongOmdbResponseApiDto){
+  aggiungi(filmScelto: any) {
+    const insertFilm: InsertFilmDTO = {
+      titolo: filmScelto.Title,
+      descrizione: filmScelto.Plot || '',
+      durata: filmScelto.Runtime && filmScelto.Runtime !== 'N/A' ? Number(filmScelto.Runtime.replace(' min', '')) : 0,
+      attori: filmScelto.Actors || '',
+      urlLocandina: filmScelto.Poster && filmScelto.Poster !== 'N/A' ? filmScelto.Poster : '',
+      idGeneri: [1]
+    };
 
-      const film = filmScelto as LongOmdbResponseApiDto;
-
-      const insertFilm: InsertFilmDTO = {
-        titolo: film.title,
-        descrizione: film.plot,
-        durata: Number(film.runtime.replace(' min', '')),
-        attori: film.actors,
-        urlLocandina: film.poster && film.poster !== 'N/A' ? film.poster : '',
-        idGeneri: [1]
+    this.filmService.insert(insertFilm).subscribe({
+      next: (res: ResponseFilmDTO) => {
+        alert(`"${res.titolo}" salvato con successo.`);
+      },
+      error: (err) => {
+        console.error('Errore durante il salvataggio del film.', err);
       }
-
-      this.filmService.insert(insertFilm).subscribe({
-        next: (res: ResponseFilmDTO) => {
-          alert(`"${res.titolo}" salvato con successo.`);
-        },
-        error: (err) => {
-          console.log('Errore durante il salvataggio del film.');
-        }
-      })
+    });
   }
 
 }

@@ -57,7 +57,7 @@ export class InserisciFilmComponent implements OnInit {
     };
     this.filmService.insert(dto).subscribe({
       next: () => this.router.navigateByUrl('/gestione-film'),
-      error: (err) => console.error('ERRORE:', err)  // 👈 aggiunto
+      error: (err) => console.error('ERRORE:', err)
     });
   }
 }

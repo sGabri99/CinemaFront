@@ -1,5 +1,5 @@
 import {Routes} from '@angular/router';
-import {BigliettiUtenteComponent} from "../components/staff/biglietti-utente/biglietti-utente.component";
+import {staffGuard} from "../guards/staff.guard";
 
 export const staffRoutes: Routes = [
     {

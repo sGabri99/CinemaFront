@@ -36,20 +36,24 @@ export class BigliettiUtenteComponent {
   }
 
 
-  cancellaBiglietto(idBiglietto: number){
-    const email = prompt("Inserisci l'email per confermare: ");
-    if(!email) return;
+  cancellaBiglietto(idBiglietto: number) {
+    const email = prompt("Inserisci l'email per confermare l'annullamento: ");
+    if (!email || !email.trim()) {
+      alert("Email obbligatoria per procedere.");
+      return;
+    }
 
-    if(confirm('Sei sicuro di voler eliminare il biglietto?')){
-      this.bigliettoService.removeById(idBiglietto, email).subscribe({
+    if (confirm('Sei sicuro di voler eliminare il biglietto?')) {
+      this.bigliettoService.removeById(idBiglietto, email.trim()).subscribe({
         next: () => {
           alert('Biglietto eliminato con successo');
-          this.cerca();
+          this.biglietti = this.biglietti.filter(b => b.id !== idBiglietto);
         },
         error: (err) => {
           console.error("Errore durante l'eliminazione del biglietto", err);
+          alert("Impossibile eliminare il biglietto. Verifica che l'email inserita sia corretta.");
         }
-      })
+      });
     }
   }
 
