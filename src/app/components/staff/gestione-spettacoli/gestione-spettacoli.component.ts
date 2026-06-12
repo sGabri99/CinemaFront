@@ -3,7 +3,6 @@ import {ResponseSpettacoloDTO} from "../../../dto/spettacolo/response/response-s
 import {FormControl, FormGroup, ReactiveFormsModule, Validators} from "@angular/forms";
 import {SpettacoloService} from "../../../services/spettacolo.service";
 import {InsertSpettacoloDTO} from "../../../dto/spettacolo/request/insert-spettacolo-dto";
-import {RouterLink} from "@angular/router";
 import {CommonModule} from "@angular/common";
 import {FilmService} from "../../../services/film.service";
 import {SalaService} from "../../../services/sala.service";
@@ -12,8 +11,7 @@ import {SalaService} from "../../../services/sala.service";
   selector: 'app-gestione-spettacoli',
   standalone: true,
   imports: [
-    ReactiveFormsModule,CommonModule,
-    RouterLink
+    ReactiveFormsModule,CommonModule
   ],
   templateUrl: './gestione-spettacoli.component.html',
   styleUrl: './gestione-spettacoli.component.css'

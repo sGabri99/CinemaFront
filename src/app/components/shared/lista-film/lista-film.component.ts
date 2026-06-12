@@ -35,12 +35,12 @@ export class ListaFilmComponent implements OnInit {
 
     return this.films.filter((film) => {
       const matchTesto = !query ||
-        film.titolo.toLowerCase().includes(query) ||
-        film.descrizione.toLowerCase().includes(query) ||
-        film.attori.toLowerCase().includes(query);
+          film.titolo.toLowerCase().includes(query) ||
+          film.descrizione.toLowerCase().includes(query) ||
+          film.attori.toLowerCase().includes(query);
 
       const matchGenere = this.genereSelezionato === 'Tutti' ||
-        film.nomeGeneri?.includes(this.genereSelezionato);
+          film.nomeGeneri?.includes(this.genereSelezionato);
 
       return matchTesto && matchGenere;
     });
@@ -53,7 +53,7 @@ export class ListaFilmComponent implements OnInit {
   }
 
   generiLabel(film: ResponseFilmDTO): string {
-    return film.nomeGeneri?.length ? film.nomeGeneri.join(' / ') : 'Cinema';
+    return film.nomeGeneri?.length ? film.nomeGeneri.join(' / ') : 'Genere non specificato';
   }
 
   posterClass(index: number): string {
