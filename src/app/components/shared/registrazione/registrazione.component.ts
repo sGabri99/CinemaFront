@@ -3,7 +3,7 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Router, RouterLink } from '@angular/router';
 import { AuthService } from '../../../services/auth.service';
-import { InsertUtenteDto } from '../../../dto/utente/request/insert-utente-dto';
+import { InsertUtenteDTO } from '../../../dto/utente/request/insert-utente-dto';
 
 @Component({
   selector: 'app-registrazione',
@@ -13,7 +13,7 @@ import { InsertUtenteDto } from '../../../dto/utente/request/insert-utente-dto';
   styleUrl: './registrazione.component.css'
 })
 export class RegistrazioneComponent {
-  dto: InsertUtenteDto = {
+  dto: InsertUtenteDTO = {
     nome: '',
     cognome: '',
     email: '',

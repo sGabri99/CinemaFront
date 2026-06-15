@@ -2,12 +2,16 @@
     <div class="form-card">
         <h2>Nuovo Membro Staff</h2>
 
-        <div *ngIf="messaggioSuccesso" class="alert alert-success">
-            {{ messaggioSuccesso }}
-        </div>
-        <div *ngIf="messaggioErrore" class="alert alert-danger">
-            {{ messaggioErrore }}
-        </div>
+        @if (messaggioSuccesso) {
+            <div class="alert alert-success">
+                {{ messaggioSuccesso }}
+            </div>
+        }
+        @if (messaggioErrore) {
+            <div class="alert alert-danger">
+                {{ messaggioErrore }}
+            </div>
+        }
 
         <form [formGroup]="staffForm" (ngSubmit)="onSubmit()">
 

@@ -24,26 +24,35 @@
       <a routerLink="/lista-film" class="btn btn-secondary">Vedi tutti</a>
     </div>
 
-    <div class="status-card" *ngIf="loadingFilm">Caricamento film...</div>
-    <div class="status-card error" *ngIf="!loadingFilm && erroreFilm">{{ erroreFilm }}</div>
-    <div class="status-card" *ngIf="!loadingFilm && !erroreFilm && filmInEvidenza.length === 0">
-      Nessun film disponibile.
-    </div>
+    @if (loadingFilm) {
+      <div class="status-card">Caricamento film...</div>
+    } @else if (erroreFilm) {
+      <div class="status-card error">{{ erroreFilm }}</div>
+    } @else if (filmInEvidenza.length === 0) {
+      <div class="status-card">
+        Nessun film disponibile.
+      </div>
+    } @else {
+      <div class="movie-grid">
+        @for (film of filmInEvidenza; track film.id; let i = $index) {
+          <article class="movie-card">
+            @if (!film.urlLocandina) {
+              <div [class]="posterClass(i)">
+                <span>POSTER</span>
+              </div>
+            } @else {
+              <img class="poster-image" [src]="film.urlLocandina" [alt]="'Locandina ' + film.titolo">
+            }
 
-    <div class="movie-grid" *ngIf="!loadingFilm && !erroreFilm && filmInEvidenza.length > 0">
-      <article class="movie-card" *ngFor="let film of filmInEvidenza; let i = index">
-        <div [class]="posterClass(i)" *ngIf="!film.urlLocandina">
-          <span>POSTER</span>
-        </div>
-        <img *ngIf="film.urlLocandina" class="poster-image" [src]="film.urlLocandina" [alt]="'Locandina ' + film.titolo">
-
-        <div class="movie-info">
-          <h3>{{ film.titolo }}</h3>
-          <p class="movie-meta">{{ generiLabel(film) }} - {{ durataLabel(film.durata) }}</p>
-          <a [routerLink]="['/dettaglio-film', film.id]" class="btn btn-primary">Dettagli</a>
-        </div>
-      </article>
-    </div>
+            <div class="movie-info">
+              <h3>{{ film.titolo }}</h3>
+              <p class="movie-meta">{{ generiLabel(film) }} - {{ durataLabel(film.durata) }}</p>
+              <a [routerLink]="['/dettaglio-film', film.id]" class="btn btn-primary">Dettagli</a>
+            </div>
+          </article>
+        }
+      </div>
+    }
   </section>
 
   <section id="programmazione" class="content-section">
@@ -54,23 +63,31 @@
       </div>
     </div>
 
-    <div class="status-card" *ngIf="loadingSpettacoli">Caricamento spettacoli...</div>
-    <div class="status-card error" *ngIf="!loadingSpettacoli && erroreSpettacoli">{{ erroreSpettacoli }}</div>
-    <div class="status-card" *ngIf="!loadingSpettacoli && !erroreSpettacoli && spettacoliOggi.length === 0">
-      Nessuno spettacolo disponibile oggi.
-    </div>
-
-    <div class="schedule" *ngIf="!loadingSpettacoli && !erroreSpettacoli && spettacoliOggi.length > 0">
-      <article class="schedule-card" *ngFor="let spettacolo of spettacoliOggi" [class.on-air]="spettacoloInCorso(spettacolo)">
-        <h3>{{ spettacolo.nomeFilm }}</h3>
-        <p class="movie-meta">{{ spettacolo.nomeSala }} - {{ spettacolo.postiRimanenti }} posti disponibili</p>
-        <div class="time-list">
-          <span class="time" [class.featured]="spettacoloInCorso(spettacolo)">
-            {{ fasciaOraria(spettacolo) }}
-          </span>
-          <span class="live-badge" *ngIf="spettacoloInCorso(spettacolo)">In corso</span>
-        </div>
-      </article>
-    </div>
+    @if (loadingSpettacoli) {
+      <div class="status-card">Caricamento spettacoli...</div>
+    } @else if (erroreSpettacoli) {
+      <div class="status-card error">{{ erroreSpettacoli }}</div>
+    } @else if (spettacoliOggi.length === 0) {
+      <div class="status-card">
+        Nessuno spettacolo disponibile oggi.
+      </div>
+    } @else {
+      <div class="schedule">
+        @for (spettacolo of spettacoliOggi; track spettacolo.id) {
+          <article class="schedule-card" [class.on-air]="spettacoloInCorso(spettacolo)">
+            <h3>{{ spettacolo.nomeFilm }}</h3>
+            <p class="movie-meta">{{ spettacolo.nomeSala }} - {{ spettacolo.postiRimanenti }} posti disponibili</p>
+            <div class="time-list">
+              <span class="time" [class.featured]="spettacoloInCorso(spettacolo)">
+                {{ fasciaOraria(spettacolo) }}
+              </span>
+              @if (spettacoloInCorso(spettacolo)) {
+                <span class="live-badge">In corso</span>
+              }
+            </div>
+          </article>
+        }
+      </div>
+    }
   </section>
 </main>

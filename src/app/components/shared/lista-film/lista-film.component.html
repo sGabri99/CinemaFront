@@ -14,42 +14,49 @@
         <label>
             <span>Genere</span>
             <select [(ngModel)]="genereSelezionato">
-                <option *ngFor="let genere of generi" [value]="genere">{{ genere }}</option>
+                @for (genere of generi; track genere) {
+                    <option [value]="genere">{{ genere }}</option>
+                }
             </select>
         </label>
     </section>
 
-    <section class="empty-state" *ngIf="loading">
-        <h2>Caricamento film...</h2>
-        <p>Sto recuperando i titoli dal backend.</p>
-    </section>
+    @if (loading) {
+        <section class="empty-state">
+            <h2>Caricamento film...</h2>
+            <p>Sto recuperando i titoli dal backend.</p>
+        </section>
+    } @else if (errore) {
+        <section class="empty-state error">
+            <h2>Errore</h2>
+            <p>{{ errore }}</p>
+        </section>
+    } @else if (filmFiltrati.length) {
+        <section class="movie-grid">
+            @for (film of filmFiltrati; track film.id; let i = $index) {
+                <article class="movie-card">
+                    @if (!film.urlLocandina) {
+                        <div [class]="posterClass(i)">
+                            <span>POSTER</span>
+                        </div>
+                    } @else {
+                        <img class="poster-image" [src]="film.urlLocandina" [alt]="'Locandina ' + film.titolo">
+                    }
 
-    <section class="empty-state error" *ngIf="!loading && errore">
-        <h2>Errore</h2>
-        <p>{{ errore }}</p>
-    </section>
-
-    <section class="movie-grid" *ngIf="!loading && !errore && filmFiltrati.length; else nessunFilm">
-        <article class="movie-card" *ngFor="let film of filmFiltrati; let i = index">
-            <div [class]="posterClass(i)" *ngIf="!film.urlLocandina">
-                <span>POSTER</span>
-            </div>
-            <img *ngIf="film.urlLocandina" class="poster-image" [src]="film.urlLocandina" [alt]="'Locandina ' + film.titolo">
-
-            <div class="movie-info">
-                <p class="eyebrow">{{ generiLabel(film) }}</p>
-                <h2>{{ film.titolo }}</h2>
-                <p class="description">{{ film.descrizione }}</p>
-                <p class="movie-meta">{{ durataLabel(film.durata) }} - {{ film.attori }}</p>
-                <a [routerLink]="['/dettaglio-film', film.id]" class="btn btn-primary">Dettaglio film</a>
-            </div>
-        </article>
-    </section>
-
-    <ng-template #nessunFilm>
-        <section class="empty-state" *ngIf="!loading && !errore">
+                    <div class="movie-info">
+                        <p class="eyebrow">{{ generiLabel(film) }}</p>
+                        <h2>{{ film.titolo }}</h2>
+                        <p class="description">{{ film.descrizione }}</p>
+                        <p class="movie-meta">{{ durataLabel(film.durata) }} - {{ film.attori }}</p>
+                        <a [routerLink]="['/dettaglio-film', film.id]" class="btn btn-primary">Dettaglio film</a>
+                    </div>
+                </article>
+            }
+        </section>
+    } @else {
+        <section class="empty-state">
             <h2>Nessun film trovato</h2>
             <p>{{ films.length ? 'Modifica i filtri per visualizzare altri titoli.' : 'Nessun film disponibile dal backend.' }}</p>
         </section>
-    </ng-template>
+    }
 </main>

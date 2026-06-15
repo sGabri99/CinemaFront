@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
-import { InsertUtenteDto } from '../dto/utente/request/insert-utente-dto';
+import { InsertUtenteDTO } from '../dto/utente/request/insert-utente-dto';
 
 @Injectable({
     providedIn: 'root'
@@ -14,7 +14,7 @@ export class StaffService {
     constructor(private http: HttpClient) { }
 
     // Metodo per inviare i dati del nuovo staff al server
-    aggiungiStaff(nuovoStaff: InsertUtenteDto): Observable<any> {
+    aggiungiStaff(nuovoStaff: InsertUtenteDTO): Observable<any> {
         return this.http.post<any>(this.apiUrl, nuovoStaff);
     }
 }
