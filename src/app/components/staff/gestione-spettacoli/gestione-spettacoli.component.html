@@ -5,15 +5,26 @@
 
             <aside class="form-sidebar">
                 <h2 class="form-title">Nuovo Spettacolo</h2>
+                <p class="form-helper">
+                    L'orario di fine viene calcolato automaticamente in base alla durata del film selezionato.
+                </p>
+
+                @if (erroreInserimento) {
+                    <div class="status-banner error-banner">{{ erroreInserimento }}</div>
+                }
+
+                @if (successoInserimento) {
+                    <div class="status-banner success-banner">{{ successoInserimento }}</div>
+                }
 
                 <form [formGroup]="formSpettacolo" (ngSubmit)="salvaSpettacolo()">
 
                     <div class="form-group">
                         <label class="form-label">Scegli Film</label>
                         <select formControlName="idFilm" class="form-input" style="color: white; background: #1a1a1a;">
-                            <option [value]="null" disabled selected >-- Seleziona un film --</option>
+                            <option [ngValue]="null" disabled selected >-- Seleziona un film --</option>
                             @for (f of listaFilm; track f.id) {
-                                <option [value]="f.id">{{ f.titolo }}</option>
+                                <option [ngValue]="f.id">{{ f.titolo }}</option>
                             }
                         </select>
                     </div>
@@ -21,9 +32,9 @@
                     <div class="form-group">
                         <label class="form-label">Scegli Sala</label>
                         <select formControlName="idSala" class="form-input" style="color: white; background: #1a1a1a;">
-                            <option [value]="null" disabled selected>-- Seleziona una sala --</option>
+                            <option [ngValue]="null" disabled selected>-- Seleziona una sala --</option>
                             @for (s of listaSale; track s.id) {
-                                <option [value]="s.id">{{ s.nome }}</option>
+                                <option [ngValue]="s.id">{{ s.nome }}</option>
                             }
                         </select>
                     </div>
@@ -39,10 +50,14 @@
                             <input type="time" formControlName="oraInizio" class="form-input">
                         </div>
                         <div>
-                            <label class="form-label">Fine</label>
-                            <input type="time" formControlName="oraFine" class="form-input">
+                            <label class="form-label">Fine automatica</label>
+                            <div class="form-input auto-time-display">{{ oraFineStimata }}</div>
                         </div>
                     </div>
+
+                    <p class="duration-hint">
+                        Durata film: <strong>{{ durataFilmSelezionatoLabel }}</strong>
+                    </p>
 
                     <button type="submit" [disabled]="formSpettacolo.invalid" class="btn btn-primary" style="width: 100%;">
                         PROGRAMMA SPETTACOLO

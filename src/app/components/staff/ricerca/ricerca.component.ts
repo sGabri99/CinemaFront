@@ -1,103 +1,109 @@
 import { Component } from '@angular/core';
-import {LongOmdbResponseApiDto} from "../../../dto/omdbapi/response/long-omdb-response-api-dto";
-import {FilmService} from "../../../services/film.service";
-import {InsertFilmDTO} from "../../../dto/film/request/insert-film-dto";
-import {ResponseFilmDTO} from "../../../dto/film/response/response-film-dto";
-import {FormsModule} from "@angular/forms";
-import {CommonModule} from "@angular/common";
+import { LongOmdbResponseApiDto } from "../../../dto/omdbapi/response/long-omdb-response-api-dto";
+import { FilmService } from "../../../services/film.service";
+import { InsertFilmDTO } from "../../../dto/film/request/insert-film-dto";
+import { ResponseFilmDTO } from "../../../dto/film/response/response-film-dto";
+import { FormsModule } from "@angular/forms";
+import { CommonModule } from "@angular/common";
+import { ConfirmDialogService } from "../../../services/confirm-dialog.service";
 
 @Component({
   selector: 'app-ricerca',
   standalone: true,
-  imports: [
-    FormsModule,CommonModule
-  ],
+  imports: [FormsModule, CommonModule],
   templateUrl: './ricerca.component.html',
   styleUrl: './ricerca.component.css'
 })
 export class RicercaComponent {
-
-  stringaRicerca: string = '';
-
+  stringaRicerca = '';
   filmTrovati: LongOmdbResponseApiDto[] = [];
 
-  constructor(private filmService: FilmService) { }
+  constructor(
+    private filmService: FilmService,
+    private confirmDialogService: ConfirmDialogService
+  ) {}
 
-  ricerca(){
-    if(!this.stringaRicerca.trim()) return;
+  ricerca(): void {
+    if (!this.stringaRicerca.trim()) {
+      return;
+    }
 
     this.filmService.findByTitolo(this.stringaRicerca).subscribe({
       next: (res: any) => {
-        console.log("Dati ricevuti dal server:", res);
+        console.log('Dati ricevuti dal server:', res);
 
-        // Verifichiamo se la risposta è un array valido e non vuoto
         if (Array.isArray(res) && res.length > 0) {
           this.filmTrovati = res;
-        }
-        // Se il backend ti ha mandato l'oggetto singolo anziché l'array per i film nuovi
-        else if (res && res.Title) {
+        } else if (res && res.Title) {
           this.filmTrovati = [res];
-        }
-        // Se la risposta è vuota o contiene un errore di OMDb (es. Response: "False")
-        else {
+        } else {
           this.filmTrovati = [];
-          alert('Film non trovato nel database globale di OMDb.');
+          this.confirmDialogService.notifyInfo(
+            'Film non trovato nel database globale di OMDb.',
+            'Nessun risultato'
+          ).subscribe();
         }
       },
       error: (err) => {
         console.error('Errore durante la chiamata al backend:', err);
         this.filmTrovati = [];
-        alert('Impossibile recuperare il film. Controlla la console del backend Spring Boot per vedere l\'errore SQL o di API.');
+        this.confirmDialogService.notifyError(
+          'Impossibile recuperare il film. Controlla i servizi backend e riprova.',
+          'Errore ricerca'
+        ).subscribe();
       }
     });
   }
 
-private eseguiInserimento(filmScelto:any){
-  const insertFilm: InsertFilmDTO = {
-    titolo: filmScelto.Title,
-    descrizione: filmScelto.Plot || '',
-    durata: filmScelto.Runtime && filmScelto.Runtime !== 'N/A' ? Number(filmScelto.Runtime.replace(' min', '')) : 0,
-    attori: filmScelto.Actors || '',
-    urlLocandina: filmScelto.Poster && filmScelto.Poster !== 'N/A' ? filmScelto.Poster : '',
-    imdbID: filmScelto.imdbID && filmScelto.imdbID !== 'N/A' ? filmScelto.imdbID : '',
+  private eseguiInserimento(filmScelto: any): void {
+    const insertFilm: InsertFilmDTO = {
+      titolo: filmScelto.Title,
+      descrizione: filmScelto.Plot || '',
+      durata: filmScelto.Runtime && filmScelto.Runtime !== 'N/A' ? Number(filmScelto.Runtime.replace(' min', '')) : 0,
+      attori: filmScelto.Actors || '',
+      urlLocandina: filmScelto.Poster && filmScelto.Poster !== 'N/A' ? filmScelto.Poster : '',
+      imdbID: filmScelto.imdbID && filmScelto.imdbID !== 'N/A' ? filmScelto.imdbID : '',
+      idGeneri: [1]
+    };
 
-    idGeneri: [1]
-  };
+    this.filmService.insert(insertFilm).subscribe({
+      next: (res: ResponseFilmDTO) => {
+        this.confirmDialogService.notifySuccess(
+          `"${res.titolo}" salvato con successo.`,
+          'Film importato'
+        ).subscribe();
+      },
+      error: (err) => {
+        console.error('Errore durante il salvataggio del film.', err);
+        this.confirmDialogService.notifyError(
+          'Impossibile salvare il film selezionato. Riprova tra un attimo.',
+          'Errore importazione'
+        ).subscribe();
+      }
+    });
+  }
 
-  this.filmService.insert(insertFilm).subscribe({
-    next: (res: ResponseFilmDTO) => {
-      alert(`"${res.titolo}" salvato con successo.`);
-    },
-    error: (err) => {
-      console.error('Errore durante il salvataggio del film.', err);
-    }
-  });
-
-}
-
-
-
-
-
-
-  aggiungi(filmScelto: any) {
+  aggiungi(filmScelto: any): void {
     const imdbId = filmScelto.imdbID;
 
     this.filmService.existsByImdbId(imdbId).subscribe({
       next: (esiste: boolean) => {
         if (esiste) {
-          alert("Attenzione: questo film è già presente nel database!");
+          this.confirmDialogService.notifyInfo(
+            'Questo film è già presente nel database.',
+            'Film già presente'
+          ).subscribe();
         } else {
           this.eseguiInserimento(filmScelto);
         }
       },
       error: (err) => {
-        console.error("Errore durante il controllo di esistenza", err);
+        console.error('Errore durante il controllo di esistenza', err);
+        this.confirmDialogService.notifyError(
+          'Impossibile verificare se il film è già presente nel database.',
+          'Errore controllo'
+        ).subscribe();
       }
     });
   }
-
-
-
-
 }

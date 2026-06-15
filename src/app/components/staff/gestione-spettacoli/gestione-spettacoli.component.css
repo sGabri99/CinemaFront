@@ -133,6 +133,32 @@ h1 {
     color: var(--primary);
 }
 
+.form-helper {
+    margin: 0 0 20px;
+    color: var(--secondary);
+    line-height: 1.6;
+}
+
+.status-banner {
+    margin-bottom: 16px;
+    padding: 12px 14px;
+    border-radius: 10px;
+    border: 1px solid var(--border);
+    line-height: 1.5;
+}
+
+.error-banner {
+    background: rgba(229, 9, 20, 0.14);
+    border-color: rgba(229, 9, 20, 0.35);
+    color: #ffd7da;
+}
+
+.success-banner {
+    background: rgba(31, 143, 82, 0.16);
+    border-color: rgba(31, 143, 82, 0.35);
+    color: #d7ffea;
+}
+
 .form-group {
     margin-bottom: 20px;
 }
@@ -178,7 +204,20 @@ h1 {
     display: grid;
     grid-template-columns: 1fr 1fr;
     gap: 12px;
-    margin-bottom: 28px;
+    margin-bottom: 14px;
+}
+
+.auto-time-display {
+    display: flex;
+    align-items: center;
+    min-height: 48px;
+    cursor: default;
+}
+
+.duration-hint {
+    margin: 0 0 28px;
+    color: var(--secondary);
+    font-size: 0.9rem;
 }
 
 /* ==========================================================================

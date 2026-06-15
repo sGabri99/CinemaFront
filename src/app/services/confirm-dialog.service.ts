@@ -30,4 +30,23 @@ export class ConfirmDialogService {
       variant: 'success'
     });
   }
+
+  notifyInfo(message: string, title = 'Avviso'): Observable<boolean> {
+    return this.confirm({
+      title,
+      message,
+      confirmText: 'Chiudi',
+      showCancel: false,
+      variant: 'info'
+    });
+  }
+
+  notifyError(message: string, title = 'Operazione non riuscita'): Observable<boolean> {
+    return this.confirm({
+      title,
+      message,
+      confirmText: 'Chiudi',
+      showCancel: false
+    });
+  }
 }
