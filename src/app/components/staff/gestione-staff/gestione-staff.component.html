@@ -1,50 +1,107 @@
-<div class="gestione-staff-container">
-    <div class="form-card">
-        <h2>Nuovo Membro Staff</h2>
+<main class="cinema-page">
+    <section class="content-section">
+        <div class="dashboard-layout">
+            <aside class="form-sidebar">
+                <h2 class="form-title">Nuovo amministratore</h2>
+                <p class="form-helper">
+                    Crea un nuovo account staff o super admin mantenendo lo stesso stile operativo del resto della dashboard.
+                </p>
 
-        @if (messaggioSuccesso) {
-            <div class="alert alert-success">
-                {{ messaggioSuccesso }}
-            </div>
-        }
-        @if (messaggioErrore) {
-            <div class="alert alert-danger">
-                {{ messaggioErrore }}
-            </div>
-        }
+                @if (messaggioSuccesso) {
+                    <div class="status-banner success-banner">
+                        {{ messaggioSuccesso }}
+                    </div>
+                }
 
-        <form [formGroup]="staffForm" (ngSubmit)="onSubmit()">
+                @if (messaggioErrore) {
+                    <div class="status-banner error-banner">
+                        {{ messaggioErrore }}
+                    </div>
+                }
 
-            <div class="form-group">
-                <label>Nome</label>
-                <input type="text" formControlName="nome" placeholder="Inserisci il nome">
-            </div>
+                <form [formGroup]="staffForm" (ngSubmit)="onSubmit()">
+                    <div class="form-group">
+                        <label class="form-label" for="staff-nome">Nome</label>
+                        <input
+                            id="staff-nome"
+                            type="text"
+                            class="form-input"
+                            formControlName="nome"
+                            placeholder="Inserisci il nome">
+                    </div>
 
-            <div class="form-group">
-                <label>Cognome</label>
-                <input type="text" formControlName="cognome" placeholder="Inserisci il cognome">
-            </div>
+                    <div class="form-group">
+                        <label class="form-label" for="staff-cognome">Cognome</label>
+                        <input
+                            id="staff-cognome"
+                            type="text"
+                            class="form-input"
+                            formControlName="cognome"
+                            placeholder="Inserisci il cognome">
+                    </div>
 
-            <div class="form-group">
-                <label>Email</label>
-                <input type="email" formControlName="email" placeholder="nome@cinemaaurora.it">
-            </div>
+                    <div class="form-group">
+                        <label class="form-label" for="staff-email">Email</label>
+                        <input
+                            id="staff-email"
+                            type="email"
+                            class="form-input"
+                            formControlName="email"
+                            placeholder="nome@cinemaaurora.it">
+                    </div>
 
-            <div class="form-group">
-                <label>Ruolo</label>
-                <select formControlName="ruolo">
-                    <option value="" disabled selected>Seleziona un ruolo</option>
-                    <option value="STAFF">Staff (Dipendente)</option>
-                    <option value="SUPERADMIN">Super Admin (Amministratore)</option>
-                </select>
-            </div>
+                    <div class="form-group">
+                        <label class="form-label" for="staff-ruolo">Ruolo</label>
+                        <select id="staff-ruolo" class="form-input" formControlName="ruolo">
+                            <option value="" disabled>Seleziona un ruolo</option>
+                            <option value="STAFF">Staff</option>
+                            <option value="SUPERADMIN">Super Admin</option>
+                        </select>
+                    </div>
 
-            <div class="form-group">
-                <label>Telefono <span class="opzionale">(Opzionale)</span></label>
-                <input type="text" formControlName="telefono" placeholder="Inserisci il numero di telefono">
-            </div>
+                    <div class="form-group">
+                        <label class="form-label" for="staff-telefono">
+                            Telefono <span class="field-note">(Opzionale)</span>
+                        </label>
+                        <input
+                            id="staff-telefono"
+                            type="text"
+                            class="form-input"
+                            formControlName="telefono"
+                            placeholder="Inserisci il numero di telefono">
+                    </div>
 
-            <button type="submit" class="btn-submit">REGISTRA MEMBRO STAFF</button>
-        </form>
-    </div>
-</div>
+                    <button type="submit" class="btn btn-primary action-button" [disabled]="staffForm.invalid">
+                        REGISTRA MEMBRO STAFF
+                    </button>
+                </form>
+            </aside>
+
+            <section>
+                <div class="section-header">
+                    <div>
+                        <h2>Anteprima account</h2>
+                        <p>Controllo rapido dei dati prima della creazione.</p>
+                    </div>
+                </div>
+
+                <article class="schedule-card schedule-row-card">
+                    <div class="movie-info-block">
+                        <span class="tag">Nuovo accesso</span>
+                        <h3 class="schedule-title">
+                            {{ staffForm.get('nome')?.value || 'Nome' }} {{ staffForm.get('cognome')?.value || 'Cognome' }}
+                        </h3>
+                        <p class="movie-meta schedule-info-meta">
+                            <span>{{ staffForm.get('email')?.value || 'email@cinemaaurora.it' }}</span>
+                            <span class="meta-separator">•</span>
+                            <span>{{ ruoloSelezionatoLabel }}</span>
+                        </p>
+                        <p class="description-preview">
+                            {{ staffForm.get('telefono')?.value || 'Nessun numero di telefono inserito.' }}
+                        </p>
+                    </div>
+                </article>
+            </section>
+        </div>
+    </section>
+</main>

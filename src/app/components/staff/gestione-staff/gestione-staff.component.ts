@@ -32,9 +32,24 @@ export class GestioneStaffComponent implements OnInit {
     });
   }
 
+  get ruoloSelezionatoLabel(): string {
+    const ruolo = this.staffForm?.get('ruolo')?.value;
+
+    if (ruolo === 'SUPERADMIN') {
+      return 'Super Admin';
+    }
+
+    if (ruolo === 'STAFF') {
+      return 'Staff';
+    }
+
+    return 'Ruolo non selezionato';
+  }
+
   onSubmit(): void {
     if (this.staffForm.invalid) {
       this.messaggioErrore = 'Per favore, compila tutti i campi obbligatori correttamente.';
+      this.messaggioSuccesso = null;
       return;
     }
 

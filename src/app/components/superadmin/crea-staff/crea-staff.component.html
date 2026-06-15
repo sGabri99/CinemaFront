@@ -1,28 +1,79 @@
-<div class="container">
-    <h2>Gestione Staff</h2>
+<main class="cinema-page">
+    <section class="content-section">
+        <div class="dashboard-layout">
+            <aside class="form-sidebar">
+                <h2 class="form-title">Nuovo amministratore</h2>
+                <p class="form-helper">
+                    Crea un nuovo account staff dal pannello super admin e aggiorna subito la lista del personale.
+                </p>
 
-    <form [formGroup]="staffForm" (ngSubmit)="onSubmit()">
-        <div>
-            <input formControlName="nome" placeholder="Nome">
-            <input formControlName="cognome" placeholder="Cognome">
-            <input formControlName="email" type="email" placeholder="Email">
-            <input formControlName="password" type="password" placeholder="Password">
-            <input formControlName="confermaPassword" type="password" placeholder="Conferma Password">
+                @if (messaggioSuccesso) {
+                    <div class="status-banner success-banner">{{ messaggioSuccesso }}</div>
+                }
+
+                @if (messaggioErrore) {
+                    <div class="status-banner error-banner">{{ messaggioErrore }}</div>
+                }
+
+                <form [formGroup]="staffForm" (ngSubmit)="onSubmit()">
+                    <div class="form-group">
+                        <label class="form-label" for="admin-nome">Nome</label>
+                        <input id="admin-nome" class="form-input" formControlName="nome" placeholder="Nome">
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label" for="admin-cognome">Cognome</label>
+                        <input id="admin-cognome" class="form-input" formControlName="cognome" placeholder="Cognome">
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label" for="admin-email">Email</label>
+                        <input id="admin-email" class="form-input" formControlName="email" type="email" placeholder="nome@cinemaaurora.it">
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label" for="admin-password">Password</label>
+                        <input id="admin-password" class="form-input" formControlName="password" type="password" placeholder="Inserisci la password">
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label" for="admin-conferma-password">Conferma password</label>
+                        <input id="admin-conferma-password" class="form-input" formControlName="confermaPassword" type="password" placeholder="Ripeti la password">
+                    </div>
+
+                    <button type="submit" class="btn btn-primary action-button" [disabled]="staffForm.invalid">
+                        AGGIUNGI STAFF
+                    </button>
+                </form>
+            </aside>
+
+            <section>
+                <div class="section-header">
+                    <div>
+                        <h2>Staff registrato</h2>
+                        <p>Lista aggiornata di tutti i membri dello staff presenti a sistema.</p>
+                    </div>
+                </div>
+
+                <div class="schedule">
+                    @for (staff of listaStaff; track staff.email) {
+                        <article class="schedule-card schedule-row-card">
+                            <div class="movie-info-block">
+                                <span class="tag">Staff attivo</span>
+                                <h3 class="schedule-title">{{ staff.nome }} {{ staff.cognome }}</h3>
+                                <p class="movie-meta schedule-info-meta">
+                                    <span>{{ staff.email }}</span>
+                                </p>
+                            </div>
+                        </article>
+                    } @empty {
+                        <article class="schedule-card empty-card">
+                            <h3>Nessuno staff presente</h3>
+                            <p>Quando creerai un nuovo account, comparirà qui.</p>
+                        </article>
+                    }
+                </div>
+            </section>
         </div>
-
-        <button type="submit" [disabled]="staffForm.invalid">Aggiungi Staff</button>
-    </form>
-
-    <hr>
-
-    <h3>Lista Staff</h3>
-    <ul>
-        @for (staff of listaStaff; track staff.email) {
-            <li>
-                {{ staff.nome }} {{ staff.cognome }} - {{ staff.email }}
-            </li>
-        } @empty {
-            <li>Nessuno staff presente.</li>
-        }
-    </ul>
-</div>
+    </section>
+</main>

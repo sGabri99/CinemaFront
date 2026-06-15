@@ -15,6 +15,8 @@ import {ResponseUtenteDataDTO} from "../../../dto/utente/response/response-utent
 export class CreaStaffComponent implements OnInit {
   listaStaff: ResponseUtenteDataDTO[] = [];
   staffForm: FormGroup;
+  messaggioSuccesso: string | null = null;
+  messaggioErrore: string | null = null;
 
   constructor(private formbuiler: FormBuilder, private authService: AuthService,) {
     this.staffForm = this.formbuiler.group({
@@ -43,12 +45,19 @@ export class CreaStaffComponent implements OnInit {
     if (this.staffForm.valid) {
       this.authService.aggiungiStaff(this.staffForm.value).subscribe({
         next: () => {
-          alert('Staff aggiunto con successo!');
+          this.messaggioSuccesso = 'Staff aggiunto con successo.';
+          this.messaggioErrore = null;
           this.staffForm.reset();
           this.caricaListaStaff();
         },
-        error: (err) => alert(err.error?.message || 'Errore durante l\'aggiunta')
+        error: (err) => {
+          this.messaggioErrore = err.error?.message || 'Errore durante l\'aggiunta dello staff.';
+          this.messaggioSuccesso = null;
+        }
       });
+    } else {
+      this.messaggioErrore = 'Compila correttamente tutti i campi prima di creare il nuovo account.';
+      this.messaggioSuccesso = null;
     }
   }
 }
