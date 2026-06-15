@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
 import { StaffService } from '../../../services/staff.service';
-import { InsertUtenteDto } from '../../../dto/utente/request/insert-utente-dto';
+import { InsertUtenteDTO } from '../../../dto/utente/request/insert-utente-dto';
 
 @Component({
   selector: 'app-gestione-staff',
@@ -38,7 +38,7 @@ export class GestioneStaffComponent implements OnInit {
       return;
     }
 
-    const nuovoStaff: InsertUtenteDto = this.staffForm.value;
+    const nuovoStaff: InsertUtenteDTO = this.staffForm.value;
 
     this.staffService.aggiungiStaff(nuovoStaff).subscribe({
       next: (response) => {
