@@ -17,6 +17,10 @@ import {authGuard} from "./guards/auth.guard";
 import {DashboardComponent} from "./components/loggato/dashboard/dashboard.component";
 import {CreaStaffComponent} from "./components/superadmin/crea-staff/crea-staff.component";
 import {adminGuard} from "./guards/admin.guard";
+import { BigliettiUtenteComponent } from "./components/staff/biglietti-utente/biglietti-utente.component";
+import { GestioneSpettacoliComponent } from "./components/staff/gestione-spettacoli/gestione-spettacoli.component";
+import { RicercaComponent } from "./components/staff/ricerca/ricerca.component";
+import {B} from "@angular/cdk/keycodes";
 
 export const routes: Routes = [
   {path: '',pathMatch: 'full', redirectTo: 'home'},
@@ -39,7 +43,18 @@ export const routes: Routes = [
       { path: 'gestione-generi', title: 'Gestione generi', component: GestioneGenereComponent , canActivate: [staffGuard]},
       { path: 'gestione-film', title: 'Gestione film', component: GestioneFilmComponent , canActivate: [staffGuard] },
       { path: 'crea-staff', title: 'Crea staff', component: CreaStaffComponent , canActivate: [adminGuard] },
-
+      {
+        path: 'biglietti-utente', title: 'Biglietti Utente', component:BigliettiUtenteComponent,canActivate: [staffGuard]},
+      {
+        path: 'gestione-spettacoli',
+        title: 'Gestione Spettacoli',
+     component:GestioneSpettacoliComponent,canActivate: [staffGuard]
+      },
+      {
+        path: 'ricerca',
+        title: 'Ricerca Catalogo',
+        component:RicercaComponent,canActivate: [staffGuard]
+      },
 
 
     ]
