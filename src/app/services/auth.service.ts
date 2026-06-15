@@ -29,7 +29,7 @@ export class AuthService {
         tap((response) => {
           const token = response.headers.get('Authorization');
           if (token) {
-            localStorage.setItem(this.TOKEN_KEY, token);
+            localStorage.setItem(this.TOKEN_KEY, this.normalizeToken(token));
           }
         })
       );
@@ -82,7 +82,8 @@ export class AuthService {
 
 
   getToken(): string | null {
-    return localStorage.getItem(this.TOKEN_KEY);
+    const token = localStorage.getItem(this.TOKEN_KEY);
+    return token ? this.normalizeToken(token) : null;
   }
 
   isLoggedIn(): boolean {
@@ -115,6 +116,9 @@ export class AuthService {
     }
   }
 
+  private normalizeToken(token: string): string {
+    return token.replace(/^Bearer\s+/i, '').trim();
+  }
 
 
 

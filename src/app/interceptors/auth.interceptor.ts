@@ -1,9 +1,13 @@
 import { HttpInterceptorFn } from '@angular/common/http';
 
 export const authInterceptor: HttpInterceptorFn = (req, next) => {
-  const token = localStorage.getItem('auth_token');
+  const token = localStorage.getItem('auth_token')?.replace(/^Bearer\s+/i, '').trim();
+  const richiedeAuth = req.url.includes('/staff/') ||
+    req.url.includes('/admin/') ||
+    req.url.includes('/cliente/') ||
+    req.url.endsWith('/edit_password');
 
-  if (!token) {
+  if (!token || !richiedeAuth) {
     return next(req);
   }
 

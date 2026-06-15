@@ -44,12 +44,12 @@ export class HomeComponent implements OnInit, OnDestroy {
   }
 
   get filmInEvidenza(): ResponseFilmDTO[] {
-    return this.films.slice(0, 4);
+    return this.asArray(this.films).slice(0, 4);
   }
 
   get spettacoliOggi(): ResponseSpettacoloDTO[] {
     const oggi = this.dataLocaleOggi();
-    return this.spettacoli
+    return this.asArray(this.spettacoli)
       .filter(spettacolo => spettacolo.data === oggi)
       .sort((a, b) => this.timestampSpettacolo(a.oraInizio, a.data) - this.timestampSpettacolo(b.oraInizio, b.data));
   }
@@ -92,7 +92,7 @@ export class HomeComponent implements OnInit, OnDestroy {
 
     this.filmService.findAll().subscribe({
       next: (films) => {
-        this.films = films;
+        this.films = this.asArray(films);
         this.loadingFilm = false;
       },
       error: () => {
@@ -110,7 +110,7 @@ export class HomeComponent implements OnInit, OnDestroy {
 
     this.spettacoloService.findByData(oggi).subscribe({
       next: (spettacoli) => {
-        this.spettacoli = spettacoli;
+        this.spettacoli = this.asArray(spettacoli);
         this.loadingSpettacoli = false;
       },
       error: () => {
@@ -132,5 +132,9 @@ export class HomeComponent implements OnInit, OnDestroy {
     if (!value) return 0;
     const normalized = value.includes('T') || value.includes(' ') ? value.replace(' ', 'T') : `${data}T${value}`;
     return new Date(normalized).getTime();
+  }
+
+  private asArray<T>(value: T[] | null | undefined): T[] {
+    return Array.isArray(value) ? value : [];
   }
 }

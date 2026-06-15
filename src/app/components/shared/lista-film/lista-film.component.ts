@@ -30,20 +30,24 @@ export class ListaFilmComponent implements OnInit {
   }
 
   get generi(): string[] {
-    const generi = this.films.flatMap((film) => film.nomeGeneri ?? []);
+    const generi = this.asArray(this.films).flatMap((film) => film.nomeGeneri ?? []);
     return ['Tutti', ...Array.from(new Set(generi))];
   }
 
   get filmFiltrati(): ResponseFilmDTO[] {
     const query = this.ricerca.trim().toLowerCase();
     // ID dei film che hanno almeno uno spettacolo futuro
-    const idFilmConSpettacoli = new Set(this.spettacoliFuturi.map(s => s.idFilm));
+    const idFilmConSpettacoli = new Set(this.asArray(this.spettacoliFuturi).map(s => s.idFilm));
 
-    return this.films.filter((film) => {
+    return this.asArray(this.films).filter((film) => {
+      const titolo = (film.titolo ?? '').toLowerCase();
+      const descrizione = (film.descrizione ?? '').toLowerCase();
+      const attori = (film.attori ?? '').toLowerCase();
+
       const matchTesto = !query ||
-          film.titolo.toLowerCase().includes(query) ||
-          film.descrizione.toLowerCase().includes(query) ||
-          film.attori.toLowerCase().includes(query);
+          titolo.includes(query) ||
+          descrizione.includes(query) ||
+          attori.includes(query);
 
       const matchGenere = this.genereSelezionato === 'Tutti' ||
           film.nomeGeneri?.includes(this.genereSelezionato);
@@ -77,8 +81,8 @@ export class ListaFilmComponent implements OnInit {
       spettacoli: this.spettacoloService.findAll()
     }).subscribe({
       next: ({ films, spettacoli }) => {
-        this.films = films;
-        this.spettacoliFuturi = spettacoli.filter(s => this.isFuturo(s));
+        this.films = this.asArray(films);
+        this.spettacoliFuturi = this.asArray(spettacoli).filter(s => this.isFuturo(s));
         this.loading = false;
       },
       error: () => {
@@ -98,5 +102,9 @@ export class ListaFilmComponent implements OnInit {
     const ora = timePart?.substring(0, 5) ?? '00:00';
     const dataOra = new Date(`${spettacolo.data}T${ora}:00`);
     return dataOra > new Date();
+  }
+
+  private asArray<T>(value: T[] | null | undefined): T[] {
+    return Array.isArray(value) ? value : [];
   }
 }

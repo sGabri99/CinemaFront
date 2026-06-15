@@ -84,8 +84,8 @@ export class ListaSpettacoliComponent implements OnInit {
             films: this.filmService.findAll()
         }).subscribe({
             next: ({ spettacoli, films }) => {
-                this.spettacoli = spettacoli.filter(s => this.isFuturo(s));
-                this.films = films;
+                this.spettacoli = this.asArray(spettacoli).filter(s => this.isFuturo(s));
+                this.films = this.asArray(films);
                 this.spettacoliFiltrati = this.spettacoli;
                 this.inizializzaSelezioni();
                 this.loading = false;
@@ -128,7 +128,7 @@ export class ListaSpettacoliComponent implements OnInit {
 
     getFilmBySpettacolo(spettacolo: ResponseSpettacoloDTO): ResponseFilmDTO | undefined {
         return this.getFilmById(spettacolo.idFilm) ??
-            this.films.find(f => this.normalizzaTesto(f.titolo) === this.normalizzaTesto(spettacolo.nomeFilm));
+            this.asArray(this.films).find(f => this.normalizzaTesto(f.titolo) === this.normalizzaTesto(spettacolo.nomeFilm));
     }
 
     formatOrario(ora: string): string {
@@ -217,7 +217,7 @@ export class ListaSpettacoliComponent implements OnInit {
     get gruppiPerData(): GruppoData[] {
         const mappaData = new Map<string, Map<string, ResponseSpettacoloDTO[]>>();
 
-        for (const s of this.spettacoliFiltrati) {
+        for (const s of this.asArray(this.spettacoliFiltrati)) {
             if (!mappaData.has(s.data)) mappaData.set(s.data, new Map());
             const mappaFilm = mappaData.get(s.data)!;
             const filmKey = this.filmKeyFromSpettacolo(s);
@@ -273,5 +273,9 @@ export class ListaSpettacoliComponent implements OnInit {
 
     get totalFilmDelGiorno(): number {
         return this.gruppiPerData.reduce((acc, g) => acc + g.filmsDelGiorno.length, 0);
+    }
+
+    private asArray<T>(value: T[] | null | undefined): T[] {
+        return Array.isArray(value) ? value : [];
     }
 }
