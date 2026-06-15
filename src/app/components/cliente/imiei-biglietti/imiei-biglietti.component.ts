@@ -1,4 +1,4 @@
-import {Component, OnInit} from '@angular/core';
+import {Component, OnInit, HostListener} from '@angular/core';
 import { QRCodeComponent } from 'angularx-qrcode';
 import {ResponseBigliettoDTO} from "../../../dto/biglietto/response/response-biglietto-dto";
 import {BigliettoService} from "../../../services/biglietto.service";
@@ -20,6 +20,7 @@ export class IMieiBigliettiComponent implements OnInit {
   biglietti: ResponseBigliettoDTO[] = [];
   spettacoli: ResponseSpettacoloDTO[] = [];
   film: ResponseFilmDTO[] = [];
+  bigliettoSelezionato: ResponseBigliettoDTO | null = null;
 
   constructor(
     private filmService: FilmService,
@@ -47,28 +48,19 @@ export class IMieiBigliettiComponent implements OnInit {
     return this.biglietti.filter(b => b.idSpettacolo === idSpettacolo);
   }
 
-  /**
-   * Restituisce true se lo spettacolo inizia fra più di un'ora rispetto all'ora attuale.
-   */
   isCancellabile(spettacolo: ResponseSpettacoloDTO): boolean {
     const dataOraInizio = new Date(spettacolo.oraInizio);
-    const oraLimite = new Date(Date.now() + 60 * 60 * 1000); // ora corrente + 1 ora
+    const oraLimite = new Date(Date.now() + 60 * 60 * 1000);
     return dataOraInizio > oraLimite;
   }
 
   cancellaBiglietto(biglietto: ResponseBigliettoDTO, spettacolo: ResponseSpettacoloDTO): void {
-    if (!this.isCancellabile(spettacolo)) {
-      return;
-    }
+    if (!this.isCancellabile(spettacolo)) return;
 
     const email = this.authService.getEmail();
-    if (!email) {
-      return;
-    }
+    if (!email) return;
 
-    if (!confirm(`Sei sicuro di voler cancellare questo biglietto per "${spettacolo.nomeFilm}"?`)) {
-      return;
-    }
+    if (!confirm(`Sei sicuro di voler cancellare questo biglietto per "${spettacolo.nomeFilm}"?`)) return;
 
     this.bigliettoService.removeById(biglietto.id, email).subscribe({
       next: () => {
@@ -78,5 +70,20 @@ export class IMieiBigliettiComponent implements OnInit {
         console.error('Errore durante la cancellazione del biglietto:', err);
       }
     });
+  }
+
+  // --- Modale QR ---
+
+  apriModaleQR(biglietto: ResponseBigliettoDTO): void {
+    this.bigliettoSelezionato = biglietto;
+  }
+
+  chiudiModaleQR(): void {
+    this.bigliettoSelezionato = null;
+  }
+
+  @HostListener('document:keydown.escape')
+  onEscapeKey(): void {
+    this.chiudiModaleQR();
   }
 }

@@ -30,7 +30,7 @@
                     </div>
 
                     <div class="ticket-qr p-3 d-flex flex-column align-items-center justify-content-center">
-                        <div class="bg-white p-1 rounded">
+                        <div class="bg-white p-1 rounded qr-clickable" (click)="apriModaleQR(b)" title="Ingrandisci QR">
                             <qrcode [qrdata]="b.codiceBiglietto" [width]="100"></qrcode>
                         </div>
                         <small class="mt-2 text-secondary font-monospace">{{ b.codiceBiglietto }}</small>
@@ -40,3 +40,16 @@
         </div>
     }
 </div>
+
+<!-- Modale QR -->
+@if (bigliettoSelezionato) {
+    <div class="qr-modal-backdrop" (click)="chiudiModaleQR()">
+        <div class="qr-modal-content" (click)="$event.stopPropagation()">
+            <button class="qr-modal-close" (click)="chiudiModaleQR()" title="Chiudi">&times;</button>
+            <div class="bg-white p-3 rounded mb-3">
+                <qrcode [qrdata]="bigliettoSelezionato.codiceBiglietto" [width]="260"></qrcode>
+            </div>
+            <p class="font-monospace text-secondary mb-0">{{ bigliettoSelezionato.codiceBiglietto }}</p>
+        </div>
+    </div>
+}
