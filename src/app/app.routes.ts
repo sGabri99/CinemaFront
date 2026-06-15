@@ -21,6 +21,7 @@ import { BigliettiUtenteComponent } from "./components/staff/biglietti-utente/bi
 import { GestioneSpettacoliComponent } from "./components/staff/gestione-spettacoli/gestione-spettacoli.component";
 import { RicercaComponent } from "./components/staff/ricerca/ricerca.component";
 import {B} from "@angular/cdk/keycodes";
+import {IMieiBigliettiComponent} from "./components/cliente/imiei-biglietti/imiei-biglietti.component";
 
 export const routes: Routes = [
   {path: '',pathMatch: 'full', redirectTo: 'home'},
@@ -53,10 +54,15 @@ export const routes: Routes = [
       {
         path: 'ricerca',
         title: 'Ricerca Catalogo',
-        component:RicercaComponent,canActivate: [staffGuard]
+        component:RicercaComponent,canActivate: [staffGuard],
       },
 
-
+      {
+        path: 'i-miei-biglietti',
+        title: 'I miei biglietti',
+        component:      IMieiBigliettiComponent
+        ,canActivate: [authGuard]
+      },
     ]
   },
   { path: 'staff', loadComponent: () => import('./components/staff/staff-wrapper/staff-wrapper.component').then(m => m.StaffWrapperComponent)

@@ -40,4 +40,13 @@ export class BigliettoService {
       body: email,
     });
   }
+
+
+
+  clientebiglietti(): Observable<ResponseBigliettoDTO[]> {
+    return this.http.get<ResponseBigliettoDTO[]>(
+        `${this.BASE_URL}/cliente/biglietto`
+    );
+  }
+
 }
