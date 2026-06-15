@@ -2,11 +2,8 @@ import { CommonModule } from '@angular/common';
 import { Component, OnInit } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { RouterLink } from '@angular/router';
-import { forkJoin } from 'rxjs';
 import { ResponseFilmDTO } from '../../../dto/film/response/response-film-dto';
-import { ResponseSpettacoloDTO } from '../../../dto/spettacolo/response/response-spettacolo-dto';
 import { FilmService } from '../../../services/film.service';
-import { SpettacoloService } from '../../../services/spettacolo.service';
 
 @Component({
   selector: 'app-lista-film',
@@ -17,13 +14,12 @@ import { SpettacoloService } from '../../../services/spettacolo.service';
 })
 export class ListaFilmComponent implements OnInit {
   films: ResponseFilmDTO[] = [];
-  spettacoliFuturi: ResponseSpettacoloDTO[] = [];
   ricerca = '';
   genereSelezionato = 'Tutti';
   loading = false;
   errore: string | null = null;
 
-  constructor(private filmService: FilmService, private spettacoloService: SpettacoloService) {}
+  constructor(private filmService: FilmService) {}
 
   ngOnInit(): void {
     this.caricaFilm();
@@ -36,8 +32,6 @@ export class ListaFilmComponent implements OnInit {
 
   get filmFiltrati(): ResponseFilmDTO[] {
     const query = this.ricerca.trim().toLowerCase();
-    // ID dei film che hanno almeno uno spettacolo futuro
-    const idFilmConSpettacoli = new Set(this.asArray(this.spettacoliFuturi).map(s => s.idFilm));
 
     return this.asArray(this.films).filter((film) => {
       const titolo = (film.titolo ?? '').toLowerCase();
@@ -52,9 +46,7 @@ export class ListaFilmComponent implements OnInit {
       const matchGenere = this.genereSelezionato === 'Tutti' ||
           film.nomeGeneri?.includes(this.genereSelezionato);
 
-      const haSpettacoloFuturo = idFilmConSpettacoli.has(film.id);
-
-      return matchTesto && matchGenere && haSpettacoloFuturo;
+      return matchTesto && matchGenere;
     });
   }
 
@@ -76,13 +68,9 @@ export class ListaFilmComponent implements OnInit {
     this.loading = true;
     this.errore = null;
 
-    forkJoin({
-      films: this.filmService.findAll(),
-      spettacoli: this.spettacoloService.findAll()
-    }).subscribe({
-      next: ({ films, spettacoli }) => {
+    this.filmService.findAll().subscribe({
+      next: (films) => {
         this.films = this.asArray(films);
-        this.spettacoliFuturi = this.asArray(spettacoli).filter(s => this.isFuturo(s));
         this.loading = false;
       },
       error: () => {
@@ -91,17 +79,6 @@ export class ListaFilmComponent implements OnInit {
         this.loading = false;
       }
     });
-  }
-
-  private isFuturo(spettacolo: ResponseSpettacoloDTO): boolean {
-    const timePart = spettacolo.oraInizio.includes('T')
-        ? spettacolo.oraInizio.split('T')[1]
-        : spettacolo.oraInizio.includes(' ')
-            ? spettacolo.oraInizio.split(' ')[1]
-            : spettacolo.oraInizio;
-    const ora = timePart?.substring(0, 5) ?? '00:00';
-    const dataOra = new Date(`${spettacolo.data}T${ora}:00`);
-    return dataOra > new Date();
   }
 
   private asArray<T>(value: T[] | null | undefined): T[] {
