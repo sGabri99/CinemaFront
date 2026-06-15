@@ -18,9 +18,9 @@
             @if (userRole === 'STAFF') {
                 <a mat-list-item routerLink="gestione-generi" routerLinkActive="active-link">Gestione Generi</a>
                 <a mat-list-item routerLink="gestione-film" routerLinkActive="active-link">Gestione Film</a>
-                <a mat-list-item routerLink="staff/gestione-spettacoli" routerLinkActive="active-link">Gestione Spettacoli</a>
-                <a mat-list-item routerLink="staff/biglietti-utente" routerLinkActive="active-link">Gestione Biglietti Utenti</a>
-                <a mat-list-item routerLink="staff/ricerca" routerLinkActive="active-link">Ricerca OMBD</a>
+                <a mat-list-item routerLink="gestione-spettacoli" routerLinkActive="active-link">Gestione Spettacoli</a>
+                <a mat-list-item routerLink="biglietti-utente" routerLinkActive="active-link">Gestione Biglietti Utenti</a>
+                <a mat-list-item routerLink="ricerca" routerLinkActive="active-link">Ricerca OMBD</a>
             }
 
             @if (userRole === 'SUPERADMIN') {
