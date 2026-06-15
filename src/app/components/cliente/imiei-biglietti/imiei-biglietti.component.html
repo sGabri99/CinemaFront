@@ -6,7 +6,17 @@
             <h4 class="text-white-50 mb-3">{{ s.nomeFilm }} - {{ s.data | date:'fullDate' }}</h4>
 
             @for (b of getBigliettiPerSpettacolo(s.id); track b.id) {
-                <div class="ticket-wrapper d-flex mb-3">
+                <div class="ticket-wrapper d-flex mb-3 position-relative">
+
+                    @if (isCancellabile(s)) {
+                        <button
+                            class="btn-cancella-biglietto"
+                            (click)="cancellaBiglietto(b, s)"
+                            title="Cancella biglietto">
+                            &times;
+                        </button>
+                    }
+
                     <div class="ticket-info p-4 flex-grow-1">
                         <h5 class="text-uppercase fw-bold" style="color: var(--primary)">{{ s.nomeFilm }}</h5>
                         <div class="mt-3" style="color: var(--secondary)">
@@ -20,7 +30,7 @@
                     </div>
 
                     <div class="ticket-qr p-3 d-flex flex-column align-items-center justify-content-center">
-                        <div class="bg-white p-1 rounded">
+                        <div class="bg-white p-1 rounded qr-clickable" (click)="apriModaleQR(b)" title="Ingrandisci QR">
                             <qrcode [qrdata]="b.codiceBiglietto" [width]="100"></qrcode>
                         </div>
                         <small class="mt-2 text-secondary font-monospace">{{ b.codiceBiglietto }}</small>
@@ -30,3 +40,16 @@
         </div>
     }
 </div>
+
+<!-- Modale QR -->
+@if (bigliettoSelezionato) {
+    <div class="qr-modal-backdrop" (click)="chiudiModaleQR()">
+        <div class="qr-modal-content" (click)="$event.stopPropagation()">
+            <button class="qr-modal-close" (click)="chiudiModaleQR()" title="Chiudi">&times;</button>
+            <div class="bg-white p-3 rounded mb-3">
+                <qrcode [qrdata]="bigliettoSelezionato.codiceBiglietto" [width]="260"></qrcode>
+            </div>
+            <p class="font-monospace text-secondary mb-0">{{ bigliettoSelezionato.codiceBiglietto }}</p>
+        </div>
+    </div>
+}
