@@ -8,12 +8,9 @@ import { ResetPasswordRequest } from '../dto/resetpassword/request/reset-passwor
 import { jwtDecode } from 'jwt-decode';
 import {ResponseUtenteDataDTO} from "../dto/utente/response/response-utente-data-dto";
 
-import { InsertUtenteDto } from '../dto/utente/request/insert-utente-dto';
+
 import { ResponseUtenteDto } from '../dto/utente/response/response-utente-dto';
-
-export function getAllStaff() {
-
-}
+import {InsertUtenteDTO} from "../dto/utente/request/insert-utente-dto";
 
 
 @Injectable({
@@ -38,14 +35,14 @@ export class AuthService {
       );
   }
 
-  registrazione(dto: InsertUtenteDto): Observable<ResponseUtenteDto> {
+  registrazione(dto: InsertUtenteDTO): Observable<ResponseUtenteDto> {
     return this.http.post<ResponseUtenteDto>(
         `${this.BASE_URL}/registrazione`,
         dto
     );
   }
 
-  aggiungiStaff(dto: InsertUtenteDto): Observable<ResponseUtenteDto> {
+  aggiungiStaff(dto: InsertUtenteDTO): Observable<ResponseUtenteDto> {
     return this.http.post<ResponseUtenteDto>(
         `${this.BASE_URL}/admin/aggiungi_staff`,
         dto
