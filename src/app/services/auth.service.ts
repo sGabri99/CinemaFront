@@ -9,7 +9,7 @@ import { jwtDecode } from 'jwt-decode';
 import {ResponseUtenteDataDTO} from "../dto/utente/response/response-utente-data-dto";
 
 
-import { ResponseUtenteDto } from '../dto/utente/response/response-utente-dto';
+import { ResponseUtenteDTO } from '../dto/utente/response/response-utente-dto';
 import {InsertUtenteDTO} from "../dto/utente/request/insert-utente-dto";
 
 
@@ -35,15 +35,15 @@ export class AuthService {
       );
   }
 
-  registrazione(dto: InsertUtenteDTO): Observable<ResponseUtenteDto> {
-    return this.http.post<ResponseUtenteDto>(
+  registrazione(dto: InsertUtenteDTO): Observable<ResponseUtenteDTO> {
+    return this.http.post<ResponseUtenteDTO>(
         `${this.BASE_URL}/registrazione`,
         dto
     );
   }
 
-  aggiungiStaff(dto: InsertUtenteDTO): Observable<ResponseUtenteDto> {
-    return this.http.post<ResponseUtenteDto>(
+  aggiungiStaff(dto: InsertUtenteDTO): Observable<ResponseUtenteDTO> {
+    return this.http.post<ResponseUtenteDTO>(
         `${this.BASE_URL}/admin/aggiungi_staff`,
         dto
     );
