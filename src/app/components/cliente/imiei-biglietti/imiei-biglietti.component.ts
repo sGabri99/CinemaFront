@@ -8,6 +8,7 @@ import {ResponseSpettacoloDTO} from "../../../dto/spettacolo/response/response-s
 import {ResponseFilmDTO} from "../../../dto/film/response/response-film-dto";
 import {FilmService} from "../../../services/film.service";
 import {DatePipe} from "@angular/common";
+import {AuthService} from "../../../services/auth.service";
 
 @Component({
   selector: 'app-imiei-biglietti',
@@ -19,8 +20,13 @@ export class IMieiBigliettiComponent implements OnInit {
   biglietti: ResponseBigliettoDTO[] = [];
   spettacoli: ResponseSpettacoloDTO[] = [];
   film: ResponseFilmDTO[] = [];
-  constructor(private filmService: FilmService, private bigliettoService: BigliettoService, private spettacoloService: SpettacoloService)
-  {}
+
+  constructor(
+    private filmService: FilmService,
+    private bigliettoService: BigliettoService,
+    private spettacoloService: SpettacoloService,
+    private authService: AuthService
+  ) {}
 
   ngOnInit(): void {
     forkJoin({
@@ -31,6 +37,7 @@ export class IMieiBigliettiComponent implements OnInit {
       this.spettacoli = res.spettacoli;
     });
   }
+
   getSpettacoliConBiglietti() {
     const idSpettacoliUtente = new Set(this.biglietti.map(b => b.idSpettacolo));
     return this.spettacoli.filter(s => idSpettacoliUtente.has(s.id));
@@ -40,8 +47,36 @@ export class IMieiBigliettiComponent implements OnInit {
     return this.biglietti.filter(b => b.idSpettacolo === idSpettacolo);
   }
 
+  /**
+   * Restituisce true se lo spettacolo inizia fra più di un'ora rispetto all'ora attuale.
+   */
+  isCancellabile(spettacolo: ResponseSpettacoloDTO): boolean {
+    const dataOraInizio = new Date(spettacolo.oraInizio);
+    const oraLimite = new Date(Date.now() + 60 * 60 * 1000); // ora corrente + 1 ora
+    return dataOraInizio > oraLimite;
+  }
 
+  cancellaBiglietto(biglietto: ResponseBigliettoDTO, spettacolo: ResponseSpettacoloDTO): void {
+    if (!this.isCancellabile(spettacolo)) {
+      return;
+    }
 
+    const email = this.authService.getEmail();
+    if (!email) {
+      return;
+    }
 
+    if (!confirm(`Sei sicuro di voler cancellare questo biglietto per "${spettacolo.nomeFilm}"?`)) {
+      return;
+    }
 
+    this.bigliettoService.removeById(biglietto.id, email).subscribe({
+      next: () => {
+        this.biglietti = this.biglietti.filter(b => b.id !== biglietto.id);
+      },
+      error: (err) => {
+        console.error('Errore durante la cancellazione del biglietto:', err);
+      }
+    });
+  }
 }
