@@ -9,6 +9,7 @@ import {ResponseFilmDTO} from "../../../dto/film/response/response-film-dto";
 import {FilmService} from "../../../services/film.service";
 import {DatePipe} from "@angular/common";
 import {AuthService} from "../../../services/auth.service";
+import {ConfirmDialogService} from "../../../services/confirm-dialog.service";
 
 @Component({
   selector: 'app-imiei-biglietti',
@@ -26,7 +27,8 @@ export class IMieiBigliettiComponent implements OnInit {
     private filmService: FilmService,
     private bigliettoService: BigliettoService,
     private spettacoloService: SpettacoloService,
-    private authService: AuthService
+    private authService: AuthService,
+    private confirmDialogService: ConfirmDialogService
   ) {}
 
   ngOnInit(): void {
@@ -60,15 +62,23 @@ export class IMieiBigliettiComponent implements OnInit {
     const email = this.authService.getEmail();
     if (!email) return;
 
-    if (!confirm(`Sei sicuro di voler cancellare questo biglietto per "${spettacolo.nomeFilm}"?`)) return;
-
-    this.bigliettoService.removeById(biglietto.id, email).subscribe({
-      next: () => {
-        this.biglietti = this.biglietti.filter(b => b.id !== biglietto.id);
-      },
-      error: (err) => {
-        console.error('Errore durante la cancellazione del biglietto:', err);
+    this.confirmDialogService.confirm({
+      title: 'Annulla biglietto',
+      message: `Sei sicuro di voler cancellare questo biglietto per "${spettacolo.nomeFilm}"?`,
+      confirmText: 'Elimina'
+    }).subscribe(conferma => {
+      if (!conferma) {
+        return;
       }
+
+      this.bigliettoService.removeById(biglietto.id, email).subscribe({
+        next: () => {
+          this.biglietti = this.biglietti.filter(b => b.id !== biglietto.id);
+        },
+        error: (err) => {
+          console.error('Errore durante la cancellazione del biglietto:', err);
+        }
+      });
     });
   }
 

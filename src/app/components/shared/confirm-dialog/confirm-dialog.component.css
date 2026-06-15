@@ -1,0 +1,38 @@
+:host {
+    display: block;
+    color: var(--text, #ffffff);
+}
+
+[mat-dialog-title] {
+    margin: 0;
+    color: var(--text, #ffffff);
+    font-size: 1.4rem;
+    font-weight: 700;
+}
+
+mat-dialog-content {
+    color: var(--secondary, #b3b3b3);
+    line-height: 1.6;
+    padding-top: 8px;
+}
+
+mat-dialog-actions {
+    padding-top: 8px;
+}
+
+.dialog-cancel-button {
+    color: var(--secondary, #b3b3b3) !important;
+}
+
+.dialog-confirm-button {
+    background: var(--primary, #e50914) !important;
+    color: var(--text, #ffffff) !important;
+}
+
+.dialog-success-button {
+    background: #1f8f52 !important;
+}
+
+.dialog-info-button {
+    background: #2563eb !important;
+}

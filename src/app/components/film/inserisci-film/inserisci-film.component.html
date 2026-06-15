@@ -1,44 +1,128 @@
-<div class="container my-4">
-    <h2>Inserisci film</h2>
+<main class="cinema-page">
+    <section class="content-section">
+        <div class="dashboard-layout">
+            <aside class="form-sidebar">
+                <h2 class="form-title">Nuovo Film</h2>
+                <p class="sidebar-description">
+                    Compila i dati principali del film e seleziona i generi da associare al catalogo.
+                </p>
 
-    <form [formGroup]="form" (ngSubmit)="salva()">
+                @if (erroreSalvataggio) {
+                    <div class="alert-error">
+                        {{ erroreSalvataggio }}
+                    </div>
+                }
 
-        <div class="mb-3">
-            <label>Titolo</label>
-            <input type="text" class="form-control" formControlName="titolo">
-        </div>
+                <form [formGroup]="form" (ngSubmit)="salva()">
+                    <div class="form-group">
+                        <label class="form-label">Titolo</label>
+                        <input type="text" class="form-input" formControlName="titolo">
+                    </div>
 
-        <div class="mb-3">
-            <label>Descrizione</label>
-            <input type="text" class="form-control" formControlName="descrizione">
-        </div>
+                    <div class="form-group">
+                        <label class="form-label">Descrizione</label>
+                        <textarea class="form-input form-textarea" formControlName="descrizione"></textarea>
+                    </div>
 
-        <div class="mb-3">
-            <label>Durata (minuti)</label>
-            <input type="number" class="form-control" formControlName="durata">
-        </div>
+                    <div class="form-group">
+                        <label class="form-label">Durata (minuti)</label>
+                        <input type="number" class="form-input" formControlName="durata" min="1">
+                    </div>
 
-        <div class="mb-3">
-            <label>Attori</label>
-            <input type="text" class="form-control" formControlName="attori">
-        </div>
+                    <div class="form-group">
+                        <label class="form-label">Attori</label>
+                        <input type="text" class="form-input" formControlName="attori">
+                    </div>
 
-        <div class="mb-3">
-            <label>URL locandina</label>
-            <input type="text" class="form-control" formControlName="urlLocandina">
-        </div>
+                    <div class="form-group">
+                        <label class="form-label">URL locandina</label>
+                        <input type="url" class="form-input" formControlName="urlLocandina">
+                    </div>
 
-        <div class="mb-3">
-            <label>Generi</label>
-            @for (genere of generi; track genere.id) {
-                <div class="form-check">
-                    <input type="checkbox" class="form-check-input" (change)="selezionaGenere(genere.id)">
-                    <label class="form-check-label">{{ genere.nome }}</label>
+                    <div class="form-group">
+                        <label class="form-label">Generi</label>
+                        <div class="genre-selector">
+                            @for (genere of generi; track genere.id) {
+                                <button
+                                    type="button"
+                                    class="genre-option"
+                                    [class.selected]="isGenereSelezionato(genere.id)"
+                                    (click)="toggleGenere(genere.id)">
+                                    {{ genere.nome }}
+                                </button>
+                            }
+                        </div>
+                        <small class="field-hint">Clicca sui generi per aggiungerli o rimuoverli.</small>
+                    </div>
+
+                    <button
+                        type="submit"
+                        class="btn btn-primary action-button"
+                        [disabled]="salvataggioInCorso || form.invalid || generiSelezionati.length === 0">
+                        {{ salvataggioInCorso ? 'SALVATAGGIO...' : 'SALVA FILM' }}
+                    </button>
+                </form>
+            </aside>
+
+            <main>
+                <div class="section-header">
+                    <div>
+                        <h2>Anteprima Inserimento</h2>
+                        <p>Controlla i dati prima di aggiungere il film al catalogo.</p>
+                    </div>
                 </div>
-            }
+
+                <div class="schedule">
+                    <article class="schedule-card schedule-row-card">
+                        <div class="movie-info-block">
+                            <span class="tag">Nuovo inserimento</span>
+                            <h3 class="schedule-title">
+                                {{ form.value.titolo || 'Titolo del film' }}
+                            </h3>
+                            <p class="movie-meta schedule-info-meta">
+                                <span>{{ form.value.durata || 0 }} min</span>
+                                <span class="meta-separator">•</span>
+                                <span>{{ form.value.attori || 'Attori da definire' }}</span>
+                            </p>
+                            <p class="description-preview">
+                                {{ form.value.descrizione || 'La descrizione del film comparira qui appena la inserisci.' }}
+                            </p>
+                        </div>
+                    </article>
+
+                    <article class="schedule-card schedule-row-card">
+                        <div class="movie-info-block">
+                            <span class="tag">Generi selezionati</span>
+                            <div class="genre-chip-list">
+                                @for (genere of generiSelezionatiDettaglio; track genere.id) {
+                                    <span class="genre-chip">{{ genere.nome }}</span>
+                                } @empty {
+                                    <p class="movie-meta schedule-info-meta">
+                                        Nessun genere selezionato.
+                                    </p>
+                                }
+                            </div>
+                        </div>
+                    </article>
+
+                    <article class="schedule-card schedule-row-card">
+                        <div class="movie-info-block">
+                            <span class="tag">Locandina</span>
+                            @if (form.value.urlLocandina) {
+                                <img
+                                    class="poster-preview"
+                                    [src]="form.value.urlLocandina"
+                                    [alt]="form.value.titolo || 'Locandina film'">
+                            } @else {
+                                <img
+                                    class="poster-preview"
+                                    [src]="defaultPosterUrl"
+                                    [alt]="form.value.titolo || 'Locandina film di default'">
+                            }
+                        </div>
+                    </article>
+                </div>
+            </main>
         </div>
-
-        <button type="submit" class="btn btn-primary" [disabled]="form.invalid">Salva</button>
-    </form>
-</div>
-
+    </section>
+</main>

@@ -3,6 +3,7 @@ import {BigliettoService} from "../../../services/biglietto.service";
 import {ResponseBigliettoDTO} from "../../../dto/biglietto/response/response-biglietto-dto";
 import {FormsModule} from "@angular/forms";
 import {CommonModule} from "@angular/common";
+import {ConfirmDialogService} from "../../../services/confirm-dialog.service";
 
 @Component({
   selector: 'app-biglietti-utente',
@@ -18,7 +19,10 @@ export class BigliettiUtenteComponent {
   idUtenteCercato: number | null = null;
   biglietti: ResponseBigliettoDTO[] = [];
 
-  constructor(private bigliettoService: BigliettoService) {}
+  constructor(
+    private bigliettoService: BigliettoService,
+    private confirmDialogService: ConfirmDialogService
+  ) {}
 
   cerca(){
     if(!this.idUtenteCercato) return;
@@ -35,13 +39,21 @@ export class BigliettiUtenteComponent {
 
 
   cancellaBiglietto(idBiglietto: number) {
-    const email = prompt("Inserisci l'email per confermare l'annullamento: ");
-    if (!email || !email.trim()) {
-      alert("Email obbligatoria per procedere.");
-      return;
-    }
+    this.confirmDialogService.confirm({
+      title: 'Elimina biglietto',
+      message: 'Sei sicuro di voler eliminare questo biglietto?',
+      confirmText: 'Elimina'
+    }).subscribe(conferma => {
+      if (!conferma) {
+        return;
+      }
 
-    if (confirm('Sei sicuro di voler eliminare il biglietto?')) {
+      const email = prompt("Inserisci l'email per confermare l'annullamento: ");
+      if (!email || !email.trim()) {
+        alert("Email obbligatoria per procedere.");
+        return;
+      }
+
       this.bigliettoService.removeById(idBiglietto, email.trim()).subscribe({
         next: () => {
           alert('Biglietto eliminato con successo');
@@ -52,7 +64,7 @@ export class BigliettiUtenteComponent {
           alert("Impossibile eliminare il biglietto. Verifica che l'email inserita sia corretta.");
         }
       });
-    }
+    });
   }
 
 

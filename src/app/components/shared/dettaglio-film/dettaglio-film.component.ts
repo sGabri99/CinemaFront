@@ -8,6 +8,8 @@ import { SpettacoloService } from '../../../services/spettacolo.service';
 import { AuthService } from '../../../services/auth.service';
 import { Ruolo } from '../../../enums/ruolo';
 import { AcquistoBigliettoComponent } from '../acquisto-biglietto/acquisto-biglietto.component';
+import { ResponseBigliettoDTO } from '../../../dto/biglietto/response/response-biglietto-dto';
+import { ConfirmDialogService } from '../../../services/confirm-dialog.service';
 
 @Component({
   selector: 'app-dettaglio-film',
@@ -34,7 +36,8 @@ export class DettaglioFilmComponent implements OnInit {
       private route: ActivatedRoute,
       private filmService: FilmService,
       private spettacoloService: SpettacoloService,
-      private authService: AuthService
+      private authService: AuthService,
+      private confirmDialogService: ConfirmDialogService
   ) {}
 
   ngOnInit(): void {
@@ -95,10 +98,16 @@ export class DettaglioFilmComponent implements OnInit {
     this.spettacoloInAcquisto = null;
   }
 
-  onAcquistoConfermato(): void {
-    this.messaggioAcquisto = 'Acquisto confermato.';
+  onAcquistoConfermato(biglietti: ResponseBigliettoDTO[]): void {
+    const quantita = biglietti.length;
+    this.messaggioAcquisto = quantita === 1 ? 'Acquisto confermato.' : `Acquisto confermato per ${quantita} biglietti.`;
     this.erroreAcquisto = null;
     this.chiudiModaleAcquisto();
+    this.confirmDialogService.notifySuccess(
+      quantita === 1
+        ? 'Il tuo biglietto è stato acquistato con successo.'
+        : `I tuoi ${quantita} biglietti sono stati acquistati con successo.`
+    ).subscribe();
   }
 
   private caricaFilm(id: number): void {

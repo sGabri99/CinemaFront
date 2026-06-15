@@ -1,6 +1,6 @@
 /* Stessi stili di login.component.css — condividi o unifica in styles.css */
 .auth-page {
-    background-color: #111;
+    background: var(--background-tint, #111);
     min-height: 100vh;
     display: flex;
     align-items: center;

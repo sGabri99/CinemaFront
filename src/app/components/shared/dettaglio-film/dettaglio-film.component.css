@@ -9,7 +9,7 @@
 }
 
 .detail-page {
-  background: var(--background);
+  background: var(--background-tint, var(--background));
   color: var(--text);
   font-family: Arial, Helvetica, sans-serif;
   margin: 0 auto;

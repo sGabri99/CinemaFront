@@ -1,6 +1,7 @@
 /* You can add global styles to this file, and also import other style files */
 :root {
   --background: #121212;
+  --background-tint: radial-gradient(circle at 50% 0%, rgba(229, 9, 20, 0.16) 0%, rgba(229, 9, 20, 0.08) 22%, rgba(18, 18, 18, 0) 56%), #121212;
   --surface: #1E1E1E;
   --primary: #E50914;
   --secondary: #B3B3B3;
@@ -12,23 +13,34 @@
 html,
 body {
   min-height: 100%;
-  background-color: var(--background);
+  background: var(--background-tint);
   color: var(--text);
   margin: 0;
 }
 
 body {
-  background: #121212;
+  background: var(--background-tint);
   margin: 0;
 }
 
 app-root {
   display: flex;
   flex-direction: column;
-  height: 100vh;
-  overflow: hidden;   
-  background: #121212;
+  min-height: 100vh;
+  background: var(--background-tint);
 }
 
 html, body { height: 100%; }
 body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
+
+.confirm-dialog-panel .mat-mdc-dialog-surface {
+  background: var(--surface);
+  color: var(--text);
+  border: 1px solid var(--border);
+  border-radius: 16px !important;
+  box-shadow: 0 24px 48px rgba(0, 0, 0, 0.35);
+}
+
+.confirm-dialog-panel .mat-mdc-dialog-container .mdc-dialog__content {
+  color: var(--secondary);
+}

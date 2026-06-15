@@ -4,6 +4,7 @@ import { ActivatedRoute } from '@angular/router';
 import { FilmService } from "../../../services/film.service";
 import { ResponseFilmDTO } from "../../../dto/film/response/response-film-dto";
 import { CommonModule } from '@angular/common';
+import { ConfirmDialogService } from "../../../services/confirm-dialog.service";
 
 @Component({
   selector: 'app-gestione-film',
@@ -19,7 +20,8 @@ export class GestioneFilmComponent implements OnInit {
 
   constructor(
       private filmService: FilmService,
-      private route: ActivatedRoute
+      private route: ActivatedRoute,
+      private confirmDialogService: ConfirmDialogService
   ) {}
 
   ngOnInit(): void {
@@ -38,9 +40,19 @@ export class GestioneFilmComponent implements OnInit {
   }
 
   elimina(id: number): void {
-    this.filmService.removeById(id).subscribe({
-      next: () => this.films = this.films.filter(film => film.id !== id),
-      error: (err) => console.error('Errore eliminazione:', err)
+    this.confirmDialogService.confirm({
+      title: 'Elimina film',
+      message: 'Sei sicuro di voler eliminare questo film?',
+      confirmText: 'Elimina'
+    }).subscribe(conferma => {
+      if (!conferma) {
+        return;
+      }
+
+      this.filmService.removeById(id).subscribe({
+        next: () => this.films = this.films.filter(film => film.id !== id),
+        error: (err) => console.error('Errore eliminazione:', err)
+      });
     });
   }
 }

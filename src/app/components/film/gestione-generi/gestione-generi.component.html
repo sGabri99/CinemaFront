@@ -1,21 +1,54 @@
+<main class="cinema-page">
+    <section class="content-section">
+        <div class="dashboard-layout">
+            <aside class="form-sidebar">
+                <h2 class="form-title">Nuovo Genere</h2>
+                <p class="sidebar-description">
+                    Inserisci un nuovo genere e mantieni coerente la classificazione del catalogo.
+                </p>
 
-<div class="container my-4">
-    <h2>Gestione generi</h2>
+                <form [formGroup]="form" (ngSubmit)="inserisci()">
+                    <div class="form-group">
+                        <label class="form-label">Nome genere</label>
+                        <input type="text" class="form-input" formControlName="nome">
+                    </div>
 
-    <form [formGroup]="form" (ngSubmit)="inserisci()" class="mb-3">
-        <label>Nuovo genere</label>
-        <div class="d-flex gap-2">
-            <input type="text" class="form-control" formControlName="nome">
-            <button type="submit" class="btn btn-primary" [disabled]="form.invalid">Aggiungi</button>
+                    <button type="submit" class="btn btn-primary action-button" [disabled]="form.invalid">
+                        AGGIUNGI GENERE
+                    </button>
+                </form>
+            </aside>
+
+            <main>
+                <div class="section-header">
+                    <div>
+                        <h2>Generi Disponibili</h2>
+                        <p>Lista di tutti i generi disponibili per i film del catalogo.</p>
+                    </div>
+                </div>
+
+                <div class="schedule">
+                    @for (genere of generi; track genere.id) {
+                        <article class="schedule-card genre-row-card">
+                            <div class="movie-info-block">
+                                <span class="tag schedule-badge-id">ID: #{{ genere.id }}</span>
+                                <h3 class="schedule-title">{{ genere.nome }}</h3>
+                            </div>
+
+                            <div class="schedule-actions-box">
+                                <button class="btn btn-secondary btn-icon-delete" (click)="elimina(genere.id)">
+                                    Elimina
+                                </button>
+                            </div>
+                        </article>
+                    } @empty {
+                        <article class="schedule-card empty-state-card">
+                            <h3 class="schedule-title">Nessun genere disponibile</h3>
+                            <p class="movie-meta schedule-info-meta">Aggiungi un genere per iniziare a classificare i film.</p>
+                        </article>
+                    }
+                </div>
+            </main>
         </div>
-    </form>
-
-    <ul class="list-group">
-        @for (genere of generi; track genere.id) {
-            <li class="list-group-item d-flex justify-content-between">
-                {{ genere.nome }}
-                <button class="btn btn-sm btn-danger" (click)="elimina(genere.id)">Elimina</button>
-            </li>
-        }
-    </ul>
-</div>
+    </section>
+</main>

@@ -6,6 +6,7 @@ import {InsertSpettacoloDTO} from "../../../dto/spettacolo/request/insert-spetta
 import {CommonModule} from "@angular/common";
 import {FilmService} from "../../../services/film.service";
 import {SalaService} from "../../../services/sala.service";
+import {ConfirmDialogService} from "../../../services/confirm-dialog.service";
 
 @Component({
   selector: 'app-gestione-spettacoli',
@@ -31,7 +32,12 @@ export class GestioneSpettacoliComponent implements OnInit{
     oraFine: new FormControl('', Validators.required)
   });
 
-  constructor(private spettacoloService: SpettacoloService, private filmService: FilmService,private salaService: SalaService) { }
+  constructor(
+    private spettacoloService: SpettacoloService,
+    private filmService: FilmService,
+    private salaService: SalaService,
+    private confirmDialogService: ConfirmDialogService
+  ) { }
 
   ngOnInit(): void {
     this.caricaSpettacoli();
@@ -107,7 +113,15 @@ export class GestioneSpettacoliComponent implements OnInit{
   }
 
   elimina(id: number){
-    if(confirm('Vuoi rimuovere lo spettacolo?')){
+    this.confirmDialogService.confirm({
+      title: 'Elimina spettacolo',
+      message: 'Sei sicuro di voler eliminare questo spettacolo?',
+      confirmText: 'Elimina'
+    }).subscribe(conferma => {
+      if (!conferma) {
+        return;
+      }
+
       this.spettacoloService.removeById(id).subscribe({
         next:() =>{
           alert('Spettacolo rimosso con successo');
@@ -116,8 +130,8 @@ export class GestioneSpettacoliComponent implements OnInit{
         error: (err) => {
           console.log('Errore durante la rimozione del spettacolo');
         }
-      })
-    }
+      });
+    });
   }
 
 }

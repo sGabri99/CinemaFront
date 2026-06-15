@@ -17,11 +17,11 @@
 .hero {
   align-items: center;
   background:
-    linear-gradient(to right, rgba(18, 18, 18, 0.96), rgba(18, 18, 18, 0.58)),
-    linear-gradient(135deg, #2b0003, #121212 60%);
+    linear-gradient(to right, rgba(18, 18, 18, 0.94), rgba(18, 18, 18, 0.72)),
+    var(--background);
   display: flex;
   min-height: 560px;
-  padding: 80px 24px;
+  padding: 104px 24px 88px;
 }
 
 .hero-content,
@@ -282,7 +282,7 @@ h1 {
 @media (max-width: 640px) {
   .hero {
     min-height: auto;
-    padding: 70px 24px;
+    padding: 88px 24px 64px;
   }
 
   .movie-grid,

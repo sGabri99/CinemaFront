@@ -3,6 +3,7 @@ import { ResponseGenereDTO } from "../../../dto/genere/response/response-genere-
 import { FormControl, FormGroup, ReactiveFormsModule, Validators } from "@angular/forms";
 import { GenereService } from "../../../services/genere.service";
 import { InsertGenereDTO } from "../../../dto/genere/request/insert-genere-dto";
+import { ConfirmDialogService } from "../../../services/confirm-dialog.service";
 
 @Component({
   selector: 'app-gestione-generi',
@@ -19,7 +20,10 @@ export class GestioneGenereComponent implements OnInit {
     nome: new FormControl('', Validators.required)
   });
 
-  constructor(private genereService: GenereService) {}
+  constructor(
+    private genereService: GenereService,
+    private confirmDialogService: ConfirmDialogService
+  ) {}
 
   ngOnInit(): void {
     this.genereService.findAll().subscribe(generi => {
@@ -40,8 +44,18 @@ export class GestioneGenereComponent implements OnInit {
   }
 
   elimina(id: number): void {
-    this.genereService.removeById(id).subscribe(() => {
-      this.generi = this.generi.filter(genere => genere.id !== id);
+    this.confirmDialogService.confirm({
+      title: 'Elimina genere',
+      message: 'Sei sicuro di voler eliminare questo genere?',
+      confirmText: 'Elimina'
+    }).subscribe(conferma => {
+      if (!conferma) {
+        return;
+      }
+
+      this.genereService.removeById(id).subscribe(() => {
+        this.generi = this.generi.filter(genere => genere.id !== id);
+      });
     });
   }
 }

@@ -4,8 +4,10 @@
   --secondary: #B3B3B3;
   --text: #FFFFFF;
   --border: #2a2a2a;
-  background: rgba(18, 18, 18, 0.95);
+  background: linear-gradient(180deg, rgba(18, 18, 18, 0.995) 0%, rgba(18, 18, 18, 0.985) 100%);
+  backdrop-filter: blur(14px);
   border-bottom: 1px solid var(--border);
+  box-shadow: 0 10px 28px rgba(0, 0, 0, 0.22);
   position: sticky;
   top: 0;
   z-index: 10;

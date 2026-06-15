@@ -11,6 +11,8 @@ import { ResponseSpettacoloDTO } from '../../../dto/spettacolo/response/response
 import { ResponseFilmDTO } from '../../../dto/film/response/response-film-dto';
 import { Ruolo } from '../../../enums/ruolo';
 import { AcquistoBigliettoComponent } from '../acquisto-biglietto/acquisto-biglietto.component';
+import { ConfirmDialogService } from '../../../services/confirm-dialog.service';
+import { ResponseBigliettoDTO } from '../../../dto/biglietto/response/response-biglietto-dto';
 
 export interface SpettacoloPerFilm {
     filmKey: string;
@@ -67,7 +69,8 @@ export class ListaSpettacoliComponent implements OnInit {
         private spettacoloService: SpettacoloService,
         private filmService: FilmService,
         private authService: AuthService,
-        private bigliettoService: BigliettoService
+        private bigliettoService: BigliettoService,
+        private confirmDialogService: ConfirmDialogService
     ) {}
 
     ngOnInit(): void {
@@ -203,11 +206,19 @@ export class ListaSpettacoliComponent implements OnInit {
         this.spettacoloInAcquisto = null;
     }
 
-    onAcquistoConfermato(): void {
+    onAcquistoConfermato(biglietti: ResponseBigliettoDTO[]): void {
         const orario = this.spettacoloInAcquisto ? this.formatOrario(this.spettacoloInAcquisto.oraInizio) : '';
-        this.messaggio = `Acquisto confermato per ${orario}.`;
+        const quantita = biglietti.length;
+        this.messaggio = quantita === 1
+            ? `Acquisto confermato per ${orario}.`
+            : `Acquisto confermato per ${quantita} biglietti alle ${orario}.`;
         this.errore = null;
         this.chiudiModaleAcquisto();
+        this.confirmDialogService.notifySuccess(
+            quantita === 1
+                ? `Il tuo biglietto per le ${orario} è stato acquistato con successo.`
+                : `I tuoi ${quantita} biglietti per le ${orario} sono stati acquistati con successo.`
+        ).subscribe();
     }
 
     isPrenotazioneInCorso(data: string, filmKey: string): boolean {

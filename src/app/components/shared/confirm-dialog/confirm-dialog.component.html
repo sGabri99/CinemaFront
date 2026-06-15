@@ -1,0 +1,23 @@
+<h2 mat-dialog-title>{{ data.title || 'Conferma eliminazione' }}</h2>
+
+<mat-dialog-content>
+    <p>{{ data.message }}</p>
+</mat-dialog-content>
+
+<mat-dialog-actions align="end">
+    @if (data.showCancel !== false) {
+    <button type="button" mat-button class="dialog-cancel-button" (click)="chiudi(false)">
+        {{ data.cancelText || 'Annulla' }}
+    </button>
+    }
+    <button
+        type="button"
+        mat-flat-button
+        class="dialog-confirm-button"
+        [class.dialog-success-button]="data.variant === 'success'"
+        [class.dialog-info-button]="data.variant === 'info'"
+        (click)="chiudi(true)"
+        cdkFocusInitial>
+        {{ data.confirmText || 'Conferma' }}
+    </button>
+</mat-dialog-actions>

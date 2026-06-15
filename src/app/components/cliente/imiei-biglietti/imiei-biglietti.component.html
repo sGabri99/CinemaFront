@@ -1,4 +1,4 @@
-<div class="container mt-5">
+<div class="tickets-page">
     <h2 class="mb-4">I tuoi Biglietti</h2>
 
     @for (s of getSpettacoliConBiglietti(); track s.id) {
@@ -6,7 +6,7 @@
             <h4 class="text-white-50 mb-3">{{ s.nomeFilm }} - {{ s.data | date:'fullDate' }}</h4>
 
             @for (b of getBigliettiPerSpettacolo(s.id); track b.id) {
-                <div class="ticket-wrapper d-flex mb-3 position-relative">
+                <div class="ticket-wrapper mb-3 position-relative">
 
                     @if (isCancellabile(s)) {
                         <button
