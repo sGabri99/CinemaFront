@@ -57,7 +57,13 @@ export class IMieiBigliettiComponent implements OnInit {
   }
 
   cancellaBiglietto(biglietto: ResponseBigliettoDTO, spettacolo: ResponseSpettacoloDTO): void {
-    if (!this.isCancellabile(spettacolo)) return;
+    if (!this.isCancellabile(spettacolo)) {
+      this.confirmDialogService.notifyInfo(
+        'Non è più possibile cancellare il biglietto a meno di un’ora dall’inizio dello spettacolo.',
+        'Cancellazione non disponibile'
+      ).subscribe();
+      return;
+    }
 
     const email = this.authService.getEmail();
     if (!email) return;
@@ -74,9 +80,17 @@ export class IMieiBigliettiComponent implements OnInit {
       this.bigliettoService.removeById(biglietto.id, email).subscribe({
         next: () => {
           this.biglietti = this.biglietti.filter(b => b.id !== biglietto.id);
+          this.confirmDialogService.notifySuccess(
+            'Il biglietto è stato cancellato correttamente.',
+            'Biglietto cancellato'
+          ).subscribe();
         },
         error: (err) => {
           console.error('Errore durante la cancellazione del biglietto:', err);
+          this.confirmDialogService.notifyError(
+            err?.error?.message || 'Impossibile cancellare il biglietto.',
+            'Cancellazione non riuscita'
+          ).subscribe();
         }
       });
     });

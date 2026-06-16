@@ -8,14 +8,13 @@
             @for (b of getBigliettiPerSpettacolo(s.id); track b.id) {
                 <div class="ticket-wrapper mb-3 position-relative">
 
-                    @if (isCancellabile(s)) {
-                        <button
-                            class="btn-cancella-biglietto"
-                            (click)="cancellaBiglietto(b, s)"
-                            title="Cancella biglietto">
-                            &times;
-                        </button>
-                    }
+                    <button
+                        class="btn-cancella-biglietto"
+                        [class.btn-cancella-biglietto-disabled]="!isCancellabile(s)"
+                        (click)="cancellaBiglietto(b, s)"
+                        [title]="isCancellabile(s) ? 'Cancella biglietto' : 'Non cancellabile a meno di un ora dallo spettacolo'">
+                        &times;
+                    </button>
 
                     <div class="ticket-info p-4 flex-grow-1">
                         <h5 class="text-uppercase fw-bold" style="color: var(--primary)">{{ s.nomeFilm }}</h5>

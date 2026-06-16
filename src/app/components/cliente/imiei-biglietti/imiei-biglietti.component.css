@@ -79,6 +79,16 @@
     transform: scale(1.12);
 }
 
+.btn-cancella-biglietto-disabled {
+    opacity: 0.55;
+    background: rgba(80, 80, 80, 0.9);
+}
+
+.btn-cancella-biglietto-disabled:hover {
+    background: rgba(80, 80, 80, 0.9);
+    transform: none;
+}
+
 /* QR cliccabile */
 .qr-clickable {
     cursor: zoom-in;
