@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { ReactiveFormsModule, FormGroup, FormControl, Validators } from '@angular/forms';
-import { Router } from '@angular/router';
+import {ActivatedRoute, Router} from '@angular/router';
 import { FilmService } from '../../../services/film.service';
 import { GenereService } from '../../../services/genere.service';
 import { ResponseGenereDTO } from '../../../dto/genere/response/response-genere-dto';
@@ -33,16 +33,14 @@ export class InserisciFilmComponent implements OnInit {
   });
 
   constructor(
+      private route: ActivatedRoute,
       private filmService: FilmService,
-      private genereService: GenereService,
       private router: Router
   ) {}
 
   ngOnInit(): void {
-    this.genereService.findAll().subscribe(generi => {
-      this.generi = generi;
-      this.aggiornaGeneriSelezionati();
-    });
+    this.generi = (this.route.snapshot.data['generi'] as ResponseGenereDTO[]) ?? [];
+    this.aggiornaGeneriSelezionati();
   }
 
   toggleGenere(id: number): void {

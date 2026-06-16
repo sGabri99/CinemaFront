@@ -10,6 +10,8 @@ import {FilmService} from "../../../services/film.service";
 import {DatePipe} from "@angular/common";
 import {AuthService} from "../../../services/auth.service";
 import {ConfirmDialogService} from "../../../services/confirm-dialog.service";
+import {ActivatedRoute} from "@angular/router";
+import {IMieiBigliettiResolverData} from "../../../app.resolver";
 
 @Component({
   selector: 'app-imiei-biglietti',
@@ -24,21 +26,17 @@ export class IMieiBigliettiComponent implements OnInit {
   bigliettoSelezionato: ResponseBigliettoDTO | null = null;
 
   constructor(
-    private filmService: FilmService,
-    private bigliettoService: BigliettoService,
-    private spettacoloService: SpettacoloService,
-    private authService: AuthService,
-    private confirmDialogService: ConfirmDialogService
+      private route: ActivatedRoute,
+      private bigliettoService: BigliettoService,
+      private authService: AuthService,
+      private confirmDialogService: ConfirmDialogService
   ) {}
 
+
   ngOnInit(): void {
-    forkJoin({
-      biglietti: this.bigliettoService.clientebiglietti(),
-      spettacoli: this.spettacoloService.findAll()
-    }).subscribe(res => {
-      this.biglietti = res.biglietti;
-      this.spettacoli = res.spettacoli;
-    });
+  const dati = this.route.snapshot.data['dati'] as IMieiBigliettiResolverData;
+  this.biglietti  = dati.biglietti  ?? [];
+  this.spettacoli = dati.spettacoli ?? [];
   }
 
   getSpettacoliConBiglietti() {

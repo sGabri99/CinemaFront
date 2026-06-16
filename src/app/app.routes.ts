@@ -21,16 +21,23 @@ import { BigliettiUtenteComponent } from "./components/staff/biglietti-utente/bi
 import { GestioneSpettacoliComponent } from "./components/staff/gestione-spettacoli/gestione-spettacoli.component";
 import { RicercaComponent } from "./components/staff/ricerca/ricerca.component";
 import {IMieiBigliettiComponent} from "./components/cliente/imiei-biglietti/imiei-biglietti.component";
+import {
+  dettaglioFilmResolver,
+  filmListResolver, gestioneFilmResolver, gestioneGeneriResolver, gestioneSpettacoliResolver,
+  homeResolver, iMieiBigliettiResolver,
+  inserisciFilmResolver,
+  listaSpettacoliResolver
+} from "./app.resolver";
 
 export const routes: Routes = [
   {path: '',pathMatch: 'full', redirectTo: 'home'},
-  {path: 'home', title: 'HomePage', component: HomeComponent },
-  {path: 'lista-film', title: 'Lista film', component: ListaFilmComponent },
-  {path: 'dettaglio-film/:id', title: 'Dettaglio film', component: DettaglioFilmComponent },
-  { path: 'inserisci-film', title: 'Inserisci film', component: InserisciFilmComponent, canActivate: [staffGuard] },
-  { path: 'login', title: 'Login', component: LoginComponent },
+  {path: 'home', title: 'HomePage', component: HomeComponent ,  resolve: { dati: homeResolver } },
+  {path: 'lista-film', title: 'Lista film', component: ListaFilmComponent, resolve: { films: filmListResolver }   },
+  {path: 'dettaglio-film/:id', title: 'Dettaglio film', component: DettaglioFilmComponent, resolve: { dati: dettaglioFilmResolver }  },
+  { path: 'inserisci-film', title: 'Inserisci film', component: InserisciFilmComponent, canActivate: [staffGuard], resolve: { generi: inserisciFilmResolver }},
+  { path: 'login', title: 'Login', component: LoginComponent  },
   { path: 'registrazione', title: 'Registrazione', component: RegistrazioneComponent },
-  { path: 'lista-spettacoli', title: 'Lista Spettacoli', component: ListaSpettacoliComponent },
+  { path: 'lista-spettacoli', title: 'Lista Spettacoli', component: ListaSpettacoliComponent , resolve: { dati: listaSpettacoliResolver }  },
   { path: 'password-dimenticata', title: 'Password dimenticata', component: ForgotPasswordComponent },
   { path: 'password-reset', title: 'Password reset', component: ResetPasswordComponent },
   {
@@ -39,8 +46,8 @@ export const routes: Routes = [
     canActivate: [authGuard],
     children: [
       { path: 'profilo', component: ProfiloComponent },
-      { path: 'gestione-film', component: GestioneFilmComponent },
-      { path: 'gestione-generi', title: 'Gestione generi', component: GestioneGenereComponent , canActivate: [staffGuard]},
+      { path: 'gestione-film', component: GestioneFilmComponent, resolve: { films: gestioneFilmResolver }  },
+      { path: 'gestione-generi', title: 'Gestione generi', component: GestioneGenereComponent , canActivate: [staffGuard], resolve: { generi: gestioneGeneriResolver }},
       { path: 'gestione-film', title: 'Gestione film', component: GestioneFilmComponent , canActivate: [staffGuard] },
       { path: 'crea-staff', title: 'Crea staff', component: CreaStaffComponent , canActivate: [adminGuard] },
       {
@@ -48,7 +55,7 @@ export const routes: Routes = [
       {
         path: 'gestione-spettacoli',
         title: 'Gestione Spettacoli',
-     component:GestioneSpettacoliComponent,canActivate: [staffGuard]
+     component:GestioneSpettacoliComponent,canActivate: [staffGuard], resolve: { dati: gestioneSpettacoliResolver }
       },
       {
         path: 'ricerca',
@@ -60,7 +67,7 @@ export const routes: Routes = [
         path: 'i-miei-biglietti',
         title: 'I miei biglietti',
         component:      IMieiBigliettiComponent
-        ,canActivate: [authGuard]
+        ,canActivate: [authGuard],  resolve: { dati: iMieiBigliettiResolver }
       },
     ]
   },

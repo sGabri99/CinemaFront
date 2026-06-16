@@ -1,18 +1,15 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { RouterLink } from '@angular/router';
-import { forkJoin } from 'rxjs';
-import { SpettacoloService } from '../../../services/spettacolo.service';
-import { FilmService } from '../../../services/film.service';
+import {ActivatedRoute, RouterLink} from '@angular/router';
 import { AuthService } from '../../../services/auth.service';
-import { BigliettoService } from '../../../services/biglietto.service';
 import { ResponseSpettacoloDTO } from '../../../dto/spettacolo/response/response-spettacolo-dto';
 import { ResponseFilmDTO } from '../../../dto/film/response/response-film-dto';
 import { Ruolo } from '../../../enums/ruolo';
 import { AcquistoBigliettoComponent } from '../acquisto-biglietto/acquisto-biglietto.component';
 import { ConfirmDialogService } from '../../../services/confirm-dialog.service';
 import { ResponseBigliettoDTO } from '../../../dto/biglietto/response/response-biglietto-dto';
+import {ListaSpettacoliResolverData} from "../../../app.resolver";
 
 export interface SpettacoloPerFilm {
     filmKey: string;
@@ -36,7 +33,6 @@ export class ListaSpettacoliComponent implements OnInit {
     spettacoli: ResponseSpettacoloDTO[] = [];
     films: ResponseFilmDTO[] = [];
     spettacoliFiltrati: ResponseSpettacoloDTO[] = [];
-    loading = false;
     errore: string | null = null;
     messaggio: string | null = null;
     prenotazioniInCorso = new Set<string>();
@@ -44,6 +40,9 @@ export class ListaSpettacoliComponent implements OnInit {
 
     dataSelezionata: string = '';
     oggi: string = new Date().toISOString().split('T')[0];
+    loading = false;
+
+
 
     /**
      * Restituisce true se lo spettacolo non è ancora iniziato.
@@ -66,39 +65,21 @@ export class ListaSpettacoliComponent implements OnInit {
     spettacoloInAcquisto: ResponseSpettacoloDTO | null = null;
 
     constructor(
-        private spettacoloService: SpettacoloService,
-        private filmService: FilmService,
+        private route: ActivatedRoute,
+
         private authService: AuthService,
-        private bigliettoService: BigliettoService,
         private confirmDialogService: ConfirmDialogService
     ) {}
 
     ngOnInit(): void {
-        this.caricaTutti();
+        const dati = this.route.snapshot.data['dati'] as ListaSpettacoliResolverData;
+        this.films = dati.films ?? [];
+        this.spettacoli = (dati.spettacoli ?? []).filter(s => this.isFuturo(s));
+        this.spettacoliFiltrati = this.spettacoli;
+        this.inizializzaSelezioni();
     }
 
-    caricaTutti(): void {
-        this.loading = true;
-        this.errore = null;
-        this.dataSelezionata = '';
 
-        forkJoin({
-            spettacoli: this.spettacoloService.findAll(),
-            films: this.filmService.findAll()
-        }).subscribe({
-            next: ({ spettacoli, films }) => {
-                this.spettacoli = this.asArray(spettacoli).filter(s => this.isFuturo(s));
-                this.films = this.asArray(films);
-                this.spettacoliFiltrati = this.spettacoli;
-                this.inizializzaSelezioni();
-                this.loading = false;
-            },
-            error: () => {
-                this.errore = 'Impossibile caricare gli spettacoli. Riprova più tardi.';
-                this.loading = false;
-            }
-        });
-    }
 
     filtraPerData(): void {
         if (!this.dataSelezionata) {
@@ -131,7 +112,7 @@ export class ListaSpettacoliComponent implements OnInit {
 
     getFilmBySpettacolo(spettacolo: ResponseSpettacoloDTO): ResponseFilmDTO | undefined {
         return this.getFilmById(spettacolo.idFilm) ??
-            this.asArray(this.films).find(f => this.normalizzaTesto(f.titolo) === this.normalizzaTesto(spettacolo.nomeFilm));
+            this.films.find(f => this.normalizzaTesto(f.titolo) === this.normalizzaTesto(spettacolo.nomeFilm));
     }
 
     formatOrario(ora: string): string {
@@ -228,7 +209,7 @@ export class ListaSpettacoliComponent implements OnInit {
     get gruppiPerData(): GruppoData[] {
         const mappaData = new Map<string, Map<string, ResponseSpettacoloDTO[]>>();
 
-        for (const s of this.asArray(this.spettacoliFiltrati)) {
+        for (const s of this.spettacoliFiltrati) {
             if (!mappaData.has(s.data)) mappaData.set(s.data, new Map());
             const mappaFilm = mappaData.get(s.data)!;
             const filmKey = this.filmKeyFromSpettacolo(s);
@@ -282,11 +263,5 @@ export class ListaSpettacoliComponent implements OnInit {
         return `${data}-${filmKey}`;
     }
 
-    get totalFilmDelGiorno(): number {
-        return this.gruppiPerData.reduce((acc, g) => acc + g.filmsDelGiorno.length, 0);
-    }
 
-    private asArray<T>(value: T[] | null | undefined): T[] {
-        return Array.isArray(value) ? value : [];
-    }
 }

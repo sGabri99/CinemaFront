@@ -26,18 +26,18 @@ export class GestioneFilmComponent implements OnInit {
 
   ngOnInit(): void {
     // Legge il query param ?filmInserito=true passato da inserisci-film
+    this.films = (this.route.snapshot.data['films'] as ResponseFilmDTO[]) ?? [];
+
+    // Query param ?filmInserito=true passato da inserisci-film
     this.route.queryParams.subscribe(params => {
       if (params['filmInserito'] === 'true') {
         this.filmInserito = true;
-        // Nasconde il banner automaticamente dopo 4 secondi
         setTimeout(() => this.filmInserito = false, 4000);
       }
     });
-
-    this.filmService.findAll().subscribe(films => {
-      this.films = films;
-    });
   }
+
+
 
   elimina(id: number): void {
     this.confirmDialogService.confirm({
