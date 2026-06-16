@@ -76,6 +76,16 @@ export class AuthService {
     return this.http.get<ResponseUtenteDataDTO[]>(`${this.BASE_URL}/admin/lista_staff`);
   }
 
+  eliminaStaff(id: number): Observable<ResponseUtenteDTO> {
+    return this.http.delete<ResponseUtenteDTO>(`${this.BASE_URL}/admin/staff/${id}`);
+  }
+
+  eliminaStaffByEmail(email: string): Observable<ResponseUtenteDTO> {
+    return this.http.delete<ResponseUtenteDTO>(`${this.BASE_URL}/admin/staff`, {
+      params: { email }
+    });
+  }
+
 
 
 
