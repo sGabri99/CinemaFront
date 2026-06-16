@@ -34,14 +34,44 @@
     } @else if (filmFiltrati.length) {
         <section class="movie-grid">
             @for (film of filmFiltrati; track film.id; let i = $index) {
-                <article class="movie-card">
-                    @if (!film.urlLocandina) {
-                        <div [class]="posterClass(i)">
-                            <span>POSTER</span>
-                        </div>
-                    } @else {
-                        <img class="poster-image" [src]="film.urlLocandina" [alt]="'Locandina ' + film.titolo">
-                    }
+                <article class="movie-card"
+                    (mouseenter)="onMouseEnter(film.id)"
+                    (mouseleave)="onMouseLeave(film.id)">
+
+                    <div class="poster-wrapper">
+
+                        <!-- Trailer in riproduzione (dopo click sul play) -->
+                        @if (filmPlayId === film.id && film.urlTrailer) {
+                            <iframe
+                                class="trailer-iframe"
+                                [src]="getEmbedUrl(film.urlTrailer) | safeUrl"
+                                frameborder="0"
+                                allow="autoplay; encrypted-media"
+                                allowfullscreen>
+                            </iframe>
+
+                        <!-- Hover: mostra poster + overlay con pulsante play -->
+                        } @else if (filmHoverId === film.id && film.urlTrailer) {
+                            @if (!film.urlLocandina) {
+                                <div [class]="posterClass(i)"><span>POSTER</span></div>
+                            } @else {
+                                <img class="poster-image" [src]="film.urlLocandina" [alt]="'Locandina ' + film.titolo">
+                            }
+                            <div class="trailer-overlay" (click)="onPlayClick($event, film.id)">
+                                <div class="play-button">▶</div>
+                                <span class="play-label">Guarda il trailer</span>
+                            </div>
+
+                        <!-- Default: solo poster -->
+                        } @else if (!film.urlLocandina) {
+                            <div [class]="posterClass(i)">
+                                <span>POSTER</span>
+                            </div>
+                        } @else {
+                            <img class="poster-image" [src]="film.urlLocandina" [alt]="'Locandina ' + film.titolo">
+                        }
+
+                    </div>
 
                     <div class="movie-info">
                         <p class="eyebrow">{{ generiLabel(film) }}</p>
