@@ -4,6 +4,7 @@ import { FormControl, FormGroup, ReactiveFormsModule, Validators } from "@angula
 import { GenereService } from "../../../services/genere.service";
 import { InsertGenereDTO } from "../../../dto/genere/request/insert-genere-dto";
 import { ConfirmDialogService } from "../../../services/confirm-dialog.service";
+import {ActivatedRoute} from "@angular/router";
 
 @Component({
   selector: 'app-gestione-generi',
@@ -21,27 +22,26 @@ export class GestioneGenereComponent implements OnInit {
   });
 
   constructor(
-    private genereService: GenereService,
-    private confirmDialogService: ConfirmDialogService
+      private route: ActivatedRoute,
+      private genereService: GenereService,
+      private confirmDialogService: ConfirmDialogService
   ) {}
 
   ngOnInit(): void {
-    this.genereService.findAll().subscribe(generi => {
-      this.generi = generi;
-    });
+    this.generi = (this.route.snapshot.data['generi'] as ResponseGenereDTO[]) ?? [];
   }
 
+
   inserisci(): void {
-    const dto: InsertGenereDTO = {
-      nome: this.form.value.nome!
-    };
-    this.genereService.insert(dto).subscribe(() => {
-      this.form.reset();
-      this.genereService.findAll().subscribe(generi => {
-        this.generi = generi;
-      });
-    });
-  }
+  const dto: InsertGenereDTO = { nome: this.form.value.nome! };
+this.genereService.insert(dto).subscribe(() => {
+  this.form.reset();
+  // Ricarica la lista dopo l'inserimento (operazione mutante → chiamata HTTP necessaria)
+  this.genereService.findAll().subscribe(generi => this.generi = generi);
+});
+}
+
+
 
   elimina(id: number): void {
     this.confirmDialogService.confirm({

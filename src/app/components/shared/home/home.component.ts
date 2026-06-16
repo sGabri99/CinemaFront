@@ -1,10 +1,10 @@
 import { CommonModule } from '@angular/common';
 import { Component, OnDestroy, OnInit } from '@angular/core';
-import { RouterLink } from '@angular/router';
+import {ActivatedRoute, RouterLink} from '@angular/router';
 import { ResponseFilmDTO } from '../../../dto/film/response/response-film-dto';
 import { ResponseSpettacoloDTO } from '../../../dto/spettacolo/response/response-spettacolo-dto';
-import { FilmService } from '../../../services/film.service';
-import { SpettacoloService } from '../../../services/spettacolo.service';
+
+import {HomeResolverData} from "../../../app.resolver";
 
 @Component({
   selector: 'app-home',
@@ -24,14 +24,13 @@ export class HomeComponent implements OnInit, OnDestroy {
   erroreSpettacoli: string | null = null;
   private timerAggiornamento?: ReturnType<typeof setInterval>;
 
-  constructor(
-    private filmService: FilmService,
-    private spettacoloService: SpettacoloService
-  ) {}
+  constructor(private route: ActivatedRoute) {}
 
   ngOnInit(): void {
-    this.caricaFilm();
-    this.caricaSpettacoli();
+    const dati = this.route.snapshot.data['dati'] as HomeResolverData;
+    this.films = dati.films ?? [];
+    this.spettacoli = dati.spettacoli ?? [];
+
     this.timerAggiornamento = setInterval(() => {
       this.adesso = new Date();
     }, 60000);
@@ -86,40 +85,7 @@ export class HomeComponent implements OnInit, OnDestroy {
     return ['poster red', 'poster dark-red', 'poster gray', 'poster'][index % 4];
   }
 
-  private caricaFilm(): void {
-    this.loadingFilm = true;
-    this.erroreFilm = null;
 
-    this.filmService.findAll().subscribe({
-      next: (films) => {
-        this.films = this.asArray(films);
-        this.loadingFilm = false;
-      },
-      error: () => {
-        this.films = [];
-        this.erroreFilm = 'Impossibile caricare i film dal backend.';
-        this.loadingFilm = false;
-      }
-    });
-  }
-
-  private caricaSpettacoli(): void {
-    this.loadingSpettacoli = true;
-    this.erroreSpettacoli = null;
-    const oggi = this.dataLocaleOggi();
-
-    this.spettacoloService.findByData(oggi).subscribe({
-      next: (spettacoli) => {
-        this.spettacoli = this.asArray(spettacoli);
-        this.loadingSpettacoli = false;
-      },
-      error: () => {
-        this.spettacoli = [];
-        this.erroreSpettacoli = 'Impossibile caricare gli spettacoli dal backend.';
-        this.loadingSpettacoli = false;
-      }
-    });
-  }
 
   private dataLocaleOggi(): string {
     const anno = this.adesso.getFullYear();

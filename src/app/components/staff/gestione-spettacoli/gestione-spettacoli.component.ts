@@ -8,6 +8,9 @@ import {FilmService} from "../../../services/film.service";
 import {SalaService} from "../../../services/sala.service";
 import {ConfirmDialogService} from "../../../services/confirm-dialog.service";
 import {ResponseFilmDTO} from "../../../dto/film/response/response-film-dto";
+import {ResponseSalaDTO} from "../../../dto/sala/response/response-sala-dto";
+import {ActivatedRoute} from "@angular/router";
+import {GestioneSpettacoliResolverData} from "../../../app.resolver";
 
 @Component({
   selector: 'app-gestione-spettacoli',
@@ -22,7 +25,7 @@ export class GestioneSpettacoliComponent implements OnInit{
 
   spettacoli: ResponseSpettacoloDTO[] = [];
   listaFilm: ResponseFilmDTO[] = [];
-  listaSale: any[] = [];
+  listaSale: ResponseSalaDTO[] = [];
   erroreInserimento: string | null = null;
   successoInserimento: string | null = null;
 
@@ -35,50 +38,21 @@ export class GestioneSpettacoliComponent implements OnInit{
   });
 
   constructor(
-    private spettacoloService: SpettacoloService,
-    private filmService: FilmService,
-    private salaService: SalaService,
-    private confirmDialogService: ConfirmDialogService
+      private route: ActivatedRoute,
+      private spettacoloService: SpettacoloService,
+      private confirmDialogService: ConfirmDialogService
   ) { }
 
   ngOnInit(): void {
-    this.caricaSpettacoli();
-    this.caricaFilm();
-    this.caricaSale();
+      const dati = this.route.snapshot.data['dati'] as GestioneSpettacoliResolverData;
+      this.listaFilm  = dati.films      ?? [];
+      this.listaSale  = dati.sale       ?? [];
+      this.spettacoli = dati.spettacoli ?? [];
   }
 
-  caricaSpettacoli(){
-    this.spettacoloService.findAll().subscribe({
-      next: (res: ResponseSpettacoloDTO[]) => {
-        this.spettacoli = res;
-      },
-      error: (err) => {
-        console.log('Errore durante il caricamento dei spettacoli');
-      }
-    })
-  }
 
-  caricaFilm() {
-      this.filmService.findAll().subscribe({
-          next: (res) => {
-              this.listaFilm = res;
-              },
-            error: (err) => {
-                console.error('Errore nel caricamento dei film per la select', err);
-            }
-        });
-    }
 
-    caricaSale() {
-        this.salaService.findAll().subscribe({
-            next: (res) => {
-                this.listaSale = res;
-            },
-            error: (err) => {
-                console.error('Errore nel caricamento delle sale per la select', err);
-            }
-        });
-    }
+
 
   get filmSelezionato(): ResponseFilmDTO | undefined {
     const idFilm = this.formSpettacolo.controls.idFilm.value;
@@ -193,8 +167,7 @@ export class GestioneSpettacoliComponent implements OnInit{
                           this.formSpettacolo.reset();
                           this.successoInserimento = `Spettacolo programmato. Fine automatica prevista: ${oraFineStimata}.`;
                           this.erroreInserimento = null;
-                          this.caricaSpettacoli();
-                      },
+                          this.spettacoloService.findAll().subscribe(s => this.spettacoli = s);                      },
                       error: () => {
                           this.successoInserimento = null;
                           this.erroreInserimento = 'Il backend ha accettato la richiesta ma non restituisce il nuovo spettacolo. Riavvia il backend in esecuzione e ricompilalo prima di riprovare.';
@@ -249,8 +222,8 @@ export class GestioneSpettacoliComponent implements OnInit{
 
       this.spettacoloService.removeById(id).subscribe({
         next:() =>{
-          alert('Spettacolo rimosso con successo');
-          this.caricaSpettacoli();
+            this.spettacoli = this.spettacoli.filter(s => s.id !== id);
+            this.confirmDialogService.notifySuccess('Spettacolo rimosso con successo.').subscribe();
         },
         error: (err) => {
           console.log('Errore durante la rimozione del spettacolo');

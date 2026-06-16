@@ -10,6 +10,7 @@ import { Ruolo } from '../../../enums/ruolo';
 import { AcquistoBigliettoComponent } from '../acquisto-biglietto/acquisto-biglietto.component';
 import { ResponseBigliettoDTO } from '../../../dto/biglietto/response/response-biglietto-dto';
 import { ConfirmDialogService } from '../../../services/confirm-dialog.service';
+import {DettaglioFilmResolverData} from "../../../app.resolver";
 
 @Component({
   selector: 'app-dettaglio-film',
@@ -21,10 +22,12 @@ import { ConfirmDialogService } from '../../../services/confirm-dialog.service';
 export class DettaglioFilmComponent implements OnInit {
   film?: ResponseFilmDTO;
   spettacoli: ResponseSpettacoloDTO[] = [];
+
   loadingFilm = false;
   loadingSpettacoli = false;
   erroreFilm: string | null = null;
   erroreSpettacoli: string | null = null;
+
 
   // Modale di acquisto biglietto
   modaleAperta = false;
@@ -34,16 +37,15 @@ export class DettaglioFilmComponent implements OnInit {
 
   constructor(
       private route: ActivatedRoute,
-      private filmService: FilmService,
-      private spettacoloService: SpettacoloService,
+
       private authService: AuthService,
       private confirmDialogService: ConfirmDialogService
   ) {}
 
   ngOnInit(): void {
-    const id = Number(this.route.snapshot.paramMap.get('id'));
-    this.caricaFilm(id);
-    this.caricaSpettacoli(id);
+    const dati = this.route.snapshot.data['dati'] as DettaglioFilmResolverData;
+    this.film = dati.film;
+    this.spettacoli = dati.spettacoli ?? [];
   }
 
   durataLabel(minuti: number): string {
@@ -110,57 +112,5 @@ export class DettaglioFilmComponent implements OnInit {
     ).subscribe();
   }
 
-  private caricaFilm(id: number): void {
-    if (!id) {
-      this.erroreFilm = 'Film non valido.';
-      return;
-    }
 
-    this.loadingFilm = true;
-    this.erroreFilm = null;
-
-    this.filmService.findById(id).subscribe({
-      next: (film) => {
-        this.film = film;
-        this.loadingFilm = false;
-      },
-      error: () => {
-        this.film = undefined;
-        this.erroreFilm = 'Impossibile caricare il film dal backend.';
-        this.loadingFilm = false;
-      }
-    });
-  }
-
-  private caricaSpettacoli(id: number): void {
-    if (!id) {
-      return;
-    }
-
-    this.loadingSpettacoli = true;
-    this.erroreSpettacoli = null;
-
-    this.spettacoloService.findByIdFilm(id).subscribe({
-      next: (spettacoli) => {
-        this.spettacoli = spettacoli.filter(s => this.isFuturo(s));
-        this.loadingSpettacoli = false;
-      },
-      error: () => {
-        this.spettacoli = [];
-        this.erroreSpettacoli = 'Impossibile caricare gli spettacoli del film.';
-        this.loadingSpettacoli = false;
-      }
-    });
-  }
-
-  private isFuturo(spettacolo: ResponseSpettacoloDTO): boolean {
-    const timePart = spettacolo.oraInizio.includes('T')
-        ? spettacolo.oraInizio.split('T')[1]
-        : spettacolo.oraInizio.includes(' ')
-            ? spettacolo.oraInizio.split(' ')[1]
-            : spettacolo.oraInizio;
-    const ora = timePart?.substring(0, 5) ?? '00:00';
-    const dataOra = new Date(`${spettacolo.data}T${ora}:00`);
-    return dataOra > new Date();
-  }
 }
