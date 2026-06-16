@@ -4,10 +4,11 @@ import { FormsModule } from '@angular/forms';
 import {ActivatedRoute, RouterLink} from '@angular/router';
 import { ResponseFilmDTO } from '../../../dto/film/response/response-film-dto';
 import { FilmService } from '../../../services/film.service';
+import { SafeUrlPipe } from '../../../pipes/safe-url.pipe';
 
 @Component({
   selector: 'app-lista-film',
-  imports: [CommonModule, FormsModule, RouterLink],
+  imports: [CommonModule, FormsModule, RouterLink, SafeUrlPipe],
   templateUrl: './lista-film.component.html',
   standalone: true,
   styleUrl: './lista-film.component.css'
@@ -21,6 +22,12 @@ export class ListaFilmComponent implements OnInit {
   errore: string | null = null;
 
   constructor(private route: ActivatedRoute) {}
+  // ID del film su cui l'utente ha CLICCATO il play (sblocca audio)
+  filmPlayId: number | null = null;
+  // ID del film su cui l'utente è in hover (mostra overlay play)
+  filmHoverId: number | null = null;
+
+
 
   ngOnInit(): void {
     this.films = (this.route.snapshot.data['films'] as ResponseFilmDTO[]) ?? [];
@@ -65,5 +72,34 @@ export class ListaFilmComponent implements OnInit {
     return ['poster red', 'poster dark-red', 'poster gray', 'poster'][index % 4];
   }
 
+  getEmbedUrl(url: string): string {
+    const match = url.match(/(?:v=|youtu\.be\/)([^&?/]+)/);
+    // autoplay=1 + mute=0: l'audio funziona perché l'utente ha cliccato esplicitamente
+    return match
+      ? `https://www.youtube.com/embed/${match[1]}?autoplay=1&mute=0&controls=1&modestbranding=1&rel=0`
+      : '';
+  }
 
+  onMouseEnter(filmId: number): void {
+    this.filmHoverId = filmId;
+  }
+
+  onMouseLeave(filmId: number): void {
+    this.filmHoverId = null;
+    // Se si esce dalla card, ferma anche il video se era in play
+    if (this.filmPlayId === filmId) {
+      this.filmPlayId = null;
+    }
+  }
+
+  onPlayClick(event: Event, filmId: number): void {
+    event.stopPropagation();
+    this.filmPlayId = filmId;
+  }
+
+  private caricaFilm(): void {
+    this.loading = true;
+    this.errore = null;
+
+}
 }
