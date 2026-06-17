@@ -1,14 +1,14 @@
 :host {
     display: block;
     min-height: 100vh;
-    background: var(--background-tint, #121212);
+    background: transparent;
     color: var(--text, #ffffff);
     font-family: Arial, Helvetica, sans-serif;
 }
 
 .admin-staff-page {
     min-height: 100vh;
-    background: var(--background-tint, #121212);
+    background: transparent;
     color: var(--text, #ffffff);
 }
 

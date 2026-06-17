@@ -11,7 +11,7 @@
     display: block;
 
     /* FORZATURA FONDAMENTALE: Applica il colore di sfondo e del testo a tutto il componente */
-    background: var(--background-tint, var(--background));
+    background: transparent;
     color: var(--text);
     min-height: 100vh;
     font-family: Arial, Helvetica, sans-serif;
@@ -21,7 +21,7 @@
    STRUTTURA E LAYOUT DELLA PAGINA
    ========================================================================== */
 .cinema-page {
-    background: var(--background-tint, var(--background));
+    background: transparent;
     color: var(--text);
 }
 

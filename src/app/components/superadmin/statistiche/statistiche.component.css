@@ -1,6 +1,6 @@
 :host {
     display: block;
-    background: var(--background-tint, #121212);
+    background: transparent;
     color: var(--text, #ffffff);
     min-height: 100vh;
     font-family: Arial, Helvetica, sans-serif;

@@ -9,7 +9,7 @@
 }
 
 .page {
-  background: var(--background-tint, var(--background));
+  background: transparent;
   color: var(--text);
   font-family: Arial, Helvetica, sans-serif;
   margin: 0 auto;
