@@ -1,8 +1,14 @@
 :host {
+    --background: #121212;
+    --surface: #1e1e1e;
+    --primary: #e50914;
+    --secondary: #b3b3b3;
+    --text: #ffffff;
+    --border: #2a2a2a;
     display: flex;
     justify-content: center;
     align-items: flex-start;
-    background: var(--background-tint, #121212);
+    background: transparent;
     min-height: 100%;
     padding: 48px 24px;
     box-sizing: border-box;
@@ -82,7 +88,10 @@
     margin-bottom: 4px;
 }
 
-.section-title i { color: #E50914; font-size: 16px; }
+.section-title i {
+    color: #E50914;
+    font-size: 16px;
+}
 
 .section-subtitle {
     font-size: 12px;
@@ -90,7 +99,8 @@
     margin-bottom: 24px;
 }
 
-.alert-ok, .alert-err {
+.alert-ok,
+.alert-err {
     display: flex;
     align-items: center;
     gap: 8px;
@@ -112,7 +122,9 @@
     color: #ff6b6b;
 }
 
-.field-group { margin-bottom: 16px; }
+.field-group {
+    margin-bottom: 16px;
+}
 
 .field-group label {
     display: block;
@@ -133,7 +145,9 @@
     transition: border-color 0.15s;
 }
 
-.field-input:focus-within { border-color: #3a3a3a; }
+.field-input:focus-within {
+    border-color: #3a3a3a;
+}
 
 .field-input input {
     flex: 1;
@@ -145,7 +159,9 @@
     color: #ffffff;
 }
 
-.field-input input::placeholder { color: #3a3a3a; }
+.field-input input::placeholder {
+    color: #3a3a3a;
+}
 
 .field-input button {
     background: transparent;
@@ -158,7 +174,9 @@
     transition: color 0.15s;
 }
 
-.field-input button:hover { color: #ccc; }
+.field-input button:hover {
+    color: #ccc;
+}
 
 .btn-save {
     margin-top: 8px;
@@ -178,8 +196,14 @@
     transition: background-color 0.15s;
 }
 
-.btn-save:hover:not(:disabled) { background-color: #c5070e; }
-.btn-save:disabled { opacity: 0.45; cursor: not-allowed; }
+.btn-save:hover:not(:disabled) {
+    background-color: #c5070e;
+}
+
+.btn-save:disabled {
+    opacity: 0.45;
+    cursor: not-allowed;
+}
 
 .btn-logout {
     background: transparent;
@@ -195,4 +219,7 @@
     transition: border-color 0.15s, color 0.15s;
 }
 
-.btn-logout:hover { border-color: #3a3a3a; color: #888; }
+.btn-logout:hover {
+    border-color: #3a3a3a;
+    color: #888;
+}

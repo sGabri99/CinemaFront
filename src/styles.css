@@ -9,52 +9,62 @@
   --border: #2a2a2a;
 }
 
-/*
- * Il gradiente va su html (non su body): html è il "canvas" del browser,
- * il suo background copre l'intera area scrollabile, anche oltre il viewport.
- * body e app-root sono trasparenti: il gradiente di html mostra attraverso.
- */
+
 html {
   height: 100%;
   background: var(--background-tint);
-  background-attachment: fixed; /* il gradiente rimane fisso durante lo scroll */
+  background-attachment: fixed;
 }
 
 body {
-  height: 100%;
   margin: 0;
   background: transparent;
   color: var(--text);
   font-family: Roboto, "Helvetica Neue", sans-serif;
+  overflow-y: auto;
+  overflow-x: hidden;
 }
 
+
 app-root {
-  display: block;
-  height: 100%;
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
   background: transparent;
 }
 
-/*
- * Solo nella dashboard: overflow hidden per bloccare lo scroll orizzontale
- * della mat-sidenav. Le altre pagine scrollano normalmente.
- */
-body:has(app-dashboard) {
-  overflow: hidden;
+app-root> :not(app-navbar):not(app-footer):not(router-outlet) {
+  flex: 1 0 auto;
+  min-width: 0;
 }
 
-/* Angular Material v19: il container deve propagare height:100% */
+router-outlet {
+  display: none !important;
+}
+
+
 .mat-drawer-container {
-  height: 100% !important;
+  display: flex !important;
+  flex-direction: row !important;
+  height: auto !important;
+  min-height: calc(100vh - 70px);
+  background: transparent !important;
 }
 
-/* Blocca lo scroll orizzontale interno al mat-sidenav-content */
 .mat-drawer-content,
 .mat-sidenav-content {
-  overflow-x: hidden !important;
+  flex: 1 1 auto !important;
+  min-width: 0 !important;
+  margin-left: 0 !important;
+  overflow: visible !important;
   box-sizing: border-box;
 }
 
-/* --- Dialog styles --- */
+
+.mat-drawer-inner-container {
+  overflow-x: hidden !important;
+}
+
 .confirm-dialog-panel .mat-mdc-dialog-surface {
   background: var(--surface);
   color: var(--text);

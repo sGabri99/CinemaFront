@@ -1,15 +1,21 @@
 :host {
+    --background: #121212;
+    --surface: #1e1e1e;
+    --primary: #e50914;
+    --secondary: #b3b3b3;
+    --text: #ffffff;
+    --border: #2a2a2a;
     display: block;
     min-height: 100vh;
     background: transparent;
-    color: var(--text, #ffffff);
+    color: var(--text);
     font-family: Arial, Helvetica, sans-serif;
 }
 
 .admin-staff-page {
     min-height: 100vh;
     background: transparent;
-    color: var(--text, #ffffff);
+    color: var(--text);
 }
 
 .admin-staff-section {
