@@ -28,6 +28,7 @@ import {
   inserisciFilmResolver,
   listaSpettacoliResolver
 } from "./app.resolver";
+import {StatisticheComponent} from "./components/superadmin/statistiche/statistiche.component";
 
 export const routes: Routes = [
   {path: '',pathMatch: 'full', redirectTo: 'home'},
@@ -62,7 +63,11 @@ export const routes: Routes = [
         title: 'Ricerca Catalogo',
         component:RicercaComponent,canActivate: [staffGuard],
       },
-
+      {
+        path: 'statistiche',
+        component: StatisticheComponent,
+        canActivate: [adminGuard]
+      },
       {
         path: 'i-miei-biglietti',
         title: 'I miei biglietti',

@@ -1,0 +1,275 @@
+@if (loading) {
+    <div class="stat-loading">
+        <div class="stat-spinner"></div>
+        <p>Caricamento statistiche…</p>
+    </div>
+}
+
+@if (errore) {
+    <div class="stat-banner stat-banner--error">
+        <span>⚠</span> {{ errore }}
+    </div>
+}
+
+@if (!loading && !errore) {
+    <div class="stat-page">
+
+        <header class="stat-header">
+            <div>
+                <h1 class="stat-title">Statistiche</h1>
+                <p class="stat-subtitle">Panoramica completa dell'andamento del cinema (prezzi basati sul tipo di sala)</p>
+            </div>
+        </header>
+
+        <section class="stat-kpi-grid">
+
+            <div class="stat-kpi-card stat-kpi-card--accent">
+                <span class="stat-kpi-icon">💶</span>
+                <div class="stat-kpi-value">{{ formatEuro(fatturatoTotale) }}</div>
+                <div class="stat-kpi-label">Fatturato totale</div>
+            </div>
+
+            <div class="stat-kpi-card">
+                <span class="stat-kpi-icon">🎟</span>
+                <div class="stat-kpi-value">{{ totaleBigliettiVenduti }}</div>
+                <div class="stat-kpi-label">Biglietti venduti</div>
+            </div>
+
+            <div class="stat-kpi-card">
+                <span class="stat-kpi-icon">🎬</span>
+                <div class="stat-kpi-value">{{ totaleSpettacoli }}</div>
+                <div class="stat-kpi-label">Spettacoli totali</div>
+                <div class="stat-kpi-sub">{{ spettacoliFuturi }} in programma · {{ spettacoliPassati }} passati</div>
+            </div>
+
+            <div class="stat-kpi-card">
+                <span class="stat-kpi-icon">🎞</span>
+                <div class="stat-kpi-value">{{ filmInCatalogo }}</div>
+                <div class="stat-kpi-label">Film in catalogo</div>
+            </div>
+
+            <div class="stat-kpi-card">
+                <span class="stat-kpi-icon">📊</span>
+                <div class="stat-kpi-value">{{ mediaOccupazioneGlobale | number:'1.0-0' }}%</div>
+                <div class="stat-kpi-label">Occupazione media</div>
+                <div class="stat-kpi-bar-wrap">
+                    <div class="stat-kpi-bar"
+                         [style.width]="barraLarghezza(mediaOccupazioneGlobale)"
+                         [style.background]="coloreOccupazione(mediaOccupazioneGlobale)">
+                    </div>
+                </div>
+            </div>
+
+        </section>
+
+        <section class="stat-section">
+            <h2 class="stat-section-title">🏆 Film più redditizi</h2>
+            <div class="stat-top3">
+                @for (item of filmTopTre; track item.film.id; let i = $index) {
+                    <div class="stat-top3-card" [class.primo]="i === 0">
+                        <div class="stat-top3-pos">{{ i + 1 }}</div>
+                        <div class="stat-top3-info">
+                            <div class="stat-top3-titolo">{{ item.film.titolo }}</div>
+                            <div class="stat-top3-meta">
+                                {{ item.totaleBiglietti }} biglietti · {{ item.totaleSpettacoli }} spettacoli
+                            </div>
+                            <div class="stat-top3-fatturato">{{ formatEuro(item.fatturato) }}</div>
+                            <div class="stat-barra-wrap">
+                                <div class="stat-barra"
+                                     [style.width]="barraLarghezza(item.percentualeOccupazione)"
+                                     [style.background]="coloreOccupazione(item.percentualeOccupazione)">
+                                </div>
+                                <span class="stat-barra-label">
+                                    {{ item.percentualeOccupazione | number:'1.0-0' }}% occupazione
+                                    · <strong>{{ trendLabel(item.percentualeOccupazione) }}</strong>
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+                }
+                @empty {
+                    <p class="stat-empty">Nessun dato disponibile.</p>
+                }
+            </div>
+        </section>
+
+        <section class="stat-section">
+            <div class="stat-tabs">
+                <button class="stat-tab" [class.active]="vistaAttiva === 'film'" (click)="vistaAttiva = 'film'">Per film</button>
+                <button class="stat-tab" [class.active]="vistaAttiva === 'spettacoli'" (click)="vistaAttiva = 'spettacoli'">Per spettacolo</button>
+                <button class="stat-tab" [class.active]="vistaAttiva === 'sale'" (click)="vistaAttiva = 'sale'">Per sala</button>
+            </div>
+
+            @if (vistaAttiva === 'film') {
+                <div class="stat-toolbar">
+                    <label class="stat-label">Ordina per</label>
+                    <select class="stat-select" [(ngModel)]="ordinamentoFilm" (change)="ordinaFilm()">
+                        <option value="fatturato">Fatturato</option>
+                        <option value="biglietti">Biglietti venduti</option>
+                        <option value="occupazione">% Occupazione</option>
+                        <option value="spettacoli">N° spettacoli</option>
+                    </select>
+                </div>
+
+                <div class="stat-table-wrap">
+                    <table class="stat-table">
+                        <thead>
+                        <tr>
+                            <th>#</th>
+                            <th>Film</th>
+                            <th>Generi</th>
+                            <th>Spettacoli</th>
+                            <th>Biglietti</th>
+                            <th>Posti totali</th>
+                            <th>Occupazione</th>
+                            <th>Fatturato</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                            @for (item of statPerFilm; track item.film.id; let i = $index) {
+                                <tr>
+                                    <td class="stat-rank">{{ i + 1 }}</td>
+                                    <td class="stat-film-titolo">{{ item.film.titolo }}</td>
+                                    <td class="stat-secondary">{{ item.film.nomeGeneri?.join(', ') || '—' }}</td>
+                                    <td class="stat-num">{{ item.totaleSpettacoli }}</td>
+                                    <td class="stat-num">{{ item.totaleBiglietti }}</td>
+                                    <td class="stat-num">{{ item.postiTotali }}</td>
+                                    <td class="stat-occ-cell">
+                                        <div class="stat-mini-barra-wrap">
+                                            <div class="stat-mini-barra"
+                                                 [style.width]="barraLarghezza(item.percentualeOccupazione)"
+                                                 [style.background]="coloreOccupazione(item.percentualeOccupazione)">
+                                            </div>
+                                        </div>
+                                        <span class="stat-occ-num">{{ item.percentualeOccupazione | number:'1.0-0' }}%</span>
+                                    </td>
+                                    <td class="stat-num stat-fatturato">{{ formatEuro(item.fatturato) }}</td>
+                                </tr>
+                            }
+                            @empty {
+                                <tr><td colspan="8" class="stat-empty">Nessun film trovato.</td></tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            }
+
+            @if (vistaAttiva === 'spettacoli') {
+                <div class="stat-toolbar">
+                    <label class="stat-label">Ordina per</label>
+                    <select class="stat-select" [(ngModel)]="ordinamentoSpettacoli" (change)="ordinaSpettacoli()">
+                        <option value="fatturato">Fatturato</option>
+                        <option value="biglietti">Biglietti venduti</option>
+                        <option value="occupazione">% Occupazione</option>
+                        <option value="data">Data</option>
+                    </select>
+
+                    <label class="stat-label">Data</label>
+                    <input class="stat-input" type="date" [(ngModel)]="filtroData" />
+
+                    <label class="stat-label">Film</label>
+                    <select class="stat-select" [(ngModel)]="filtroFilmId">
+                        <option [ngValue]="null">Tutti i film</option>
+                        @for (film of films; track film.id) {
+                            <option [ngValue]="film.id">{{ film.titolo }}</option>
+                        }
+                    </select>
+                    <button class="stat-btn-ghost" (click)="resetFiltriSpettacoli()">Azzera filtri</button>
+                </div>
+
+                <div class="stat-toolbar-summary">
+                    <span>{{ spettacoliFiltrati.length }} spettacol{{ spettacoliFiltrati.length === 1 ? 'o' : 'i' }}</span>
+                    <span class="stat-summary-fatturato">Fatturato filtrato: <strong>{{ formatEuro(fatturatoFiltrato) }}</strong></span>
+                </div>
+
+                <div class="stat-table-wrap">
+                    <table class="stat-table">
+                        <thead>
+                        <tr>
+                            <th>Film</th>
+                            <th>Data</th>
+                            <th>Orario</th>
+                            <th>Sala</th>
+                            <th>Capienza</th>
+                            <th>Biglietti</th>
+                            <th>Occupazione</th>
+                            <th>Fatturato</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                            @for (item of spettacoliFiltrati; track item.spettacolo.id) {
+                                <tr>
+                                    <td class="stat-film-titolo">{{ item.spettacolo.nomeFilm }}</td>
+                                    <td>{{ formatData(item.spettacolo.data) }}</td>
+                                    <td class="stat-secondary">{{ formatOrario(item.spettacolo.oraInizio) }}</td>
+                                    <td>{{ item.spettacolo.nomeSala }}</td>
+                                    <td class="stat-num">{{ item.capienza }}</td>
+                                    <td class="stat-num">{{ item.totaleBiglietti }}</td>
+                                    <td class="stat-occ-cell">
+                                        <div class="stat-mini-barra-wrap">
+                                            <div class="stat-mini-barra"
+                                                 [style.width]="barraLarghezza(item.percentualeOccupazione)"
+                                                 [style.background]="coloreOccupazione(item.percentualeOccupazione)">
+                                            </div>
+                                        </div>
+                                        <span class="stat-occ-num">{{ item.percentualeOccupazione | number:'1.0-0' }}%</span>
+                                    </td>
+                                    <td class="stat-num stat-fatturato">{{ formatEuro(item.fatturato) }}</td>
+                                </tr>
+                            }
+                            @empty {
+                                <tr><td colspan="8" class="stat-empty">Nessuno spettacolo trovato.</td></tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            }
+
+            @if (vistaAttiva === 'sale') {
+                <div class="stat-table-wrap">
+                    <table class="stat-table">
+                        <thead>
+                        <tr>
+                            <th>Sala</th>
+                            <th>Tipo</th>
+                            <th>Posti</th>
+                            <th>Spettacoli</th>
+                            <th>Biglietti venduti</th>
+                            <th>Utilizzo medio</th>
+                            <th>Fatturato</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                            @for (item of statPerSala; track item.sala.id) {
+                                <tr>
+                                    <td class="stat-film-titolo">{{ item.sala.nome }}</td>
+                                    <td>
+                                        <span class="stat-badge" [class]="'badge-' + item.sala.tipo.toLowerCase()">
+                                            {{ item.sala.tipo }}
+                                        </span>
+                                    </td>
+                                    <td class="stat-num">{{ item.sala.numeroPosti }}</td>
+                                    <td class="stat-num">{{ item.totaleSpettacoli }}</td>
+                                    <td class="stat-num">{{ item.totaleBiglietti }}</td>
+                                    <td class="stat-occ-cell">
+                                        <div class="stat-mini-barra-wrap">
+                                            <div class="stat-mini-barra"
+                                                 [style.width]="barraLarghezza(item.percentualeUtilizzo)"
+                                                 [style.background]="coloreOccupazione(item.percentualeUtilizzo)">
+                                            </div>
+                                        </div>
+                                        <span class="stat-occ-num">{{ item.percentualeUtilizzo | number:'1.0-0' }}%</span>
+                                    </td>
+                                    <td class="stat-num stat-fatturato">{{ formatEuro(item.fatturato) }}</td>
+                                </tr>
+                            }
+                            @empty {
+                                <tr><td colspan="7" class="stat-empty">Nessuna sala trovata.</td></tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            }
+        </section>
+    </div>
+}

@@ -11,9 +11,9 @@ import { Tipo } from '../../../enums/tipo';
 
 // Prezzo base per singolo biglietto in base al tipo di sala
 const PREZZI_TIPO_SALA: Record<Tipo, number> = {
-  [Tipo.NORMALE]: 6.5,
-  [Tipo.TRED]: 9,
-  [Tipo.IMAX]: 12,
+  [Tipo.NORMALE]: 7,
+  [Tipo.TRED]: 10,
+  [Tipo.IMAX]: 15,
 };
 
 @Component({
