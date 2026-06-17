@@ -1,4 +1,6 @@
 /* Stessi stili di login.component.css — condividi o unifica in styles.css */
+
+
 .auth-page {
     background: var(--background-tint, #111);
     min-height: 100vh;
@@ -118,4 +120,14 @@
     flex: 1;
     height: 1px;
     background: #2a2a2a;
+}
+.auth-input.is-invalid ~ .btn-toggle-pwd,
+.auth-input.is-valid ~ .btn-toggle-pwd {
+    color: #666;
+}
+
+.auth-input.is-invalid,
+.auth-input.is-valid {
+    background-image: none;
+    padding-right: 0.85rem;
 }

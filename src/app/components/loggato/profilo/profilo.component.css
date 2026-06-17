@@ -151,13 +151,14 @@
     background: transparent;
     border: none;
     padding: 0 14px;
-    color: #444;
+    color: #888;
     cursor: pointer;
-    font-size: 14px;
+    font-size: 16px;
+    min-width: 44px;
     transition: color 0.15s;
 }
 
-.field-input button:hover { color: #888; }
+.field-input button:hover { color: #ccc; }
 
 .btn-save {
     margin-top: 8px;
