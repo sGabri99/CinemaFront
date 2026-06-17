@@ -9,11 +9,9 @@
   --border: #2a2a2a;
 }
 
-
 html,
 body {
   height: 100%;
-  overflow: hidden;
   margin: 0;
   background: var(--background-tint);
   color: var(--text);
@@ -26,16 +24,33 @@ app-root {
   background: var(--background-tint);
 }
 
+/*
+ * FIX SCROLL ORIZZONTALE — solo quando la dashboard è attiva.
+ *
+ * body:has(app-dashboard) seleziona il body SOLO se contiene app-dashboard.
+ * Le altre pagine (home, login, ecc.) non sono influenzate e scrollano normalmente.
+ *
+ * Dentro la dashboard, lo scroll verticale funziona tramite mat-sidenav-content
+ * (overflow-y: auto impostato da Angular Material internamente).
+ * Lo scroll orizzontale è bloccato strutturalmente.
+ */
+body:has(app-dashboard) {
+  overflow: hidden;
+}
+
+/* Angular Material v19: il container deve propagare height:100% */
 .mat-drawer-container {
   height: 100% !important;
 }
 
+/* Blocca lo scroll orizzontale INTERNO al mat-sidenav-content */
 .mat-drawer-content,
 .mat-sidenav-content {
   overflow-x: hidden !important;
   box-sizing: border-box;
 }
 
+/* --- Dialog styles --- */
 .confirm-dialog-panel .mat-mdc-dialog-surface {
   background: var(--surface);
   color: var(--text);
