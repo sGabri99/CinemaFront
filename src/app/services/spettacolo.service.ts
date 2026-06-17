@@ -55,4 +55,10 @@ export class SpettacoloService {
       `${this.BASE_URL}/staff/spettacolo/${id}`
     );
   }
+
+  getFatturatoSpettacoli(): Observable<Record<number, number>> {
+    return this.http.get<Record<number, number>>(
+      `${this.BASE_URL}/admin/spettacolo/fatturato`
+    );
+  }
 }

@@ -12,27 +12,29 @@
 
 html,
 body {
-  min-height: 100%;
+  height: 100%;
+  overflow: hidden;
+  margin: 0;
   background: var(--background-tint);
   color: var(--text);
-  margin: 0;
-}
-
-body {
-  background: var(--background-tint);
-  margin: 0;
+  font-family: Roboto, "Helvetica Neue", sans-serif;
 }
 
 app-root {
-  display: flex;
-  flex-direction: column;
-  min-height: 100vh;
-  
+  display: block;
+  height: 100%;
   background: var(--background-tint);
 }
 
-html, body { height: 100%; }
-body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
+.mat-drawer-container {
+  height: 100% !important;
+}
+
+.mat-drawer-content,
+.mat-sidenav-content {
+  overflow-x: hidden !important;
+  box-sizing: border-box;
+}
 
 .confirm-dialog-panel .mat-mdc-dialog-surface {
   background: var(--surface);

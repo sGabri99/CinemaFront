@@ -1,14 +1,13 @@
-.dashboard-container {
-    min-height: 100vh;
-    width: 100%;
-    max-width: 100%;
-    overflow: hidden;
-    background: var(--background-tint, var(--background)) !important;
+
+:host {
+    display: block;
+    height: 100%;
 }
 
-.mat-sidenav-container {
+
+.dashboard-container {
+    height: 100%;
     width: 100%;
-    max-width: 100%;
     background: var(--background-tint, var(--background)) !important;
 }
 
@@ -16,7 +15,6 @@
     background-color: var(--background) !important;
     border-right: 1px solid var(--border) !important;
     width: 240px;
-    max-width: 100%;
     box-sizing: border-box;
     padding-top: 24px;
 }
@@ -68,17 +66,6 @@
 
 .dashboard-content {
     background: var(--background-tint, var(--background)) !important;
-    min-width: 0;
-    max-width: 100%;
-    overflow-x: hidden;
-    overflow-y: auto;
-    box-sizing: border-box;
-}
-
-.mat-drawer-content,
-.mat-sidenav-content {
-    min-width: 0;
-    max-width: 100%;
 }
 
 .mat-drawer-side {

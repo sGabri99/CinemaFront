@@ -36,11 +36,6 @@ export interface StatSala {
   percentualeUtilizzo: number;
   fatturato: number;
 }
-const PREZZI_TIPO_SALA: Record<Tipo, number> = {
-  [Tipo.NORMALE]: 7,
-  [Tipo.TRED]: 15,
-  [Tipo.IMAX]: 10,
-};
 
 @Component({
   selector: 'app-statistiche',
@@ -88,12 +83,16 @@ export class StatisticheComponent implements OnInit {
     forkJoin({
       films: this.filmService.findAll(),
       spettacoli: this.spettacoloService.findAll(),
-      sale: this.salaService.findAll()
+      sale: this.salaService.findAll(),
+      fatturati: this.spettacoloService.getFatturatoSpettacoli()
     }).subscribe({
-      next: ({ films, spettacoli, sale }) => {
+      next: ({ films, spettacoli, sale, fatturati }) => {
         this.films = films;
-        this.spettacoli = spettacoli;
         this.sale = sale;
+        this.spettacoli = spettacoli.map(s => ({
+          ...s,
+          fatturato: fatturati[s.id] ?? 0
+        }));
         this.ricalcolaTutto();
         this.loading = false;
       },
@@ -123,7 +122,7 @@ export class StatisticheComponent implements OnInit {
 
 
     this.fatturatoTotale = this.spettacoli.reduce((acc, s) => {
-      return acc + ((s.idBiglietti?.length ?? 0) * this.getPrezzoPerSpettacolo(s));
+      return acc + (s.fatturato ?? 0);
     }, 0);
 
     this.spettacoliPassati = this.spettacoli.filter(
@@ -156,7 +155,7 @@ export class StatisticheComponent implements OnInit {
 
       // Sommiamo il fatturato specifico per ogni spettacolo
       const fatturatoTotale = spettacoliFilm.reduce((acc, s) => {
-        return acc + ((s.idBiglietti?.length ?? 0) * this.getPrezzoPerSpettacolo(s));
+        return acc + (s.fatturato ?? 0);
       }, 0);
 
       return {
@@ -176,13 +175,12 @@ export class StatisticheComponent implements OnInit {
       const sala = this.sale.find(sa => sa.nome === s.nomeSala);
       const capienza = sala?.numeroPosti ?? 0;
       const venduti = s.idBiglietti?.length ?? 0;
-      const prezzo = this.getPrezzoPerSpettacolo(s);
       return {
         spettacolo: s,
         totaleBiglietti: venduti,
         capienza,
         percentualeOccupazione: capienza > 0 ? (venduti / capienza) * 100 : 0,
-        fatturato: venduti * prezzo
+        fatturato: s.fatturato ?? 0
       };
     });
     this.ordinaSpettacoli();
@@ -198,7 +196,7 @@ export class StatisticheComponent implements OnInit {
 
       // Calcoliamo il fatturato sommano i prezzi specifici per ogni spettacolo
       const fatturatoTotale = spettacoliSala.reduce((acc, s) => {
-        return acc + ((s.idBiglietti?.length ?? 0) * this.getPrezzoPerSpettacolo(s));
+        return acc + (s.fatturato ?? 0);
       }, 0);
 
       const postiTotali = spettacoliSala.length * sala.numeroPosti;
@@ -289,19 +287,4 @@ export class StatisticheComponent implements OnInit {
     this.filtroData = '';
     this.filtroFilmId = null;
   }
-
-
-  private getPrezzoPerSpettacolo(spettacolo: ResponseSpettacoloDTO): number {
-    const sala = this.sale.find(s => s.nome === spettacolo.nomeSala);
-    // Se la sala non ha un tipo definito, usiamo NORMALE come default
-    const tipo = sala?.tipo as Tipo || Tipo.NORMALE;
-    return PREZZI_TIPO_SALA[tipo] || 6.5;
-  }
-
-
-
-
-
-
-
 }

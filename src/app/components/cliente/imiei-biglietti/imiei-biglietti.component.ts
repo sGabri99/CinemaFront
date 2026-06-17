@@ -7,7 +7,7 @@ import {SpettacoloService} from "../../../services/spettacolo.service";
 import {ResponseSpettacoloDTO} from "../../../dto/spettacolo/response/response-spettacolo-dto";
 import {ResponseFilmDTO} from "../../../dto/film/response/response-film-dto";
 import {FilmService} from "../../../services/film.service";
-import {DatePipe} from "@angular/common";
+import {CurrencyPipe, DatePipe} from "@angular/common";
 import {AuthService} from "../../../services/auth.service";
 import {ConfirmDialogService} from "../../../services/confirm-dialog.service";
 import {ActivatedRoute} from "@angular/router";
@@ -15,7 +15,7 @@ import {IMieiBigliettiResolverData} from "../../../app.resolver";
 
 @Component({
   selector: 'app-imiei-biglietti',
-  imports: [QRCodeComponent, DatePipe],
+    imports: [QRCodeComponent, DatePipe, CurrencyPipe],
   templateUrl: './imiei-biglietti.component.html',
   styleUrl: './imiei-biglietti.component.css'
 })

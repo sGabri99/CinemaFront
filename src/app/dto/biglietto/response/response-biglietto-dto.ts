@@ -3,4 +3,5 @@ export interface ResponseBigliettoDTO {
   nomeUtente: string;
   idSpettacolo: number;
   codiceBiglietto:string;
+  prezzo: number;
 }

@@ -8,4 +8,5 @@ export interface ResponseSpettacoloDTO {
   idBiglietti: number[];
   nomeSala: string;
   nomeFilm: string;
+  fatturato?: number;
 }
