@@ -5,6 +5,7 @@ export const authInterceptor: HttpInterceptorFn = (req, next) => {
   const richiedeAuth = req.url.includes('/staff/') ||
     req.url.includes('/admin/') ||
     req.url.includes('/cliente/') ||
+    req.url.includes('/user/') ||
     req.url.endsWith('/edit_password');
 
   if (!token || !richiedeAuth) {
